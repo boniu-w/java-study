@@ -1,6 +1,6 @@
 
 
-----------------------------isInstance 与 instanceof--------------------------------
+--------------------------------isInstance 与 instanceof--------------------------------
     
 	@org.junit.Test
     public void test5(){
@@ -15,14 +15,14 @@
         }
     }
 	
-----------------------------java日期 转 sql日期--------------------------------
+--------------------------------java日期 转 sql日期--------------------------------
 	
 	Date date = new Date();
 	Timestamp sqlDate = new Timestamp(date.getTime())  // 带 时分秒的
 
 	java.sql.Date sqlDate1 = new java.sql.Date(date.getTime());  // 不带时分秒 只有年月日
 	
-----------------------------session request--------------------------------
+--------------------------------session request--------------------------------
 	1.session.setAttribute()和session.getAttribute()配对使用，作用域是整个会话期间，在所有的页面都使用这些数据的时候使用。
 
 	2.request.setAttribute()和request.getAttribute()配对使用，作用域是请求和被请求页面之间。request.setAttribute()是只在此action的
@@ -32,3 +32,38 @@
 
 	3.request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
 	方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
+	
+--------------------------------定义数组--------------------------------	
+	
+	int[] array = {1,2,3};  // 用大括号 而不是 中括号
+	
+--------------------------------关于 除法 的一些--------------------------------
+
+	@org.junit.Test
+	public void test2() {
+		long round = Math.round((2 + 3) / 2);
+		System.out.println(round);  // 2  为什么是2
+
+		long l = Math.round(2.5);
+		System.out.println(l); // 3
+
+
+		double ceil = Math.ceil(2.5);
+		System.out.println("ceil : " + ceil); // 3
+
+		double b = (2d + 3d) / 2d;
+		System.out.println("b : " + b);  // 2.5
+
+  }
+
+
+
+
+
+
+
+
+
+	
+	
+	
