@@ -53,12 +53,12 @@ public void test2() {
 ```
 
 #### 6. 所有整型包装类对象之间值的比较，全部使用 equals 方法比较。
-​	说明：对于 Integer var = ? 在-128 至 127 范围内的赋值，Integer 对象是在 IntegerCache.cache 产
-​	生，会复用已有对象，这个区间内的 Integer 值可以直接使用==进行判断，但是这个区间之外的所有数
-​	据，都会在堆上产生，并不会复用已有对象，这是一个大坑，推荐使用 equals 方法进行判断。
-​	
-  -----------------------------浮点数之间的等值判断，基本数据类型不能用==来比较，包装数据类型不能用equals 来判断-----------------------------
-​	反例：
+​	说明：对于 Integer var = ? 在-128 至 127 范围内的赋值，Integer 对象是在 IntegerCache.cache 产生，会复用已有对象，这个区间内的 Integer 值可以直接使用==进行判断，但是这个区间之外的所有数据，都会在堆上产生，并不会复用已有对象，这是一个大坑，推荐使用 equals 方法进行判断。
+
+--**浮点数之间的等值判断，基本数据类型不能用==来比较，包装数据类型不能用equals 来判断**--
+**Java中的解决方法，是通过设立一个阈值来消除计算机计算所带来的误差引起的误差**
+
+反例：
 ​	 float a = 1.0f - 0.9f;
 ​	 float b = 0.9f - 0.8f;
 ​	 if (a == b) {
@@ -71,7 +71,51 @@ public void test2() {
 ​	 // 预期进入此代码快，执行其它业务逻辑
 ​	 // 但事实上 equals 的结果为 false
 ​	 }
+
+
+
+```java
+public void floatJudge() {
+        float a = 1.0f - 0.9f;
+        float b = 0.9f - 0.8f;
+
+        System.out.println(a);
+        System.out.println(b);
+
+        if (a == b) {
+            System.out.println("a == b");
+        } else {
+            System.out.println("a != b");
+        }
+
+        final double e = 1E-14;
+        BigDecimal bigDecimal=new BigDecimal(e);
+        System.out.println("bigDecimal -> "+bigDecimal);
+
+        float abs = Math.abs(a - b);
+        System.out.println("abs -> "+abs);
+
+
+        final double e2 = 1E-7;
+
+        if (Math.abs(a - b) < e2) {
+            System.out.println("a 终于 == b");
+        } else {
+            System.out.println("a 还是 != b");
+        }
+
+
+    }
+```
+
+
+
+
+
+
+
 ​	 
+
 #### 7. 循环体内，字符串的连接方式，使用 StringBuilder 的 append 方法进行扩展
 ​	说明：下例中，反编译出的字节码文件显示每次循环都会 new 出一个 StringBuilder 对象，然后进行
 ​	append 操作，最后通过 toString 方法返回 String 对象，造成内存资源浪费。
@@ -85,7 +129,13 @@ public void test2() {
 
 #### 8.  科学计数法
 
-3.2e11  等同于 3.2 × 10¹¹
+1. 3.2e11  等同于 3.2 × 10¹¹
+
+2. excel里,导入的数据到excel里显示这样 6.22848E+18 , 但它并不等同于java 的科学计数法,
+
+在excel里 6.22848E+18 = 6228480028317730000
+
+
 
 #### 9. 两个list 合并去重
 
@@ -268,7 +318,87 @@ oracle 的时间戳 和 java 的 String 也可以对应
 
 
 
+#### 20. continue
+
+continue: 中断本次循环,而不是break 中断循环;
+
+```java
+public void continueTest() {
+        int s = 0;
+
+        for (int i = 0; i < 10; i++) {
+            if (i == 2) {
+                s -= 10;
+                continue;
+            }
+
+            if (i == 3) {
+                System.out.println("true");
+                continue;
+            }
+
+            s += 10;
+        }
+
+        System.out.println(s);
+
+    }
+```
+
+如果if 成立 则 中断本次循环,进入下一次循环;
+
+执行结果:
+
+```java
+true
+70
+```
 
 
 
+#### 21. 读取json文件
+
+把.json文件 放到 static下面 , 建个文件放进去也可以
+
+```java
+	@RequestMapping(value = "/testJson")
+    @ResponseBody
+    public void testJson() {
+        ClassPathResource resource = new    ClassPathResource("static/json/nongHangTitles.json");
+        try {
+            if (resource.exists()) {
+
+                File file = resource.getFile();
+                String s = FileUtils.readFileToString(file);
+
+                System.out.println(s);
+
+
+                JSONArray jsonArray = JSON.parseArray(s);
+                System.out.println(jsonArray.toString());
+
+
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+```
+
+
+
+#### 22. 配置
+
+1. 要想application.properties 文件里有mybatis-plus 的提示 需要这个
+
+```xml
+<!--mybatis-plus自动的维护了mybatis以及mybatis-spring的依赖，在springboot中这三者不能同时的出现，避免版本的冲突，表示：跳进过这个坑-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+```
 
