@@ -1,4 +1,4 @@
-## 1. isInstance 与 instanceof
+#### 1. isInstance 与 instanceof
 
 	@org.junit.Test
 	public void test5(){
@@ -13,7 +13,7 @@
 	    }
 	}
 
-### 2. java日期 转 sql日期
+#### 2. java日期 转 sql日期
 
 	Date date = new Date();
 	Timestamp sqlDate = new Timestamp(date.getTime())  // 带 时分秒的
@@ -29,7 +29,7 @@
  	3. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
      方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
 
-### 4. 定义数组
+#### 4. 定义数组
 
 	int[] array = {1,2,3};  // 用大括号 而不是 中括号
 
@@ -288,7 +288,7 @@ String[] titles = {
 2. ArrayList由于使用数组实现，**因此下标明确，最好使用普通循环**。
 3. 而对于 LinkedList 由于获取一个元素，要从头开始向后找，**因此建议使用增强for循环，也就是iterator**。
 
-### 18. 关于数据库的日期 类型 和 java的 数据类型的对应
+#### 18. 关于数据库的日期 类型 和 java的 数据类型的对应
 
 oracle 的时间戳 和 java 的 String 也可以对应
 
@@ -657,7 +657,7 @@ Http定义了与服务器交互的不同方法，最基本的方法有4种，分
 
 　　**2**.**对资源的增，删，改，查操作，其实都可以通过GET/POST完成，不需要用到PUT和DELETE**。
 
-　　**3**.**另外一个是，早期的Web MVC框架设计者们并没有有意识地将URL当作抽象的资源来看待和设计，所以导致一个比较严重的问题是传统的Web MVC框架基本上都只支持GET和POST两种HTTP方法，而不支持PUT和DELETE方法**。
+　　**3**.另外一个是，早期的Web MVC框架设计者们并没有有意识地将URL当作抽象的资源来看待和设计，所以导致一个比较严重的问题是**传统的Web MVC框架基本上都只支持GET和POST两种HTTP方法，而不支持PUT和DELETE方法**。
 
   * 简单解释一下MVC：MVC本来是存在于Desktop程序中的，M是指数据模型，V是指用户界面，C则是控制器。使用MVC的目的是将M和V的实现代码分离，从而使同一个程序可以使用不同的表现形式。
 
@@ -698,4 +698,38 @@ Http定义了与服务器交互的不同方法，最基本的方法有4种，分
 
 　　总结一下，Get是向服务器发索取数据的一种请求，而Post是向服务器提交数据的一种请求，在FORM（表单）中，Method默认为"GET"，实质上，GET和POST只是发送机制不同，并不是一个取一个发！
 
-　　纯属hyddd个人总结，如有错漏请指出
+　　
+
+
+
+#### 26. getbytes()的意义,
+
+​	有时候,为了让中文字符适应某些特殊要求(如http header要求其内容必须为iso8859-1编码),可能会通过将中文字符按照字节方式来编码的情况,如:
+String s_iso88591 = new String("中".getBytes("UTF-8"),"ISO8859-1"),
+
+这样得到的s_iso8859-1字符串实际是三个在ISO8859-1中的字符,在将这些字符传递到目的地后,目的地程序再通过相反的方式
+
+String s_utf8 = new String(s_iso88591.getBytes("ISO8859-1"),"UTF-8")
+
+来得到正确的中文汉字"中"，**这样就既保证了遵守协议规定、也支持中文**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
