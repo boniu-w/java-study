@@ -667,7 +667,7 @@ Http定义了与服务器交互的不同方法，最基本的方法有4种，分
 
 　　说完原理性的问题，我们再从表面现像上面看看GET和POST的区别：
 
-　　**1**.GET请求的数据会附在URL之后（就是把数据放置在HTTP协议头中），以?分割URL和传输数据，参数之间以&相连，如：login.action?name=hyddd&password=idontknow&verify=%E4%BD%A0%E5%A5%BD。如果数据是英文字母/数字，原样发送，如果是空格，转换为+，如果是中文/其他字符，则直接把字符串用BASE64加密，得出如：%E4%BD%A0%E5%A5%BD，其中％XX中的XX为该符号以16进制表示的ASCII。
+　　**1**.GET请求的数据会附在URL之后（就是把数据放置在HTTP协议头中），以?分割URL和传输数据，参数之间以&相连，如：login.action?name=hyddd&password=idontknow&verify=%E4%BD%A0%E5%A5%BD。如果数据是英文字母/数字，原样发送，如果是空格，转换为+，**如果是中文/其他字符，则直接把字符串用BASE64加密**，得出如：%E4%BD%A0%E5%A5%BD，其中％XX中的XX为该符号以**16进制表示的ASCII**。
 
 　　**POST把提交的数据则放置在是HTTP包的包体中。**
 
@@ -704,7 +704,7 @@ Http定义了与服务器交互的不同方法，最基本的方法有4种，分
 
 #### 26. getbytes()的意义,
 
-​	有时候,为了让中文字符适应某些特殊要求(如http header要求其内容必须为iso8859-1编码),可能会通过将中文字符按照字节方式来编码的情况,如:
+​	有时候,为了让中文字符适应某些特殊要求(**如http header要求其内容必须为iso8859-1编码**),可能会通过将中文字符按照字节方式来编码的情况,如:
 String s_iso88591 = new String("中".getBytes("UTF-8"),"ISO8859-1"),
 
 这样得到的s_iso8859-1字符串实际是三个在ISO8859-1中的字符,在将这些字符传递到目的地后,目的地程序再通过相反的方式
@@ -717,11 +717,72 @@ String s_utf8 = new String(s_iso88591.getBytes("ISO8859-1"),"UTF-8")
 
 
 
+#### 27. for 循环 与 iterator 迭代 循环 的 区别
+
+ HashMap hashMap = new HashMap<>();
+
+ List<Wordbook> wordbooks = wordbookInterface.examineWordbookAll();
+
+ List<MatchingToWordbook> matchingToWordbooks = wordbookInterface.examineMatchingToWordbook();
+
+ Iterator<MatchingToWordbook> iterator = matchingToWordbooks.iterator();
+
+        for (int i = 1; i < wordbooks.size() + 1; i++) {
+            ArrayList<String> arrayList = new ArrayList<>();
+    		
+            while (iterator.hasNext()) {
+                MatchingToWordbook matchingToWordbook = iterator.next();
+    			
+                String fieldName = matchingToWordbook.getFieldName();
+                Integer type = matchingToWordbook.getType();
+    			
+                if (type == i) {
+                    arrayList.add(fieldName);
+                }
+            }
+            hashMap.put(i, arrayList);
+        }
+
+
+​		
+​		
+
+		for (int i = 1; i < wordbooks.size() + 1; i++) {
+	        ArrayList<String> arrayList = new ArrayList<>();
+	
+	        for (MatchingToWordbook matchingToWordbook : matchingToWordbooks) {
+	            Integer type = matchingToWordbook.getType();
+	            String fieldName = matchingToWordbook.getFieldName();
+	
+	            if (type == i) {
+	                arrayList.add(fieldName);
+	            }
+	        }
+	        hashMap.put(i, arrayList);
+	
+	    }
+
+
+
+1. iterator遍历集合时不能同时**对集合**做修改或增加之类，否则会报ConcurrentModificationException（并发修改异常）
+
+2. 使用for循环动态遍历**有序集合**，边遍历边对有序集合操作，是可以的，不会抛出异常
+3. 使用增强for循环时，对数组操作也会报ConcurrentModificationException（并发修改异常）
 
 
 
 
 
+#### 28. 查端口号
+
+
+
+```
+netstat -ano
+netstat -aon|findstr "8080"  // 根据端口号查pid
+tashlist|findstr "2722"  // 根据pid 查 程序
+
+```
 
 
 
