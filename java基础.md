@@ -23,10 +23,11 @@
 #### 3. session 与  request
 	1. session.setAttribute()和session.getAttribute()配对使用，作用域是整个会话期间，在所有的页面都使用这些数据的时候使用。
  	2. request.setAttribute()和request.getAttribute()配对使用，作用域是请求和被请求页面之间。request.setAttribute()是只在此action的
-     下一个forward需要使用的时候使用；request.getAttribute()表示从request范围取得设置的属性，必须要先setAttribute设置属性，才能通过getAttribute来取得，
+     下一个forward需
+   	3. 要使用的时候使用；request.getAttribute()表示从request范围取得设置的属性，必须要先setAttribute设置属性，才能通过getAttribute来取得，
      设置与取得的为Object对象类型。其实表单控件中的Object的 name与value是存放在一个哈希表中的，所以在这里给出Object的name会到哈希表中找出对应它的value。
      setAttribute()的参数是String和Object。
- 	3. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
+   	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
      方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
 
 #### 4. 定义数组
@@ -780,7 +781,7 @@ String s_utf8 = new String(s_iso88591.getBytes("ISO8859-1"),"UTF-8")
 ```
 netstat -ano
 netstat -aon|findstr "8080"  // 根据端口号查pid
-tashlist|findstr "2722"  // 根据pid 查 程序
+tasklist|findstr "2722"  // 根据pid 查 程序
 
 ```
 
@@ -809,5 +810,44 @@ tashlist|findstr "2722"  // 根据pid 查 程序
 2.重载循环中用到的==、！=、*、++等运算符
 
 3.为链表创建首迭代器，和尾迭代器函数
+
+
+
+
+
+#### 31. 为什么要有抽象类
+
+
+
+​	取决于 抽象方法,这个抽象方法 类似与接口中的方法, 没有方法体,是抽象的,
+
+接口中的方法都是 public abstract,只是平时不写,
+
+​	抽象类区别于接口,抽象类中 有 其他不是abstract 的方法,只是类中的某个方法刚好需要抽象,所以就决定了类是抽象的.
+
+
+
+#### 32. 函数式编程思维
+
+函数式编程的思想: 希望可以允许程序员用计算来表示程序,用计算的组合来表达程序的组合;
+
+非函数式编程: 用命令来表示程序,用命令的顺序执行来表达程序的组合;
+
+
+
+函数式编程: 关心数据的映射,强调函数的计算比指令的执行重要
+
+命令式编程: 关心解决问题的步骤
+
+
+
+**函数式编程的好处**
+
+由于命令式编程语言也可以通过类似函数指针的方式来实现高阶函数，函数式的最主要的好处主要是不可变性带来的。没有可变的状态，函数就是**引用透明（Referential transparency）**的和**没有副作用（No Side Effect）**。
+
+一个好处是，函数即不依赖外部的状态也不修改外部的状态，函数调用的结果不依赖调用的时间和位置，这样写的代码容易进行推理，不容易出错。这使得单元测试和调试都更容易。
+
+不变性带来的另一个好处是：由于（多个线程之间）不共享状态，不会造成**资源争用(Race condition)**，也就不需要用**锁**来保护可变状态，也就不会出现**死锁**，这样可以更好地并发起来，尤其是在**对称多处理器**（SMP）架构下能够更好地利用多个处理器（核）提供的并行处理能力
+
 
 
