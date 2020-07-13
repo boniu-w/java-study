@@ -24,10 +24,10 @@
 	1. session.setAttribute()和session.getAttribute()配对使用，作用域是整个会话期间，在所有的页面都使用这些数据的时候使用。
  	2. request.setAttribute()和request.getAttribute()配对使用，作用域是请求和被请求页面之间。request.setAttribute()是只在此action的
      下一个forward需
-   	3. 要使用的时候使用；request.getAttribute()表示从request范围取得设置的属性，必须要先setAttribute设置属性，才能通过getAttribute来取得，
+      	3. 要使用的时候使用；request.getAttribute()表示从request范围取得设置的属性，必须要先setAttribute设置属性，才能通过getAttribute来取得，
      设置与取得的为Object对象类型。其实表单控件中的Object的 name与value是存放在一个哈希表中的，所以在这里给出Object的name会到哈希表中找出对应它的value。
      setAttribute()的参数是String和Object。
-   	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
+             	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
      方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
 
 #### 4. 定义数组
@@ -850,4 +850,10 @@ tasklist|findstr "2722"  // 根据pid 查 程序
 不变性带来的另一个好处是：由于（多个线程之间）不共享状态，不会造成**资源争用(Race condition)**，也就不需要用**锁**来保护可变状态，也就不会出现**死锁**，这样可以更好地并发起来，尤其是在**对称多处理器**（SMP）架构下能够更好地利用多个处理器（核）提供的并行处理能力
 
 
+
+#### 33.  @DateTimeFormat @JsonFormat
+
+@DateTimeFormat : 前端传入的参数是String , 而后端接收的字段是Date , 此情况用这个注解,
+
+这两个注解组合使用
 
