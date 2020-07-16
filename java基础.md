@@ -782,6 +782,7 @@ String s_utf8 = new String(s_iso88591.getBytes("ISO8859-1"),"UTF-8")
 netstat -ano
 netstat -aon|findstr "8080"  // 根据端口号查pid
 tasklist|findstr "2722"  // 根据pid 查 程序
+taskkill /f /t /im 程序名;
 
 ```
 
@@ -856,4 +857,61 @@ tasklist|findstr "2722"  // 根据pid 查 程序
 @DateTimeFormat : 前端传入的参数是String , 而后端接收的字段是Date , 此情况用这个注解,
 
 这两个注解组合使用
+
+
+
+#### 34. 前台请求有数据,后台接收不到
+
+后台加注解
+
+@ResquestBody
+
+
+
+不加这个注解 axios 在post 请求时,默认是把参数放到url后面的,
+
+axios 有三种请求, 默认的
+
+- Content-Type: application/json;charset=utf-8
+
+还有就是
+
+- Content-Type: multipart/form-data
+
+- Content-Type: application/x-www-form-urlencoded
+
+
+
+1. 从jquery转到axios 容易忘记设置Content-Type
+2. 后台的接收方式也不一样, 注意加 @RequestBody
+
+
+
+还有一种解决方式: 
+
+ 引入qs
+
+```js
+import Qs from 'qs'
+let data = {
+	"username": "admin",
+	"pwd": "admin"
+}
+
+axios({
+	headers: {
+		'deviceCode': 'A95ZEF1-47B5-AC90BF3'
+	},
+	method: 'post',
+	url: '/api/lockServer/search',
+	data: Qs.stringify(data)
+})
+
+```
+
+
+
+
+
+
 
