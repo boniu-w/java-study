@@ -7,7 +7,11 @@
 	    if(s.getClass().isInstance(String.class)){  // false
 	        System.out.println("...........");
 	    }
-	
+	    
+		if (String.class.isInstance(s)){  // true
+	            System.out.println(true);
+	    }
+	    
 	    if(s instanceof String){  // true
 	        System.out.println("<<<<<<<<<<<<<<<<<");
 	    }
@@ -985,4 +989,16 @@ var reg= /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/;
         queryWrapper.and(wrapper -> wrapper.eq("delete_identity",0));
 
 ````
+
+
+
+#### 38. mybatis plus 的一个注解
+
+实体类上查数据库是忽略字段
+
+```
+/* 忽略字段 */
+@TableField(exist = false)
+private Integer count;
+```
 
