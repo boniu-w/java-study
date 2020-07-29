@@ -1002,3 +1002,98 @@ var reg= /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/;
 private Integer count;
 ```
 
+
+
+#### 39. aop
+
+```java
+package com.Gzs.demo.SpringSecurityDemo.aop;
+
+import com.Gzs.demo.SpringSecurityDemo.Entity.Role;
+import com.Gzs.demo.SpringSecurityDemo.Service.RoleService;
+import com.alibaba.fastjson.JSONObject;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+/*************************************************************
+ * @Package com.Gzs.demo.SpringSecurityDemo.aop
+ * @author wg
+ * @date 2020/7/29 16:19
+ * @version
+ * @Copyright
+ *************************************************************/
+@Aspect
+@Component
+public class Required {
+    @Autowired
+    private RoleService roleService;
+
+
+    @Pointcut("execution(public * com.Gzs.demo.SpringSecurityDemo.Controller.PermissionController.saveRolePermission(*))")
+    public void executeRequired() {
+    }
+
+
+    @Around(value = "executeRequired()")
+    public Object adminRequired(ProceedingJoinPoint joinPoint) throws Throwable {
+        boolean b = false;
+        Object[] args = joinPoint.getArgs();
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = (JSONObject) args[0];
+            ArrayList<Role> list = new ArrayList<>();
+
+            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+
+            for (GrantedAuthority authority : authorities) {
+
+                list.add(roleService.getById(authority.getAuthority()));
+            }
+
+
+            for (int i = 0; i < list.size(); i++) {
+                if ("admin".equals(list.get(i).getRoleCode())) {
+                    b = true;
+                }
+
+            }
+        } catch (Exception e) {
+
+        }
+
+
+        if (b == false) {
+            jsonObject.put("adminRequired", "false");
+
+        } else {
+            jsonObject.put("adminRequired", "true");
+        }
+
+        return joinPoint.proceed(args);
+    }
+}
+```
+
+
+
+注意点 :
+
+1. 
+
+ @Pointcut("execution(public * com.Gzs.demo.SpringSecurityDemo.Controller.PermissionController.saveRolePermission(*))")
+
+最后的 saveRolePermission(*)  方法括号里面 有 " * " 号,表示 任意参数, 如果不加 " * "号, 表示 没有参数
+
+2. @Before 目前不知道怎么 改变参数值;
+
