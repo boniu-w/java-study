@@ -983,6 +983,62 @@ var reg= /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/;
 
 
 
+
+
+非打印字符: 
+
+| 字符 | 描述                                                         |
+| :--- | :----------------------------------------------------------- |
+| \cx  | 匹配由x指明的控制字符。例如， \cM 匹配一个 Control-M 或回车符。x 的值必须为 A-Z 或 a-z 之一。否则，将 c 视为一个原义的 'c' 字符。 |
+| \f   | 匹配一个换页符。等价于 \x0c 和 \cL。                         |
+| \n   | 匹配一个换行符。等价于 \x0a 和 \cJ。                         |
+| \r   | 匹配一个回车符。等价于 \x0d 和 \cM。                         |
+| \s   | 匹配任何空白字符，包括空格、制表符、换页符等等。等价于 [ \f\n\r\t\v]。注意 Unicode 正则表达式会匹配全角空格符。 |
+| \S   | 匹配任何非空白字符。等价于 [^ \f\n\r\t\v]。                  |
+| \t   | 匹配一个制表符。等价于 \x09 和 \cI。                         |
+| \v   | 匹配一个垂直制表符。等价于 \x0b 和 \cK。                     |
+
+
+
+特殊字符: 
+
+| 特别字符 | 描述                                                         |
+| :------- | :----------------------------------------------------------- |
+| $        | 匹配输入字符串的结尾位置。如果设置了 RegExp 对象的 Multiline 属性，则 $ 也匹配 '\n' 或 '\r'。要匹配 $ 字符本身，请使用 \$。 |
+| ( )      | 标记一个子表达式的开始和结束位置。子表达式可以获取供以后使用。要匹配这些字符，请使用 \( 和 \)。 |
+| *        | 匹配前面的子表达式零次或多次。要匹配 * 字符，请使用 \*。     |
+| +        | 匹配前面的子表达式一次或多次。要匹配 + 字符，请使用 \+。     |
+| .        | 匹配除换行符 \n 之外的任何单字符。要匹配 . ，请使用 \. 。    |
+| [        | 标记一个中括号表达式的开始。要匹配 [，请使用 \[。            |
+| ?        | 匹配前面的子表达式零次或一次，或指明一个非贪婪限定符。要匹配 ? 字符，请使用 \?。 |
+| \        | 将下一个字符标记为或特殊字符、或原义字符、或向后引用、或八进制转义符。例如， 'n' 匹配字符 'n'。'\n' 匹配换行符。序列 '\\' 匹配 "\"，而 '\(' 则匹配 "("。 |
+| ^        | 匹配输入字符串的开始位置，除非在方括号表达式中使用，当该符号在方括号表达式中使用时，表示不接受该方括号表达式中的字符集合。要匹配 ^ 字符本身，请使用 \^。 |
+| {        | 标记限定符表达式的开始。要匹配 {，请使用 \{。                |
+| \|       | 指明两项之间的一个选择。要匹配 \|，请使用 \|。               |
+
+
+
+限定符: 
+
+| 字符  | 描述                                                         |
+| :---- | :----------------------------------------------------------- |
+| *     | 匹配前面的子表达式零次或多次。例如，zo* 能匹配 "z" 以及 "zoo"。* 等价于{0,}。 |
+| +     | 匹配前面的子表达式一次或多次。例如，'zo+' 能匹配 "zo" 以及 "zoo"，但不能匹配 "z"。+ 等价于 {1,}。 |
+| ?     | 匹配前面的子表达式零次或一次。例如，"do(es)?" 可以匹配 "do" 、 "does" 中的 "does" 、 "doxy" 中的 "do" 。? 等价于 {0,1}。 |
+| {n}   | n 是一个非负整数。匹配确定的 n 次。例如，'o{2}' 不能匹配 "Bob" 中的 'o'，但是能匹配 "food" 中的两个 o。 |
+| {n,}  | n 是一个非负整数。至少匹配n 次。例如，'o{2,}' 不能匹配 "Bob" 中的 'o'，但能匹配 "foooood" 中的所有 o。'o{1,}' 等价于 'o+'。'o{0,}' 则等价于 'o*'。 |
+| {n,m} | m 和 n 均为非负整数，其中n <= m。最少匹配 n 次且最多匹配 m 次。例如，"o{1,3}" 将匹配 "fooooood" 中的前三个 o。'o{0,1}' 等价于 'o?'。请注意在逗号和两个数之间不能有空格。 |
+
+
+
+
+
+
+
+
+
+
+
 #### 37. mybatis plus and or
 
 ````java
@@ -992,11 +1048,11 @@ var reg= /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/;
 
 
 
-#### 38. mybatis plus 的一个注解
+#### 38. mybatis plus 的一个注解, 忽略字段 
 
 实体类上查数据库是忽略字段
 
-```
+```java
 /* 忽略字段 */
 @TableField(exist = false)
 private Integer count;
@@ -1036,51 +1092,49 @@ import java.util.Collection;
 @Component
 public class Required {
     @Autowired
-    private RoleService roleService;
+    RoleInterface roleInterface;
 
-
-    @Pointcut("execution(public * com.Gzs.demo.SpringSecurityDemo.Controller.PermissionController.saveRolePermission(*))")
-    public void executeRequired() {
+    @Pointcut("@annotation(wg.application.annotation.RequiredRole)")
+    public void requiredRole() {
     }
 
-
-    @Around(value = "executeRequired()")
-    public Object adminRequired(ProceedingJoinPoint joinPoint) throws Throwable {
+    /****************************************************************
+     * 如果不抛出异常, 无法阻止controller 执行方法内部的逻辑,也就是,这个注解的本意没有达成
+     * 这个aop就没有意义
+     * @author: wg
+     * @time: 2020/8/7 15:32
+     ****************************************************************/
+    @Around("requiredRole()")
+    public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
         boolean b = false;
-        Object[] args = joinPoint.getArgs();
-        JSONObject jsonObject = null;
-        try {
-            jsonObject = (JSONObject) args[0];
-            ArrayList<Role> list = new ArrayList<>();
+        String value = "";
+        Signature signature = joinPoint.getSignature();
+        MethodSignature methodSignature = (MethodSignature) signature;
+        Method method = methodSignature.getMethod();
+        RequiredRole requiredRole = method.getAnnotation(RequiredRole.class);
+        String[] values = requiredRole.value();
+        for (int i = 0; i < values.length; i++) {
 
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-
-            for (GrantedAuthority authority : authorities) {
-
-                list.add(roleService.getById(authority.getAuthority()));
-            }
-
-
-            for (int i = 0; i < list.size(); i++) {
-                if ("admin".equals(list.get(i).getRoleCode())) {
+            // 注解的value 值
+            value = values[i];
+            // 根据value 查询数据库中角色
+            String[] roleCodes = roleInterface.getRoleCode();
+            for (int j = 0; j < roleCodes.length; j++) {
+                if (roleCodes[j].equals(value)) {
                     b = true;
                 }
 
             }
-        } catch (Exception e) {
 
         }
 
-
-        if (b == false) {
-            jsonObject.put("adminRequired", "false");
-
+        if (b == true) {
+            System.out.println("????   " + joinPoint.proceed().toString());
+            return joinPoint.proceed();
         } else {
-            jsonObject.put("adminRequired", "true");
+            throw new Exception("required admin ");
         }
 
-        return joinPoint.proceed(args);
     }
 }
 ```
@@ -1091,9 +1145,269 @@ public class Required {
 
 1. 
 
- @Pointcut("execution(public * com.Gzs.demo.SpringSecurityDemo.Controller.PermissionController.saveRolePermission(*))")
+ @Pointcut("execution(public * com.Gzs.demo.SpringSecurityDemo.Controller.PermissionController.saveRolePermission(..))")
 
-最后的 saveRolePermission(*)  方法括号里面 有 " * " 号,表示 任意参数, 如果不加 " * "号, 表示 没有参数
+最后的 saveRolePermission(..)  方法括号里面 有 " .. " 号,表示 任意参数, 如果不加 " .. "号, 表示 没有参数
 
 2. @Before 目前不知道怎么 改变参数值;
+
+
+
+
+
+#### 40. http 缓存
+
+1. HTTP 服务器响应返回状态码 304，304 代表表示告诉浏览器，本地有缓存数据，可直接从本地获取，无需从服务器获取浪费时间
+
+2. 浏览器在加载资源时，根据请求头的Expires 和 Cache-control 判断是否命中强缓存，是则直接从缓存读取资源，不会发请求到服务器。如果没有命中强缓存，浏览器一定会发送一个请求到服务器，通过 Last-Modified 和 Etag 验证资源是否命中协商缓存，如果命中，服务器会将这个请求返回，但是不会返回这个资源的数据，依然是从缓存中读取资源。如果前面两者都没有命中，直接从服务器加载资源。
+
+
+
+![image text](https://github.com/boniu-w/img/blob/master/%E8%AF%B7%E6%B1%82%E6%95%B0%E6%8D%AE.gif?raw=true)
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### 41. 一些注解
+
+
+
+| 注解                | 解释                              | 所在包                                                |
+| ------------------- | --------------------------------- | ----------------------------------------------------- |
+| @Scope("prototype") | 被注解的bean变成多例              | org.springframework.context.annotation.Scope;         |
+| @Configuration      | 使之成为配置类容器, 相当与<beans> | org.springframework.context.annotation.Configuration; |
+| @Transient          | 忽略字段                          | jpa 的注解                                            |
+| @TableField         | 忽略字段                          | mybatisplus 的注解                                    |
+
+
+
+#### 42. 注解是怎么起作用的, 例子参见[39]aop
+
+当写自定义注解的时候`J2SE 5.0`在`java.lang.annotation`包中提供了四种注解可以被使用：
+
+- `@Documented`:是否将注解放在`Javadocs`
+- `@Retention`:当需要注解的时候
+- `@Target`:注解作用的位置
+- `@Inherited`: 子类是否获得注解
+
+`@Documented`：一个简单的市场注解，告诉您是否在Java文档中添加注解。
+
+`@Retention` ：定义注解应保留多长时间。
+
+- `RetentionPolicy.SOURCE`: 在编译期间丢弃。编译完成后，这些注解没有任何意义，因此它们不会写入字节码。示例：`@Override`，`@ SuppressWarnings`
+- `RetentionPolicy.CLASS`: 在类加载期间丢弃。在进行字节码级后处理时很有用。这是默认值。
+- `RetentionPolicy.RUNTIME`: 不会丢弃。注解应该可以在运行时进行反射。这是我们通常用于自定义注解的内容。
+
+`@Target`: 可以放置注解的位置。如果不指定，则可以将注解放在任何位置。以下是有效值。
+这里的一个重点是它只是包容性，这意味着如果你想要对7个属性进行注解并且只想要只排除一个属性，则需要在定义目标时包括所有7个。
+
+- `ElementType.TYPE (class, interface, enum)`
+- `ElementType.FIELD (instance variable)`
+- `ElementType.METHOD`
+- `ElementType.PARAMETER`
+- `ElementType.CONSTRUCTOR`
+- `ElementType.LOCAL_VARIABLE`
+- `ElementType.ANNOTATION_TYPE (on another annotation)`
+- `ElementType.PACKAGE (remember package-info.java)`
+
+`@Inherited`: 控制注解是否应该影响子类。
+
+现在，注解定义中的内容是什么？注解仅支持基本数据类型，字符串,数组和枚举。注解的所有属性都定义为方法，也可以提供默认值
+
+
+
+如果注释中只有一个属性，则应将其命名为`value`，并且在使用时可以在没有属性名称的情况下使用它。
+
+到现在为止还挺好。我们定义了自定义注解并将其应用于某些业务逻辑方法。现在，是时候写一个消费者了。为此，我们需要使用反射。如果您熟悉反射代码，您就知道反射提供了`Class`，`Method`和`Field`对象。所有这些都有一个`getAnnotation()`方法，它返回注解对象。我们需要将此对象转换为自定义注解（在使用`instanceOf()`检查之后），然后，我们可以调用自定义注解中定义的方法。
+让我们看一下使用上面注解的示例代码：
+
+
+
+```java
+Class businessLogicClass = BusinessLogic.class;
+for(Method method : businessLogicClass.getMethods()) {
+    Todo todoAnnotation = (Todo)method.getAnnotation(Todo.class);
+    if(todoAnnotation != null) {
+        System.out.println(" Method Name : " + method.getName());
+        System.out.println(" Author : " + todoAnnotation.author());
+        System.out.println(" Priority : " + todoAnnotation.priority());
+        System.out.println(" Status : " + todoAnnotation.status());
+    }
+}
+
+```
+
+
+
+#### 43. Date 与 LocalDate 互转
+
+1. Date 转 LocalDate
+
+```java
+date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+```
+
+
+
+2. LocalDate 转 Date
+
+```java
+ ZonedDateTime zonedDateTime = localDate.atStartOfDay(ZoneId.systemDefault());
+ Date.from(zonedDateTime.toInstant());
+```
+
+3. LocaDateTime 转 Date
+
+```java
+public static Date localDateTime2Date(LocalDateTime localDateTime) {
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+    }
+
+```
+
+4. LocalDate 格式化
+
+```java
+public static String formatDate(Date date) {
+        LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+    }
+
+```
+
+
+
+#### 44. ENUM 枚举
+
+
+
+```java
+package wg.application.enumeration;
+
+/*************************************************************
+ * @Package wg.application.enumeration
+ * @author wg
+ * @date 2020/8/24 9:55
+ * @version
+ * @Copyright
+ *************************************************************/
+public enum EnumTest {
+
+    MAX_INT {
+        public int getMaxInt() {
+            return Integer.MAX_VALUE;
+        }
+    };
+
+    public int getMaxInt() {
+        throw new AbstractMethodError();
+    }
+
+}
+```
+
+
+
+
+
+```java
+package wg.application.enumeration;
+
+import org.springframework.util.StringUtils;
+
+/**
+ * Query 规则 常量
+ * @Author Scott
+ * @Date 2019年02月14日
+ */
+public enum QueryRuleEnum {
+
+    GT(">","gt","大于"),
+    GE(">=","ge","大于等于"),
+    LT("<","lt","小于"),
+    LE("<=","le","小于等于"),
+    EQ("=","eq","等于"),
+    NE("!=","ne","不等于"),
+    IN("IN","in","包含"),
+    LIKE("LIKE","like","全模糊"),
+    LEFT_LIKE("LEFT_LIKE","left_like","左模糊"),
+    RIGHT_LIKE("RIGHT_LIKE","right_like","右模糊"),
+    SQL_RULES("USE_SQL_RULES","ext","自定义SQL片段");
+
+    private String value;
+    
+    private String condition; 
+
+    private String msg;
+
+    QueryRuleEnum(String value, String condition, String msg){
+        this.value = value;
+        this.condition = condition;
+        this.msg = msg;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public String getCondition() {
+      return condition;
+   }
+
+   public void setCondition(String condition) {
+      this.condition = condition;
+   }
+
+   public static QueryRuleEnum getByValue(String value){
+       if(StringUtils.isEmpty(value)) {
+          return null;
+       }
+        for(QueryRuleEnum val :values()){
+            if (val.getValue().equals(value) || val.getCondition().equals(value)){
+                return val;
+            }
+        }
+        return  null;
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
