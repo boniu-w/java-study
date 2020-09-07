@@ -299,7 +299,7 @@ oracle 的时间戳 和 java 的 String 也可以对应
 
 
 
-#### 19. 格式字符
+#### 19. 格式字符, 符号
 
 1. ```tex
     %d  表示按整型数据的实际长度输出数据。
@@ -312,14 +312,14 @@ oracle 的时间戳 和 java 的 String 也可以对应
 
 
 
-| 字符         | 16进制  | 作用                                                         |
-| ------------ | ------- | ------------------------------------------------------------ |
-| \n (newline) | \\u000A | 换行,光标往下一行                                            |
-| \t           |         | 补全当前字符串长度到8的整数倍，最少1个最多8个空格,补多少要看你\t前字符串长度,比如当前字符串长度10，那么\t后长度是16，也就是补6个空格,如果当前字符串长度12，此时\t后长度是16，补4个空格 |
-| \r (return)  | \\u000D | 回车,光标回到本行开头                                        |
-| \f           |         | 换页                                                         |
-|              | \\u0020 | 半角空格                                                     |
-|              | \\u3000 | 全角空格                                                     |
+| 字符         | 16进制  | unicode | 作用                                                         |
+| ------------ | ------- | ------- | ------------------------------------------------------------ |
+| \n (newline) | \\u000A |         | 换行,光标往下一行                                            |
+| \t           |         |         | 补全当前字符串长度到8的整数倍，最少1个最多8个空格,补多少要看你\t前字符串长度,比如当前字符串长度10，那么\t后长度是16，也就是补6个空格,如果当前字符串长度12，此时\t后长度是16，补4个空格 |
+| \r (return)  | \\u000D |         | 回车,光标回到本行开头                                        |
+| \f           |         |         | 换页                                                         |
+|              |         | \\u0020 | 半角空格                                                     |
+|              |         | \\u3000 | 全角空格                                                     |
 
 
 
@@ -1181,12 +1181,12 @@ public class Required {
 
 
 
-| 注解                | 解释                              | 所在包                                                |
-| ------------------- | --------------------------------- | ----------------------------------------------------- |
-| @Scope("prototype") | 被注解的bean变成多例              | org.springframework.context.annotation.Scope;         |
-| @Configuration      | 使之成为配置类容器, 相当与<beans> | org.springframework.context.annotation.Configuration; |
-| @Transient          | 忽略字段                          | jpa 的注解                                            |
-| @TableField         | 忽略字段                          | mybatisplus 的注解                                    |
+| 注解                | 解释                              | 所在包                                                       |
+| ------------------- | --------------------------------- | ------------------------------------------------------------ |
+| @Scope("prototype") | 被注解的bean变成多例              | org.springframework.context.annotation.Scope;                |
+| @Configuration      | 使之成为配置类容器, 相当与<beans> | org.springframework.context.annotation.Configuration;        |
+| @Transient          | 忽略字段                          | javax.persistence.Transient;                                 |
+| @TableField         | 忽略字段                          | mybatisplus 的注解 com.baomidou.mybatisplus.annotation.TableField; |
 
 
 
@@ -1397,17 +1397,82 @@ public enum QueryRuleEnum {
 
 
 
+#### 45.HTML 中有用的字符实体
+
+**注释：**实体名称对大小写敏感！
+
+| 显示结果 | 描述              | 实体名称          | 实体编号 |
+| :------- | :---------------- | :---------------- | :------- |
+|          | 空格              | \&nbsp;            | \&#160;   |
+| <        | 小于号            | \&lt;              | \&#60;    |
+| >        | 大于号            | \&gt;              | \&#62;    |
+| &        | 和号              | \&amp;             | \&#38;    |
+| "        | 引号              | \&quot;            | \&#34;    |
+| '        | 撇号              | \&apos; (IE不支持) | \&#39;    |
+| ￠       | 分（cent）        | \&cent;            | \&#162;   |
+| £        | 镑（pound）       | \&pound;           | \&#163;   |
+| ¥        | 元（yen）         | \&yen;             | \&#165;   |
+| €        | 欧元（euro）      | \&euro;            | \&#8364;  |
+| §        | 小节              | \&sect;            | \&#167;   |
+| ©        | 版权（copyright） | \&copy;            | \&#169;   |
+| ®        | 注册商标          | \&reg;             | \&#174;   |
+| ™        | 商标              | \&trade;           | \&#8482;  |
+| ×        | 乘号              | \&times;           | \&#215;   |
+| ÷        | 除号              | \&divide;          | \&#247;   |
 
 
 
+#### 46. mybatis plus 
+
+1. apply 用法
+
+   ```java
+   queryWrapper
+             .apply(
+               StringUtils.isNotBlank(standingBook.getHandleCasePerson()),
+               "(handle_case_person_one like CONCAT('%',{0},'%') or handle_case_person_two like CONCAT('%',{0},'%'))",
+               standingBook.getHandleCasePerson()
+             );
+   ```
+
+   
 
 
 
+#### 47. <?> 和 <T> 的区别
 
+```java
 
+@RequestMapping(value = "/test2")
+    public Result test2(){
+        List<Student> list1 = new ArrayList<>();
+        list1.add(new Student("zhangsan",18,0));
+        list1.add(new Student("lisi",28,0));
+        //list1.add(new Teacher("wangwu",24,1));
+        //这里如果add(new Teacher(...));就会报错，因为我们已经给List指定了数据类型为Student
+        show1(list1);
 
+        System.out.println("************分割线**************");
 
+        //这里我们并没有给List指定具体的数据类型，可以存放多种类型数据
+        List list2 = new ArrayList<>();
+        list2.add(new Student("zhaoliu",22,1));
+        list2.add(new Teacher("sunba",30,0));
+        show2(list2);
 
+        return Result.ok();
+    }
 
+    public static <T> void show1(List<T> list){
+        for (Object object : list) {
+            System.out.println(object.toString());
+        }
+    }
 
+    public static void show2(List<?> list) {
+        for (Object object : list) {
+            System.out.println(object);
+        }
+    }
+```
 
