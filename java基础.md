@@ -34,9 +34,11 @@
              	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
      方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
 
-#### 4. 定义数组
+#### 4. 数组:  定义数组
 
 	int[] array = {1,2,3};  // 用大括号 而不是 中括号
+
+
 
 #### 5. 关于 除法 的一些
 
@@ -1181,12 +1183,15 @@ public class Required {
 
 
 
-| 注解                | 解释                              | 所在包                                                       |
-| ------------------- | --------------------------------- | ------------------------------------------------------------ |
-| @Scope("prototype") | 被注解的bean变成多例              | org.springframework.context.annotation.Scope;                |
-| @Configuration      | 使之成为配置类容器, 相当与<beans> | org.springframework.context.annotation.Configuration;        |
-| @Transient          | 忽略字段                          | javax.persistence.Transient;                                 |
-| @TableField         | 忽略字段                          | mybatisplus 的注解 com.baomidou.mybatisplus.annotation.TableField; |
+| 注解                                                         | 解释                              | 所在包                                                       |
+| ------------------------------------------------------------ | --------------------------------- | ------------------------------------------------------------ |
+| @Scope("prototype")                                          | 被注解的bean变成多例              | org.springframework.context.annotation.Scope;                |
+| @Configuration                                               | 使之成为配置类容器, 相当与<beans> | org.springframework.context.annotation.Configuration;        |
+| @Transient                                                   | 忽略字段,非数据库字段             | javax.persistence.Transient;                                 |
+| @TableField                                                  | 忽略字段,非数据库字段             | mybatisplus 的注解 com.baomidou.mybatisplus.annotation.TableField; |
+| @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss") | 日期处理注解,一般结合着写         | package com.fasterxml.jackson.annotation;                    |
+| @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")               | 日期处理注解,一般结合着写         | package org.springframework.format.annotation;               |
+|                                                              |                                   |                                                              |
 
 
 
@@ -1419,6 +1424,7 @@ public enum QueryRuleEnum {
 | ™        | 商标              | \&trade;           | \&#8482;  |
 | ×        | 乘号              | \&times;           | \&#215;   |
 | ÷        | 除号              | \&divide;          | \&#247;   |
+| / | 斜线 | `&#47;` |  |
 
 
 
@@ -1439,7 +1445,7 @@ public enum QueryRuleEnum {
 
 
 
-#### 47. <?> 和 <T> 的区别
+#### 47. <?> 和 \<T> 的区别
 
 ```java
 
@@ -1476,3 +1482,60 @@ public enum QueryRuleEnum {
     }
 ```
 
+
+
+
+
+Class<T> 的用法 示例
+
+```java
+	Class<?> aClass = Class.forName("wg.application.entity.DutyEntity");
+    String[] strings = ExcelUtil.readExcelTitle(0, (Class<T>) aClass);
+
+```
+
+
+
+
+
+#### 48. requestbody
+
+
+
+
+
+#### 49. 数组: 数组转 字符串, 将两个字符串数组 合并为一个 对象
+
+1. 将两个字符串数组 合并为一个 对象  数组的reduce()方法
+
+```js
+                    var values = new Array();
+                    $("#mail-content input").each(function () {
+                        values.push($(this).val())
+                    })
+
+                    console.log(values, typeof values);
+
+                    var str = ["name", "company", "phone", "content"];
+
+                    var obj= values.reduce(function (result, value, index) {
+                        result[str[index]] = value;
+                        return result;
+                    },{})
+
+                    console.log("*****  ",obj)
+```
+2. 数组转 字符串
+
+   ```js
+   var postcodeValues=new Array();
+                           $("#postcode input").each(function () {
+                               postcodeValues.push($(this).val())
+                           })
+   
+                           var postcode= postcodeValues.join("");
+   
+                           console.log(postcode)
+   ```
+
+   
