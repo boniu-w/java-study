@@ -1546,5 +1546,174 @@ Class<T> 的用法 示例
 
 
 
+#### 51. formData 详解
 
+FormData 对象 数据  , 后台用 request.getparameter 接收 也可以用 实体类接收或 map
+
+但是 , 用ajax 会报一个错误, 用xmlhttprequest 不报错
+
+
+
+```js
+function submit3() {
+            var name = $("#name").val();
+            let age = $("#age").val();
+
+            let obj = {};
+            obj = Object.assign({
+                name: name,
+                age: age
+            }, obj)
+
+            console.log(obj)
+
+            let request = new XMLHttpRequest();
+
+            request.open("post", "http://127.0.0.1:33333/validateTestController/validatePost", false);
+            request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            request.send(obj)         // 后台接收不到 数据
+
+            console.log("request  ", request)
+            if ((request.status >= 200 && request.status < 300) || request.status == 304) {
+
+                console.log("200", request.status)
+            } else {
+                console.log("xmlHttpRequest 的状态为: ", request.status)
+            }
+
+            /////////////////////////////////////////////////////////////////////////////
+            var formData = new FormData();
+
+            formData.append('name', name);
+            formData.append('age', age);
+            formData.append('birthDate', 1940);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'http://127.0.0.1:33333/validateTestController/validatePost');
+            xhr.send(formData);    // 后台可以接收到 数据
+
+            console.log(formData)
+            if ((request.status >= 200 && request.status < 300) || request.status == 304) {
+
+                console.log("formData 200", request.status)
+            } else {
+                console.log("formData xmlHttpRequest 的状态为: ", request.status)
+            }
+
+        }
+```
+
+
+
+```js
+        function submit4() {
+            var name = $("#name").val();
+            let age = $("#age").val();
+
+            let formData = new FormData();
+            formData.append('name', name)
+            formData.append('age', age)
+
+            console.log(formData)
+            $.ajax({
+                url: "http://127.0.0.1:33333/validateTestController/validate",
+                data: formData,  // 后台接收不到数据, 而且前台就报错: Uncaught TypeError: Illegal invocation
+                type: "get",
+
+                // cache: false,
+                // processData: false,  // 告诉jQuery不要去处理发送的数据 processData 可不得了,
+                // contentType: false,  // 告诉jQuery不要去设置Content-Type请求头
+                success: function (res) {
+                    console.log(res)
+                },
+                error: function () {
+                    console.log("error")
+                }
+            })
+
+        }
+```
+
+
+
+```js
+function submit1() {
+    var name = $("#name").val();
+    let age = $("#age").val();
+
+    let obj = {};
+    obj["name"] = name;
+    obj["age"] = age;
+
+    console.log(obj)
+    $.ajax({
+        url: "http://127.0.0.1:33333/validateTestController/validate",
+        data: obj,  // 后台可以接收数据 用实体类
+        type: "get",
+
+        cache: false,
+        // processData: false,  // 告诉jQuery不要去处理发送的数据 processData 可不得了,
+        // contentType: false,  // 告诉jQuery不要去设置Content-Type请求头
+        success: function (res) {
+            console.log(res)
+        },
+        error: function () {
+            console.log("error")
+        }
+    })
+
+}
+```
+
+
+
+
+
+由此可见, 用ajax 就不要使用 formdata 对象提交数据,  要提交formdata 对象数据 使用xmlhttprequest, ajax 提交数据用object
+
+总结: ajax -> object
+
+xmlhttprequest -> formdata
+
+
+
+**注意: 只有false request.status 才 >=200**
+
+使用formdata 封装表单数据
+
+```js
+<div id="div3">
+
+    <form id="form3">
+        <input type="text" name="name" value="">
+        <input type="number" name="age">
+        <input type="button" value="sendForm" onclick="sendForm()">
+    </form>
+
+    <script>
+
+        var selectors = "#form3";
+        var form = document.querySelector(selectors)
+
+        function sendForm() {
+           var formData = new FormData(form);
+
+            formData.append("sex","1")
+
+            var request = new XMLHttpRequest();
+            request.open('POST', 'http://127.0.0.1:33333/validateTestController/getFormData',false);
+            request.send(formData);    // 后台可以接收到 数据
+
+            console.log(formData)
+            if ((request.status >= 200 && request.status < 300) || request.status == 304) {
+                console.log("formData 200", request.status)
+            } else {
+                console.log("formData xmlHttpRequest 的状态为: ", request.status)
+            }
+
+        }
+    </script>
+
+</div>
+```
 
