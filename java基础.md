@@ -26,13 +26,13 @@
 
 #### 3. session 与  request
 	1. session.setAttribute()和session.getAttribute()配对使用，作用域是整个会话期间，在所有的页面都使用这些数据的时候使用。
- 	2. request.setAttribute()和request.getAttribute()配对使用，作用域是请求和被请求页面之间。request.setAttribute()是只在此action的
-     下一个forward需
-      	3. 要使用的时候使用；request.getAttribute()表示从request范围取得设置的属性，必须要先setAttribute设置属性，才能通过getAttribute来取得，
-     设置与取得的为Object对象类型。其实表单控件中的Object的 name与value是存放在一个哈希表中的，所以在这里给出Object的name会到哈希表中找出对应它的value。
-     setAttribute()的参数是String和Object。
-             	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
-     方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
+	2. request.setAttribute()和request.getAttribute()配对使用，作用域是请求和被请求页面之间。request.setAttribute()是只在此action的
+	 下一个forward需
+	  	3. 要使用的时候使用；request.getAttribute()表示从request范围取得设置的属性，必须要先setAttribute设置属性，才能通过getAttribute来取得，
+	 设置与取得的为Object对象类型。其实表单控件中的Object的 name与value是存放在一个哈希表中的，所以在这里给出Object的name会到哈希表中找出对应它的value。
+	 setAttribute()的参数是String和Object。
+	         	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
+	 方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
 
 #### 4. 数组:  定义数组
 
@@ -1054,6 +1054,8 @@ var reg= /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/;
 实体类上查数据库是忽略字段
 
 ```java
+com.baomidou.mybatisplus.annotation.TableField;
+
 /* 忽略字段 */
 @TableField(exist = false)
 private Integer count;
@@ -1278,7 +1280,7 @@ public static Date localDateTime2Date(LocalDateTime localDateTime) {
 
 ```
 
-4. LocalDate 格式化
+4. LocalDate 格式化 转字符串
 
 ```java
 public static String formatDate(Date date) {
@@ -1304,9 +1306,15 @@ public static String formatDate(Date date) {
    ```java
    // 字符串 转 LocalDateTime
    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-   LocalDateTime parse = LocalDateTime.parse(dutyDate,fmt);
+   LocalDateTime parse = LocalDateTime.parse("2017-09-28 17:07:05",fmt);
+   
    ```
 
+// localdatetime 转 字符串
+    DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    LocalDateTime now = LocalDateTime.now();
+    fmt.format(now);
+   ```
    
 
 
@@ -1315,7 +1323,7 @@ public static String formatDate(Date date) {
 
 
 
-```java
+​```java
 package wg.application.enumeration;
 
 /*************************************************************
@@ -1338,7 +1346,7 @@ public enum EnumTest {
     }
 
 }
-```
+   ```
 
 
 
@@ -1465,7 +1473,7 @@ public enum QueryRuleEnum {
 
 
 
-#### 47. <?> 和 \<T> 的区别
+#### 47. 泛型 <?> 和 \<T> 的区别 
 
 ```java
 
@@ -1516,6 +1524,21 @@ Class<T> 的用法 示例
 
 
 
+常用的 T，E，K，V，？
+
+本质上这些个都是通配符，没啥区别，只不过是编码时的一种约定俗成的东西。比如上述代码中的 T ，我们可以换成 A-Z 之间的任何一个 字母都可以，并不会影响程序的正常运行，但是如果换成其他的字母代替 T ，在可读性上可能会弱一些。**通常情况下，T，E，K，V，？是这样约定的：**
+
+- ？表示不确定的 java 类型
+- T (type) 表示具体的一个java类型
+- K V (key value) 分别代表java键值中的Key Value
+- E (element) 代表Element
+
+
+
+？**无界通配符**
+
+
+
 
 
 #### 48. requestbody
@@ -1548,7 +1571,7 @@ Class<T> 的用法 示例
 2. 数组转 字符串
 
    ```js
-   var postcodeValues=new Array();
+   						var postcodeValues=new Array();
                            $("#postcode input").each(function () {
                                postcodeValues.push($(this).val())
                            })
@@ -2054,9 +2077,109 @@ xmlhttprequest -> formdata
 		</where>
 		order by id desc
 	</select>
+	    <select id="sortBankFlow" resultType="org.jeecg.modules.htjd.newBankFlow.entity.NewBankFlow">
+        select
+        a.id,
+        a.sjy,
+        a.jyzh,
+        a.jykh,
+        a.jyhm,
+        a.sf,
+        a.jyrq,
+        a.jysj,
+        a.sfbz,
+        a.jyje,
+        a.jyye,
+        a.jydszkh,
+        a.dshm,
+        a.pp,
+        a.dskhyh,
+        a.zysm,
+        a.bz,
+        a.xjbz,
+        a.jybz,
+        a.jywdmc,
+        a.ip,
+        a.mac
+        from
+        (select
+        id,
+        sjy,
+        jyzh,
+        jykh,
+        jyhm,
+        sf,
+        jyrq,
+        jysj,
+        sfbz,
+        jyje,
+        jyye,
+        jydszkh,
+        dshm,
+        pp,
+        dskhyh,
+        zysm,
+        bz,
+        xjbz,
+        jybz,
+        jywdmc,
+        ip,
+        mac
+        from new_bankFlow
+        <where>
+            <if test="jykh != null and jykh != '' ">
+                and jykh=#{jykh}
+            </if>
+            <if test="jyzh != null and jyzh != '' ">
+                and jyzh=#{jyzh}
+            </if>
+            <if test="jydszkh != null and jydszkh != '' ">
+                and jydszkh=#{jydszkh}
+            </if>
+            <if test="dshm != null and dshm != '' ">
+                and dshm=#{dshm}
+            </if>
+            <if test="sf != null and sf != '' ">
+                and sf=#{sf}
+            </if>
+            <if test="sfbz != null and sfbz != '' ">
+                and sfbz=#{sfbz}
+            </if>
+            <if test="jyhm != null and jyhm != '' ">
+                and jyhm=#{jyhm}
+            </if>
+            <if test="startTime != null and startTime != '' and endTime != null and endTime != '' ">
+                and date(jyrq) between #{startTime} and #{endTime}
+            </if>
+        </where>
+        ) as a
+        <if test="sortMap != null and sortMap != '' ">
+        order by
+            <foreach collection="sortMap.entrySet()" index="key" item="value" separator=",">
+                (a.${key}+0) ${value}
+            </foreach>
+        </if>
 
+    </select>
 </mapper>
 
+```
+
+
+
+
+
+mybatis @Param
+
+如果传入的参数是基本类型参数和实体类对象
+
+```xml
+public List<student> selectuser(@Param(value = "page")int pn ,@Param(value = "st")student student);
+<select id="selectuser" resultType="com.user.entity.student">
+    SELECT * FROM student
+    where sname like concat(concat("%",#{st.sname}),"%")
+    LIMIT #{page} ,5
+</select>
 ```
 
 
@@ -2069,3 +2192,156 @@ property, attribute 都是 属性
 
 property是 物体本身自带属性，不能改变的（一旦改了就是另外一个东西了）
 attribute，由于 attribute还可以做动词，表示赋予。。。特性，属于人为赋予的可改变的属性。
+
+
+
+
+
+# 56. mybatis plus
+
+
+
+```java
+    @AutoLog(value = "流水表-分页列表查询")
+    @ApiOperation(value = "流水表-分页列表查询", notes = "流水表-分页列表查询")
+    @PostMapping(value = "/list")
+    public Result<?> queryPageList(@RequestBody(required = false) JSONObject json,
+                                   @RequestParam(name = "pageNo", defaultValue = "1") Integer pageNo,
+                                   @RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize,
+                                   HttpServletRequest req) {
+        System.out.println(json);
+
+        // 如果 json 里没有k 或 v, 则 移除 ss ; 如果 ss 为空 也移除 ss
+        checkSS(json);
+
+        JSONArray ss = json.getJSONArray("ss");
+
+        if (!ObjectUtils.isEmpty(json.get("pageNo"))) {
+            pageNo = (Integer) json.get("pageNo");
+        } else {
+            pageNo = 1;
+        }
+
+        if (!ObjectUtils.isEmpty(json.get("pageSize"))) {
+            pageSize = (Integer) json.get("pageSize");
+        } else {
+            pageSize = 10;
+        }
+
+        String jyrq = json.getString("jyrq");
+        if (!StringUtils.isEmpty(jyrq)) {
+            String[] split = jyrq.split(":");
+            if (split.length == 2 && !StringUtils.isEmpty(split[0])) {
+                json.put("startTime", split[0]);
+                json.put("endTime", split[1]);
+            } else {
+                json.remove("jyrq");
+            }
+        }
+
+        NewBankFlow newBankFlow = JSON.toJavaObject(json, NewBankFlow.class);
+
+        if (ss != null) {
+            HashMap<String, String> sortMap = new HashMap<>();
+            for (int i = 0; i < ss.size(); i++) {
+                JSONObject jsonObject = ss.getJSONObject(i);
+                String k = jsonObject.getString("k");
+                String v = jsonObject.getString("v");
+                if (!StringUtils.isEmpty(k) && !StringUtils.isEmpty(v)) {
+                    sortMap.put(k, v);
+                }
+            }
+            newBankFlow.setSortMap(sortMap);
+
+            //System.out.println("newBankFlow -> " + newBankFlow);
+
+            //System.out.println("startTime -> " + json.get("startTime"));
+            //System.out.println("endTime -> " + json.get("endTime"));
+
+            QueryWrapper<NewBankFlow> queryWrapper = new QueryWrapper<>();
+            queryWrapper.lambda().between(!StringUtils.isEmpty(json.getString("jyrq")), NewBankFlow::getJyrq, json.get("startTime"), json.get("endTime"));
+            queryWrapper.lambda().eq(!StringUtils.isEmpty(json.getString("jykh")), NewBankFlow::getJykh, json.getString("jykh"));
+            queryWrapper.lambda().eq(!StringUtils.isEmpty(json.getString("jyzh")), NewBankFlow::getJyzh, json.getString("jyzh"));
+            queryWrapper.lambda().eq(!StringUtils.isEmpty(json.getString("jydszkh")), NewBankFlow::getJydszkh, json.getString("jydszkh"));
+            queryWrapper.lambda().eq(!StringUtils.isEmpty(json.getString("dshm")), NewBankFlow::getDshm, json.getString("dshm"));
+            queryWrapper.lambda().eq(!StringUtils.isEmpty(json.getString("sf")), NewBankFlow::getSf, json.getString("sf"));
+            queryWrapper.lambda().eq(!StringUtils.isEmpty(json.getString("jyhm")), NewBankFlow::getJyhm, json.getString("jyhm"));
+            queryWrapper.lambda().eq(!StringUtils.isEmpty(json.getString("sfbz")), NewBankFlow::getSfbz, json.getString("sfbz"));
+
+            if (!ObjectUtils.isEmpty(sortMap)) {
+                if (!StringUtils.isEmpty(sortMap.get("jyrq"))) {
+                    queryWrapper.orderBy(!sortMap.isEmpty(), checkSortMap(sortMap.get("jyrq")), "jyrq");
+                }
+                if (!StringUtils.isEmpty(sortMap.get("jyje"))) {
+                    queryWrapper.orderBy(!sortMap.isEmpty(), checkSortMap(sortMap.get("jyje")), "jyje" + "+0");
+                }
+                if (!StringUtils.isEmpty(sortMap.get("jyye"))) {
+                    queryWrapper.orderBy(!sortMap.isEmpty(), checkSortMap(sortMap.get("jyye")), "jyye" + "+0");
+                }
+                if (!StringUtils.isEmpty(sortMap.get("jysj"))) {
+                    queryWrapper.orderBy(!sortMap.isEmpty(), checkSortMap(sortMap.get("jysj")), "jysj");
+                }
+            }
+            Page<NewBankFlow> page = new Page<>(pageNo, pageSize);
+            IPage<NewBankFlow> bankFlows = newBankFlowService.page(page, queryWrapper);
+            System.out.println("我的方法 bankFlows.total -> " + bankFlows.getTotal());
+            return Result.ok(bankFlows);
+        }
+
+        QueryWrapper<NewBankFlow> queryWrapper = QueryGenerator.initQueryWrapper(newBankFlow, req.getParameterMap());
+        Page<NewBankFlow> page = new Page<NewBankFlow>(pageNo, pageSize);
+        IPage<NewBankFlow> pageList1 = newBankFlowService.page(page, queryWrapper);
+
+        System.out.println("pageList1.getTotal  -> " + pageList1.getTotal());
+        return Result.ok(pageList1);
+
+    }
+
+    /****************************************************************
+     * @description: 检查是 asc 还是 desc
+     * @author: wg
+     * @time: 2021/1/22 14:35
+     ****************************************************************/
+    public boolean checkSortMap(String value) {
+
+        boolean a = false;
+        switch (value) {
+            case "asc":
+                a = true;
+                break;
+
+            case "desc":
+                a = false;
+                break;
+        }
+        return a;
+    }
+
+    /****************************************************************
+     * @description: 如果 json 里没有k 或 v, 则 移除 ss ; 如果 ss 为空 也移除 ss
+     * @author: wg
+     * @time: 2021/1/22 14:35
+     ****************************************************************/
+    public void checkSS(JSONObject json) {
+        JSONArray ss = json.getJSONArray("ss");
+        if (ss.size() == 0) {
+            json.remove("ss");
+        }
+
+        if (ss.size() > 0) {
+            for (int i = 0; i < ss.size(); i++) {
+                JSONObject jsonObject = ss.getJSONObject(i);
+                String k = jsonObject.getString("k");
+                String v = jsonObject.getString("v");
+
+                if (StringUtils.isEmpty(k) || StringUtils.isEmpty(v)) {
+                    ss.remove(i);
+                    //json.remove("ss");
+                }
+            }
+        }
+    }
+```
+
+
+
