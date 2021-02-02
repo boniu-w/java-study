@@ -1,4 +1,4 @@
-#### 1. isInstance 与 instanceof
+# 1. isInstance 与 instanceof
 
 	@org.junit.Test
 	public void test5(){
@@ -17,14 +17,15 @@
 	    }
 	}
 
-#### 2. java日期 转 sql日期
+# 2. java日期 转 sql日期
 
 	Date date = new Date();
 	Timestamp sqlDate = new Timestamp(date.getTime())  // 带 时分秒的
 	
 	java.sql.Date sqlDate1 = new java.sql.Date(date.getTime());  // 不带时分秒 只有年月日
 
-#### 3. session 与  request
+# 3. session 与  request
+
 	1. session.setAttribute()和session.getAttribute()配对使用，作用域是整个会话期间，在所有的页面都使用这些数据的时候使用。
 	2. request.setAttribute()和request.getAttribute()配对使用，作用域是请求和被请求页面之间。request.setAttribute()是只在此action的
 	 下一个forward需
@@ -34,13 +35,13 @@
 	         	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
 	 方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
 
-#### 4. 数组:  定义数组
+# 4. 数组:  定义数组
 
 	int[] array = {1,2,3};  // 用大括号 而不是 中括号
 
 
 
-#### 5. 关于 除法 的一些
+# 5. 关于 除法 的一些
 
 ```java
 @org.junit.Test
@@ -59,25 +60,26 @@ public void test2() {
 }
 ```
 
-#### 6. 所有整型包装类对象之间值的比较，全部使用 equals 方法比较。
-​	说明：对于 Integer var = ? 在-128 至 127 范围内的赋值，Integer 对象是在 IntegerCache.cache 产生，会复用已有对象，这个区间内的 Integer 值可以直接使用==进行判断，但是这个区间之外的所有数据，都会在堆上产生，并不会复用已有对象，这是一个大坑，推荐使用 equals 方法进行判断。
+# 6. 所有整型包装类对象之间值的比较，全部使用 equals 方法比较。
+
+	说明：对于 Integer var = ? 在-128 至 127 范围内的赋值，Integer 对象是在 IntegerCache.cache 产生，会复用已有对象，这个区间内的 Integer 值可以直接使用==进行判断，但是这个区间之外的所有数据，都会在堆上产生，并不会复用已有对象，这是一个大坑，推荐使用 equals 方法进行判断。
 
 --**浮点数之间的等值判断，基本数据类型不能用==来比较，包装数据类型不能用equals 来判断**--
 **Java中的解决方法，是通过设立一个阈值来消除计算机计算所带来的误差引起的误差**
 
 反例：
-​	 float a = 1.0f - 0.9f;
-​	 float b = 0.9f - 0.8f;
-​	 if (a == b) {
-​	 // 预期进入此代码快，执行其它业务逻辑
-​	 // 但事实上 a==b 的结果为 false
-​	 }
-​	 Float x = Float.valueOf(a);
-​	 Float y = Float.valueOf(b);
-​	 if (x.equals(y)) {
-​	 // 预期进入此代码快，执行其它业务逻辑
-​	 // 但事实上 equals 的结果为 false
-​	 }
+	 float a = 1.0f - 0.9f;
+	 float b = 0.9f - 0.8f;
+	 if (a == b) {
+	 // 预期进入此代码快，执行其它业务逻辑
+	 // 但事实上 a==b 的结果为 false
+	 }
+	 Float x = Float.valueOf(a);
+	 Float y = Float.valueOf(b);
+	 if (x.equals(y)) {
+	 // 预期进入此代码快，执行其它业务逻辑
+	 // 但事实上 equals 的结果为 false
+	 }
 
 
 
@@ -123,10 +125,11 @@ public void floatJudge() {
 
 ​	 
 
-#### 7. 循环体内，字符串的连接方式，使用 StringBuilder 的 append 方法进行扩展
-​	说明：下例中，反编译出的字节码文件显示每次循环都会 new 出一个 StringBuilder 对象，然后进行
-​	append 操作，最后通过 toString 方法返回 String 对象，造成内存资源浪费。
-​	
+# 7. 循环体内，字符串的连接方式，使用 StringBuilder 的 append 方法进行扩展
+
+	说明：下例中，反编译出的字节码文件显示每次循环都会 new 出一个 StringBuilder 对象，然后进行
+	append 操作，最后通过 toString 方法返回 String 对象，造成内存资源浪费。
+
 
 	反例：
 	String str = "start"; 
@@ -134,7 +137,7 @@ public void floatJudge() {
 	str = str + "hello"; 
 	}
 
-#### 8.  科学计数法
+# 8.  科学计数法
 
 1. 3.2e11  等同于 3.2 × 10¹¹
 
@@ -144,14 +147,13 @@ public void floatJudge() {
 
 
 
-#### 9. 两个list 合并去重
+# 9. 两个list 合并去重
 
 1. 用set
 
 2. java8以后可通过stream来完成
 
    ```java
-   
    List<String> collect = Stream.of(listA, listB)
                          .flatMap(Collection::stream)
                          .distinct()
@@ -160,7 +162,7 @@ public void floatJudge() {
 
    如果合并的是对象,注意重写equals和hashcode方法;
 
-#### 10. 将map 转换成实体类
+# 10. 将map 转换成实体类
 
 阿里的json包
 
@@ -170,7 +172,7 @@ BankFlow bankFlow = JSON.parseObject(JSON.toJSONString(bankFlowMap), BankFlow.cl
 System.out.println("bankFlow : " + bankFlow);
 ```
 
-#### 11. 转驼峰
+# 11. 转驼峰
 
 ```java
 public String getHumpString(String string) {
@@ -188,7 +190,7 @@ public String getHumpString(String string) {
 
 
 
-#### 12. 复制数组
+# 12. 复制数组
 
 ```java
 excelTitles = Arrays.copyOf(titles, titles.length);
@@ -196,7 +198,7 @@ excelTitles = Arrays.copyOf(titles, titles.length);
 
 
 
-#### 13. if else 与 if if 的区别
+# 13. if else 与 if if 的区别
 
 在if-else if分支结构中，如果前面有一个条件成立，则下面的分支结构将不会被执行；
 
@@ -204,7 +206,7 @@ excelTitles = Arrays.copyOf(titles, titles.length);
 
 ​	
 
-#### 14. 实体类转map
+# 14. 实体类转map
 
 <u>**JSONObject.toJavaObject(JSON.parseObject(string), Map.class);**</u>
 
@@ -219,7 +221,7 @@ Iterator<BankFlow> bankFlowIterator = bankFlowList.iterator();
     }
 ```
 
-#### 15. 枚举的应用
+# 15. 枚举的应用
 
 ```java
 String[] titles = {
@@ -242,7 +244,7 @@ String[] titles = {
 
 
 
-#### 16. 自定义注解的应用
+# 16. 自定义注解的应用
 
 1. <u>**field.isAnnotationPresent(Excel.class)**</u>
 
@@ -289,26 +291,26 @@ String[] titles = {
     }
 ```
 
-#### 17. 增强for 与 for 的区别
+# 17. 增强for 与 for 的区别
 
 1. 增强for循环和iterator遍历的效果是一样的，**增强for循环的内部也就是调用iteratoer实现的(可以查看编译后的文件)**。增强for循环有些缺点，例如不能在增强循环里动态的删除集合内容，不能获取下标等。
 2. ArrayList由于使用数组实现，**因此下标明确，最好使用普通循环**。
 3. 而对于 LinkedList 由于获取一个元素，要从头开始向后找，**因此建议使用增强for循环，也就是iterator**。
 
-#### 18. 关于数据库的日期 类型 和 java的 数据类型的对应
+# 18. 关于数据库的日期 类型 和 java的 数据类型的对应
 
 oracle 的时间戳 和 java 的 String 也可以对应
 
 
 
-#### 19. 格式字符, 符号
+# 19. 格式字符, 符号
 
 1. ```tex
-    %d  表示按整型数据的实际长度输出数据。
-    %c  用来输出一个字符。
-    %s  用来输出一个字符串。
-    %x  表示以十六进制数形式输出整数。
-    ```
+   %d  表示按整型数据的实际长度输出数据。
+   %c  用来输出一个字符。
+   %s  用来输出一个字符串。
+   %x  表示以十六进制数形式输出整数。
+   ```
 
 
 
@@ -325,7 +327,7 @@ oracle 的时间戳 和 java 的 String 也可以对应
 
 
 
-#### 20. continue
+# 20. continue
 
 continue: 中断本次循环,而不是break 中断循环;
 
@@ -363,7 +365,7 @@ true
 
 
 
-#### 21. 读取json文件
+# 21. 读取json文件
 
 把.json文件 放到 static下面 , 建个文件放进去也可以
 
@@ -396,7 +398,7 @@ true
 
 
 
-#### 22. 配置
+# 22. 配置
 
 1. 要想application.properties 文件里有mybatis-plus 的提示 需要这个
 
@@ -413,7 +415,7 @@ true
 
 
 
-#### 23. 乘法 除法 的移位操作
+# 23. 乘法 除法 的移位操作
 
 \>> 是带符号右移，若操作数是正数，则高位补“0”，若操作数是负数，则高位补“1”.
 
@@ -471,11 +473,11 @@ true
         /*  与运算符用符号 "&"  */
         int i7 = a & 2;
         int i9 = a % 4;
-        System.out.println("i7 ->= " + i7 + "   ####  i9 ->= " + i9);  // 2
+        System.out.println("i7 ->= " + i7 + "   #  i9 ->= " + i9);  // 2
 
         int i8 = a & 1;
         int i10 = a % 2;
-        System.out.println("i8 ->= " + i8 + "   ####  i10->  " + i10);  // 0
+        System.out.println("i8 ->= " + i8 + "   #  i10->  " + i10);  // 0
         System.out.println();
 
         int n = 1;
@@ -585,7 +587,7 @@ public static int parseInt(String s, int radix)
 
 
 
-#### 24. 与运算符  " & " 
+# 24. 与运算符  " & " 
 
 两个操作数中位都为1，结果才为1，否则结果为0，例如下面的程序段
 
@@ -629,11 +631,11 @@ a 的二进制 10000001, b 的二进制 10000000,根据运算规律,相同为 1 
 
 另: 在if 条件中时 , 或运算符 " | ", 
 
-​	当第一个条件为真,后面的条件依然会执行,而短路或 " || ",只要第一个条件为真,则后面的条件就不再执行;
+	当第一个条件为真,后面的条件依然会执行,而短路或 " || ",只要第一个条件为真,则后面的条件就不再执行;
 
 
 
-#### 25. get 与 post
+# 25. get 与 post
 
 Http定义了与服务器交互的不同方法，最基本的方法有4种，分别是GET，POST，PUT，DELETE。URL全称是资源描述符，我们可以这样认为：一个URL地址，它用于描述一个网络上的资源，而HTTP中的GET，POST，PUT，DELETE就对应着对这个资源的查，改，增，删4个操作。到这里，大家应该有个大概的了解了，GET一般用于获取/查询资源信息，而POST一般用于更新资源信息。
 
@@ -688,19 +690,19 @@ Http定义了与服务器交互的不同方法，最基本的方法有4种，分
 
 Http get方法提交的数据大小长度并没有限制，Http协议规范没有对URL长度进行限制。 目前说的get长度有限制，是特定的浏览器及服务器对它的限制。
 
-​	IE：对URL的最大限制为2083个字符，若超出这个数字，提交按钮没有任何反应。
-
-​    Firefox：对Firefox浏览器URL的长度限制为：65536个字符。
-
-​    Safari：URL最大长度限制为80000个字符。
-
-​    Opera：URL最大长度限制为190000个字符。
-
-​    Google(chrome)：URL最大长度限制为8182个字符。
-
-​    Apache(Server)：能接受的最大url长度为8192个字符（这个准确度待定？？？）
-
-​    Microsoft Internet Information Server(IIS)：n能接受最大url的长度为16384个字符
+	IE：对URL的最大限制为2083个字符，若超出这个数字，提交按钮没有任何反应。
+	
+	Firefox：对Firefox浏览器URL的长度限制为：65536个字符。
+	
+	Safari：URL最大长度限制为80000个字符。
+	
+	Opera：URL最大长度限制为190000个字符。
+	
+	Google(chrome)：URL最大长度限制为8182个字符。
+	
+	Apache(Server)：能接受的最大url长度为8192个字符（这个准确度待定？？？）
+	
+	Microsoft Internet Information Server(IIS)：n能接受最大url的长度为16384个字符
 
 　　(2).**理论上讲，POST是没有大小限制的**，HTTP协议规范也没有进行大小限制，说“POST数据量存在80K/100K的大小限制”是不准确的，POST数据是没有限制的，起限制作用的是服务器的处理程序的处理能力。
 
@@ -737,9 +739,9 @@ GET VS POST扩展：
 
 6、GET的本质是【得】，而POST的本质是【给】。而且，GET是【幂等】的，在这一点上，GET被认为是【安全的】。实际上server端也可以用作资源更新，但是这种用法违反了约定，容易造成CSRF（跨站请求伪造）。
 
-#### 26. getbytes()的意义,
+# 26. getbytes()的意义,
 
-​	有时候,为了让中文字符适应某些特殊要求(**如http header要求其内容必须为iso8859-1编码**),可能会通过将中文字符按照字节方式来编码的情况,如:
+	有时候,为了让中文字符适应某些特殊要求(**如http header要求其内容必须为iso8859-1编码**),可能会通过将中文字符按照字节方式来编码的情况,如:
 String s_iso88591 = new String("中".getBytes("UTF-8"),"ISO8859-1"),
 
 这样得到的s_iso8859-1字符串实际是三个在ISO8859-1中的字符,在将这些字符传递到目的地后,目的地程序再通过相反的方式
@@ -752,7 +754,7 @@ String s_utf8 = new String(s_iso88591.getBytes("ISO8859-1"),"UTF-8")
 
 
 
-#### 27. for 循环 与 iterator 迭代 循环 的 区别
+# 27. for 循环 与 iterator 迭代 循环 的 区别
 
  HashMap hashMap = new HashMap<>();
 
@@ -807,7 +809,7 @@ String s_utf8 = new String(s_iso88591.getBytes("ISO8859-1"),"UTF-8")
 
 
 
-#### 28. 查端口号
+# 28. 查端口号
 
 
 
@@ -821,7 +823,7 @@ taskkill /f /t /im 程序名;
 
 
 
-#### 29. 方法定义 为 final
+# 29. 方法定义 为 final
 
 不可重写,不可动态绑定
 
@@ -829,7 +831,7 @@ taskkill /f /t /im 程序名;
 
 
 
-#### 30. 迭代器的结构
+# 30. 迭代器的结构
 
 一般情况下链表的遍历是通过指针的移动来寻找下一个结点，并输出数据的。
 
@@ -849,19 +851,19 @@ taskkill /f /t /im 程序名;
 
 
 
-#### 31. 为什么要有抽象类
+# 31. 为什么要有抽象类
 
 
 
-​	取决于 抽象方法,这个抽象方法 类似与接口中的方法, 没有方法体,是抽象的,
+	取决于 抽象方法,这个抽象方法 类似与接口中的方法, 没有方法体,是抽象的,
 
 接口中的方法都是 public abstract,只是平时不写,
 
-​	抽象类区别于接口,抽象类中 有 其他不是abstract 的方法,只是类中的某个方法刚好需要抽象,所以就决定了类是抽象的.
+	抽象类区别于接口,抽象类中 有 其他不是abstract 的方法,只是类中的某个方法刚好需要抽象,所以就决定了类是抽象的.
 
 
 
-#### 32. 函数式编程思维
+# 32. 函数式编程思维
 
 函数式编程的思想: 希望可以允许程序员用计算来表示程序,用计算的组合来表达程序的组合;
 
@@ -885,7 +887,7 @@ taskkill /f /t /im 程序名;
 
 
 
-#### 33.  @DateTimeFormat @JsonFormat
+# 33.  @DateTimeFormat @JsonFormat
 
 @DateTimeFormat : 前端传入的参数是String , 而后端接收的字段是Date , 此情况用这个注解,
 
@@ -893,7 +895,7 @@ taskkill /f /t /im 程序名;
 
 
 
-#### 34. 前台请求有数据,后台接收不到
+# 34. 前台请求有数据,后台接收不到
 
 后台加注解
 
@@ -944,7 +946,7 @@ axios({
 
 
 
-#### 35. asp, jsp
+# 35. asp, jsp
 
 ASP 脚本由 <% 和 %> 包围。向浏览器写输出：
 
@@ -972,7 +974,7 @@ Request.Form 用于收集使用 method="post" 的表单中的值。使用 POST �
 
 
 
-#### 36. 正则
+# 36. 正则
 
 密码:
 
@@ -1040,7 +1042,7 @@ var reg= /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/;
 
 
 
-#### 37. mybatis plus and or
+# 37. mybatis plus and or
 
 ````java
         queryWrapper.and(wrapper -> wrapper.eq("delete_identity",0));
@@ -1049,7 +1051,7 @@ var reg= /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[~!@#$%^&*()_+`\-={}:";'<>?,./]).{8,}$/;
 
 
 
-#### 38. mybatis plus 的一个注解, 忽略字段 
+# 38. mybatis plus 的一个注解, 忽略字段 
 
 实体类上查数据库是忽略字段
 
@@ -1063,7 +1065,7 @@ private Integer count;
 
 
 
-#### 39. aop
+# 39. aop
 
 ```java
 package com.Gzs.demo.SpringSecurityDemo.aop;
@@ -1158,7 +1160,7 @@ public class Required {
 
 
 
-#### 40. http 缓存
+# 40. http 缓存
 
 1. HTTP 服务器响应返回状态码 304，304 代表表示告诉浏览器，本地有缓存数据，可直接从本地获取，无需从服务器获取浪费时间
 
@@ -1180,7 +1182,7 @@ public class Required {
 
 
 
-#### 41. 一些注解
+# 41. 一些注解
 
 
 
@@ -1196,7 +1198,7 @@ public class Required {
 
 
 
-#### 42. 注解是怎么起作用的, 例子参见[39]aop
+# 42. 注解是怎么起作用的, 例子参见[39]aop
 
 当写自定义注解的时候`J2SE 5.0`在`java.lang.annotation`包中提供了四种注解可以被使用：
 
@@ -1254,7 +1256,7 @@ for(Method method : businessLogicClass.getMethods()) {
 
 
 
-#### 43. Date 与 LocalDate 
+# 43. Date 与 LocalDate 
 
 1. Date 转 LocalDate
 
@@ -1314,12 +1316,13 @@ public static String formatDate(Date date) {
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     LocalDateTime now = LocalDateTime.now();
     fmt.format(now);
+
    ```
    
 
 
 
-#### 44. ENUM 枚举
+# 44. ENUM 枚举
 
 
 
@@ -1430,33 +1433,33 @@ public enum QueryRuleEnum {
 
 
 
-#### 45.HTML 中有用的字符实体
+# 45.HTML 中有用的字符实体
 
 **注释：**实体名称对大小写敏感！
 
-| 显示结果 | 描述              | 实体名称          | 实体编号 |
-| :------- | :---------------- | :---------------- | :------- |
-|          | 空格              | \&nbsp;            | \&#160;   |
-| <        | 小于号            | \&lt;              | \&#60;    |
-| >        | 大于号            | \&gt;              | \&#62;    |
-| &        | 和号              | \&amp;             | \&#38;    |
-| "        | 引号              | \&quot;            | \&#34;    |
-| '        | 撇号              | \&apos; (IE不支持) | \&#39;    |
-| ￠       | 分（cent）        | \&cent;            | \&#162;   |
-| £        | 镑（pound）       | \&pound;           | \&#163;   |
-| ¥        | 元（yen）         | \&yen;             | \&#165;   |
-| €        | 欧元（euro）      | \&euro;            | \&#8364;  |
-| §        | 小节              | \&sect;            | \&#167;   |
-| ©        | 版权（copyright） | \&copy;            | \&#169;   |
-| ®        | 注册商标          | \&reg;             | \&#174;   |
-| ™        | 商标              | \&trade;           | \&#8482;  |
-| ×        | 乘号              | \&times;           | \&#215;   |
-| ÷        | 除号              | \&divide;          | \&#247;   |
-| / | 斜线 | `&#47;` |  |
+| 显示结果 | 描述              | 实体名称           | 实体编号 |
+| :------- | :---------------- | :----------------- | :------- |
+|          | 空格              | \&nbsp;            | \&#160;  |
+| <        | 小于号            | \&lt;              | \&#60;   |
+| >        | 大于号            | \&gt;              | \&#62;   |
+| &        | 和号              | \&amp;             | \&#38;   |
+| "        | 引号              | \&quot;            | \&#34;   |
+| '        | 撇号              | \&apos; (IE不支持) | \&#39;   |
+| ￠       | 分（cent）        | \&cent;            | \&#162;  |
+| £        | 镑（pound）       | \&pound;           | \&#163;  |
+| ¥        | 元（yen）         | \&yen;             | \&#165;  |
+| €        | 欧元（euro）      | \&euro;            | \&#8364; |
+| §        | 小节              | \&sect;            | \&#167;  |
+| ©        | 版权（copyright） | \&copy;            | \&#169;  |
+| ®        | 注册商标          | \&reg;             | \&#174;  |
+| ™        | 商标              | \&trade;           | \&#8482; |
+| ×        | 乘号              | \&times;           | \&#215;  |
+| ÷        | 除号              | \&divide;          | \&#247;  |
+| /        | 斜线              | `&#47;`            |          |
 
 
 
-#### 46. mybatis plus 
+# 46. mybatis plus 
 
 1. apply 用法
 
@@ -1473,10 +1476,9 @@ public enum QueryRuleEnum {
 
 
 
-#### 47. 泛型 <?> 和 \<T> 的区别 
+# 47. 泛型 <?> 和 \<T> 的区别 
 
 ```java
-
 @RequestMapping(value = "/test2")
     public Result test2(){
         List<Student> list1 = new ArrayList<>();
@@ -1541,13 +1543,13 @@ Class<T> 的用法 示例
 
 
 
-#### 48. requestbody
+# 48. requestbody
 
 
 
 
 
-#### 49. 数组: 数组转 字符串, 将两个字符串数组 合并为一个 对象
+# 49. 数组: 数组转 字符串, 将两个字符串数组 合并为一个 对象
 
 1. 将两个字符串数组 合并为一个 对象  数组的reduce()方法
 
@@ -1568,6 +1570,7 @@ Class<T> 的用法 示例
 
                     console.log("*****  ",obj)
 ```
+
 2. 数组转 字符串
 
    ```js
@@ -1585,11 +1588,11 @@ Class<T> 的用法 示例
 
 
 
-#### 50. mybatis配置详解
+# 50. mybatis配置详解
 
 
 
-#### 51. formData 详解
+# 51. formData 详解
 
 FormData 对象 数据  , 后台用 request.getparameter 接收 也可以用 实体类接收或 map
 
@@ -1764,7 +1767,7 @@ xmlhttprequest -> formdata
 
 
 
-#### 52. \* 和** 的作用
+# 52. \* 和** 的作用
 
 \* 表示所有的文件, 但是并不包括子目录下的文件
 
@@ -1774,7 +1777,7 @@ xmlhttprequest -> formdata
 
 
 
-#### 53. 转全角, 转半角
+# 53. 转全角, 转半角
 
 ```java
 /**
@@ -2345,3 +2348,176 @@ attribute，由于 attribute还可以做动词，表示赋予。。。特性，�
 
 
 
+
+
+# 57. 一些代码
+
+
+
+## 1. 写了个转驼峰 的方法
+
+```java
+ /**
+     * 转驼峰
+     * @author: wg
+     * @time: 2020/4/8 10:54
+     */
+    public String getHumpString(String string) {
+
+        String[] s = string.split("_");
+        StringBuilder stringBuilder= new StringBuilder(s[0]);
+
+        for (int k = 0; k < s.length-1; k++) {
+            stringBuilder.append(s[k + 1].substring(0, 1).toUpperCase() + s[k + 1].substring(1)) ;
+        }
+
+        return stringBuilder.toString();
+    }
+```
+
+
+
+## 2. 合并两个list 并去重 用Stream
+
+```java
+collect = Stream.of(bankFlowList, list)
+                      .flatMap(Collection::stream)
+                      .distinct()
+                      .collect(Collectors.toList());
+```
+
+
+
+## 3. map转实体类,阿里的json包
+
+```java
+BankFlow bankFlow = JSON.parseObject(JSON.toJSONString(bankFlowMap), BankFlow.class);
+```
+
+
+
+## 4. 去掉数组中的null 和 空值 
+
+```java
+		String[] titleNames = readExcelUtil.readExcelTitle(0);
+
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (int i = 0; i < titleNames.length; i++) {
+            if (titleNames[i] != null) {
+                arrayList.add(titleNames[i]);
+            }
+        }
+```
+
+
+
+## 5. 数组 与 list 转换
+
+```java
+String[] titles = (String[]) arrayList.toArray();
+```
+
+
+
+## 6. try catch 的作用
+
+  遇到异常,依然往下走
+
+
+
+
+
+## 7. 枚举与map
+
+````java
+package org.jeecg.modules.app.enums;
+
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author wg
+ * @Package org.jeecg.modules.app.enums
+ * @date 2020/4/16 9:51
+ * @Copyright
+ */
+public enum Title {
+
+
+    TRANSACTION_SUBJECT("transaction_subject", "交易主体"),
+    ACCOUNT_SUBJECT("account_subject", "交易主体账号"),
+    CARD_ENTITY("card_entity", "交易主体卡号"),
+    RECOVERY_MARK("recovery_mark", "收付标志"),
+    TRANSACTION_DATE("transaction_date", "交易日期"),
+    COUNTER_PARTY("counter_party", "交易对手"),
+    ACCOUNT_COUNTERPARTY("account_counterparty", "交易对手账号"),
+    CARD_COUNTERPARTY("card_counterparty", "交易对手卡号"),
+    TRANSACTION_AMOUNT("transaction_amount", "交易金额"),
+    ABSTRACT_CONTENT("abstract_content", "摘要"),
+    BALANCE_TRANSACTION("balance_transaction", "交易后余额"),
+    TRANSACTION_BANK("transaction_bank", "交易主体归属行"),
+    COUNTERPARTY_BANK("counterparty_bank", "交易对手归属行"),
+    PLACE_TRANSACTION("place_transaction", "交易地点"),
+    TRADING_PLACE("trading_place", "交易方式"),
+    TRANSACTION_NUMBER("transaction_number", "交易流水号"),
+    MAC("mac", "MAC地址"),
+    IP("ip", "IP地址"),
+    CURRENCY("currency", "币种"),
+    TEMARKS("temarks", "备注"),
+    TRADING_NO("trading_no", "交易机构号"),
+    TELLER_NUMBER("teller_number", "柜员号"),
+    INSTITUTION_PARTY("institution_party", "对方机构号"),
+    SUCCESSFUL_NOT("successful_not", "交易是否成功"),
+    LOG_NUMBER("log_number", "日志号"),
+    CUSTOMER_CODE("customer_code", "客户代码"),
+    APSH_PLACE("apsh_place", "APSH地点线索"),
+    MATCHER_CODE("matcher_code", "交易对手客户代码"),
+    MATCHER_BALANCE("matcher_balance", "对手交易后余额"),
+    SUBJECT_CREDENTIALS("subject_credentials", "交易主体证件号"),
+    ADVERSARY_CREDENTIALS("adversary_credentials", "交易对手证件号"),
+    TRANSACTION_RECORDS_ID("transaction_records_id", "交易记录ID"),
+    REPORT_ORGANIZATION("report_organization", "报告机构"),
+    SHE_WAI_FEN_LEI("she_wai_fen_lei", "涉外收支分类"),
+    AGENT_NAME("agent_name", "代办人名称"),
+    AGENT_CREDENTIALS("agent_credentials", "代办人证件号码"),
+    VOUCHER_NUMBER("voucher_number", "凭证号码"),
+    VOUCHER_TYPE("voucher_type", "凭证类型");
+
+
+    private String fileCode;
+    private String fileName;
+
+    private static final Map<String, String> titleMap = new HashMap<>();
+
+    static {
+        for (Title title : EnumSet.allOf(Title.class)) {
+
+            titleMap.put(title.getFileCode(), title.getFileName());
+        }
+
+    }
+
+
+    Title(String fileCode, String fileName) {
+        this.fileCode = fileCode;
+        this.fileName = fileName;
+    }
+
+    public String getFileCode() {
+        return fileCode;
+    }
+
+
+    public String getFileName() {
+        return fileName;
+    }
+
+
+    public static Map<String, String> getTitleMap() {
+        return titleMap;
+    }
+}
+
+````
