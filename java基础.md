@@ -587,7 +587,7 @@ public static int parseInt(String s, int radix)
 
 
 
-# 24. 与运算符  " & " 
+# 24. 与运算符  " & " : 两个操作数中位都为1，结果才为1，否则结果为0，
 
 两个操作数中位都为1，结果才为1，否则结果为0，例如下面的程序段
 
@@ -612,6 +612,34 @@ public static int parseInt(String s, int radix)
 分析: 
 
 a 的二进制 10000001, b 的二进制 10000000,根据运算规律,相同为 1 不同为 0 ,所以结果是 128;
+
+```
+对两个表达式执行按位“与”。
+
+result = expression1 & expression2
+
+参数
+result
+
+任何变量。
+
+expression1
+
+任何表达式。
+
+expression2
+
+任何表达式。
+
+说明
+& 运算符查看两个表达式的二进制表示法的值，并执行按位“与”操作。该操作的结果如下所示：
+
+0101   (expression1)
+1100   (expression2)
+----
+0100   (result)
+任何时候，只要两个表达式的某位都为 1，则结果的该位为 1。否则，结果的该位为 0。
+```
 
 
 
