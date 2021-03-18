@@ -28,11 +28,10 @@
 
 	1. session.setAttribute()和session.getAttribute()配对使用，作用域是整个会话期间，在所有的页面都使用这些数据的时候使用。
 	2. request.setAttribute()和request.getAttribute()配对使用，作用域是请求和被请求页面之间。request.setAttribute()是只在此action的
-	 下一个forward需
-	  	3. 要使用的时候使用；request.getAttribute()表示从request范围取得设置的属性，必须要先setAttribute设置属性，才能通过getAttribute来取得，
+	 下一个forward需要使用的时候使用；request.getAttribute()表示从request范围取得设置的属性，必须要先setAttribute设置属性，才能通过getAttribute来取得，
 	 设置与取得的为Object对象类型。其实表单控件中的Object的 name与value是存放在一个哈希表中的，所以在这里给出Object的name会到哈希表中找出对应它的value。
 	 setAttribute()的参数是String和Object。
-	         	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
+	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
 	 方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
 
 # 4. 数组:  定义数组
@@ -1573,11 +1572,13 @@ Class<T> 的用法 示例
 
 # 48. requestbody
 
+ @RequestBody接收的是一个Json对象的字符串，而不是一个Json对象, 然而在ajax请求往往传的都是Json对象, 用 JSON.stringify(data)的方式就能将对象变成字符串。同时ajax请求的时候也要指定dataType: "json",contentType:"application/json" 这样就可以轻易的将一个对象或者List传到Java端，使用@RequestBody即可绑定对象或者List
 
 
 
 
-# 49. 数组: 数组转 字符串, 将两个字符串数组 合并为一个 对象
+
+# 49. 数组: 前端数组转 字符串, 将两个字符串数组 合并为一个 对象
 
 1. 将两个字符串数组 合并为一个 对象  数组的reduce()方法
 
@@ -2378,6 +2379,12 @@ attribute，由于 attribute还可以做动词，表示赋予。。。特性，�
 
 
 
+mybatisplus 无法处理 resulttype 类型为list 等 开启 结果集自动映射 不管用
+
+
+
+
+
 # 57. 一些代码
 
 
@@ -2549,3 +2556,16 @@ public enum Title {
 }
 
 ````
+
+
+
+
+
+
+
+# 58. 注意
+
+
+
+## 1. 定义实体类, 尽量用 Integer Double 等包装类型, 不要 使用int double 等基础数字类型
+
