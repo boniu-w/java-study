@@ -2569,3 +2569,28 @@ public enum Title {
 
 ## 1. 定义实体类, 尽量用 Integer Double 等包装类型, 不要 使用int double 等基础数字类型
 
+
+
+
+
+# 59. java 命令
+
+
+
+|                                   |                  |      |
+| --------------------------------- | ---------------- | ---- |
+| javac -encoding utf-8 文件名.java | 编译成.class文件 |      |
+|                                   |                  |      |
+|                                   |                  |      |
+
+
+
+
+
+# 60. 后台接收前台数据
+
+1.   
+
+   前台数据 post -> obj
+
+   后台接收 @RequestBody(required = false) JSONObject jsonObject, 注意要加注解 
