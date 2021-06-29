@@ -1219,9 +1219,26 @@ public class Required {
 | @Configuration                                               | 使之成为配置类容器, 相当与<beans> | org.springframework.context.annotation.Configuration;        |
 | @Transient                                                   | 忽略字段,非数据库字段             | javax.persistence.Transient;                                 |
 | @TableField                                                  | 忽略字段,非数据库字段             | mybatisplus 的注解 com.baomidou.mybatisplus.annotation.TableField; |
-| @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss") | 日期处理注解,一般结合着写         | package com.fasterxml.jackson.annotation;                    |
-| @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")               | 日期处理注解,一般结合着写         | package org.springframework.format.annotation;               |
-|                                                              |                                   |                                                              |
+| @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss") | 日期处理注解,一般结合着写         | com.fasterxml.jackson.annotation;                            |
+| @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")               | 日期处理注解,一般结合着写         | org.springframework.format.annotation;                       |
+| @Mappings({         @Mapping(source = "entity.id", target = "id") }) | 把两个实体类融合成一个            | org.mapstruct.Mappings;                                      |
+
+
+
+
+
+## 1. @Mappings 例子
+
+
+
+```java
+@Mappings({
+        @Mapping(source = "entity.id", target = "id")
+})
+public abstract ConstructionDataDTO toDTO(ConstructionDataEntity entity, MaterialTypeEntity materialTypeEntity);
+```
+
+
 
 
 
@@ -2231,7 +2248,7 @@ attribute，由于 attribute还可以做动词，表示赋予。。。特性，�
 
 # 56. mybatis plus
 
-
+## 1. 部分代码演示
 
 ```java
     @AutoLog(value = "流水表-分页列表查询")
@@ -2380,6 +2397,15 @@ attribute，由于 attribute还可以做动词，表示赋予。。。特性，�
 
 
 mybatisplus 无法处理 resulttype 类型为list 等 开启 结果集自动映射 不管用
+
+
+
+## 2. 一些配置
+
+```xml
+# 开启驼峰映射
+mybatis.configuration.map-underscore-to-camel-case=true 
+```
 
 
 
@@ -2594,3 +2620,88 @@ public enum Title {
    前台数据 post -> obj
 
    后台接收 @RequestBody(required = false) JSONObject jsonObject, 注意要加注解 
+
+
+
+
+
+# 61 供与校验的注解
+
+
+
+**JSR提供的校验注解**
+
+```tex
+@Null   被注释的元素必须为 null    
+@NotNull    被注释的元素必须不为 null    
+@AssertTrue     被注释的元素必须为 true    
+@AssertFalse    被注释的元素必须为 false    
+@Min(value)     被注释的元素必须是一个数字，其值必须大于等于指定的最小值    
+@Max(value)     被注释的元素必须是一个数字，其值必须小于等于指定的最大值    
+@DecimalMin(value)  被注释的元素必须是一个数字，其值必须大于等于指定的最小值    
+@DecimalMax(value)  被注释的元素必须是一个数字，其值必须小于等于指定的最大值    
+@Size(max=, min=)   被注释的元素的大小必须在指定的范围内    
+@Digits (integer, fraction)     被注释的元素必须是一个数字，其值必须在可接受的范围内    
+@Past   被注释的元素必须是一个过去的日期    
+@Future     被注释的元素必须是一个将来的日期    
+@Pattern(regex=,flag=)  被注释的元素必须符合指定的正则表达式
+```
+
+
+
+**Hibernate Validator提供的校验注解**
+
+```tex
+@NotBlank(message =)   验证字符串非null，且长度必须大于0    
+@Email  被注释的元素必须是电子邮箱地址    
+@Length(min=,max=)  被注释的字符串的大小必须在指定的范围内    
+@NotEmpty   被注释的字符串的必须非空    
+@Range(min=,max=,message=)  被注释的元素必须在合适的范围内
+```
+
+
+
+
+
+# 62 定义char时加单引号与不加单引号的区别
+
+
+
+不加单引号：在不超过范围情况下可定义多个数字，不能定义字符
+定义的数值是国际编码表的码值，此码之会对应一个特定的字符
+单独输出时输出的是对应的特定字符
+运算时转换为int型的数字（数字的值就本身）
+
+加单引号;只能定义一个字符
+定义的字符为国际编码表中特定的字符，此字符对应一个码值
+单独输出时输出的是字符本身
+运算时转换为int型的数字(数字的值是字符对应的码值)
+
+
+
+```java
+@Test
+    public void basicDataType(){
+
+        char a=1;
+        System.out.println(a);
+
+        char b='1';
+        System.out.println(b);
+
+        char c=2;
+        char d=c;
+        int e=c;
+        System.out.println(c);
+        System.out.println(d);
+        System.out.println(e);
+
+    }
+```
+
+输出为: 
+
+![](.\img\企业微信截图_16249334068073.png)
+
+
+
