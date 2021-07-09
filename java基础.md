@@ -2402,10 +2402,74 @@ mybatisplus 无法处理 resulttype 类型为list 等 开启 结果集自动映�
 
 ## 2. 一些配置
 
-```xml
+```yaml
 # 开启驼峰映射
 mybatis.configuration.map-underscore-to-camel-case=true 
 ```
+
+
+
+## 3. 更多配置
+
+```yml
+ 
+mybatis-plus:
+  # 如果是放在src/main/java目录下 classpath:/com/yourpackage/*/mapper/*Mapper.xml
+  # 如果是放在resource目录 classpath:/mapper/*Mapper.xml
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.yourpackage.*.entity
+  global-config:
+    #主键类型  0:"数据库ID自增", 1:"用户输入ID",2:"全局唯一ID (数字类型唯一ID)", 3:"全局唯一ID UUID";
+    id-type: 3
+    #字段策略 0:"忽略判断",1:"非 NULL 判断"),2:"非空判断"
+    field-strategy: 2
+    #驼峰下划线转换
+    db-column-underline: true
+    #mp2.3+ 全局表前缀 mp_
+    #table-prefix: mp_
+    #刷新mapper 调试神器
+    #refresh-mapper: true
+    #数据库大写下划线转换
+    #capital-mode: true
+    # Sequence序列接口实现类配置
+    key-generator: com.baomidou.mybatisplus.incrementer.OracleKeyGenerator
+    #逻辑删除配置（下面3个配置）
+    logic-delete-value: 1
+    logic-not-delete-value: 0
+    sql-injector: com.baomidou.mybatisplus.mapper.LogicSqlInjector
+    #自定义填充策略接口实现
+    meta-object-handler: com.baomidou.springboot.MyMetaObjectHandler
+  configuration:
+    #配置返回数据库(column下划线命名&&返回java实体是驼峰命名)，自动匹配无需as（没开启这个，SQL需要写as： select user_id as userId） 
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    #配置JdbcTypeForNull, oracle数据库必须配置
+    jdbc-type-for-null: 'null'
+```
+
+
+
+## 4. 只查询指定字段 和 排除指定字段查询
+
+
+
+```java
+// 只查询指定字段
+wrapper.select("id", "name").in("id",set);
+
+// 排除指定字段查询
+ 	@Test
+    public void selectByWrapper11() {
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select(User.class, info -> !info.getColumn().equals("manager_id")
+                && !info.getColumn().equals("create_time"));
+        List<User> users = userMapper.selectList(queryWrapper);
+        users.forEach(System.out::println);
+    }
+```
+
+
 
 
 
@@ -2704,4 +2768,56 @@ public enum Title {
 ![](.\img\企业微信截图_16249334068073.png)
 
 
+
+
+
+
+
+# 63. 融合, 合并两个实体类, 
+
+1. 使用 注解
+
+   ```java
+   @Mappings({
+               @Mapping(source = "entity.id", target = "id")
+       })
+       public abstract RouteSurveyDetailDTO toDTO(RouteSurveyDetailEntity entity, RouteSurveyHistoryEntity routeSurveyHistoryEntity);
+   ```
+
+
+
+
+# 64. list  isEmpty()  size
+
+
+
+1. list=null,意味着list在堆中不存在，根本没有地址，如果此时操作list会报空指针异常。
+
+2. list.size()=0，意思堆内有list对象，但是还没来得及放元素，其长度随着元素数量变化而变化，暂时为零。
+
+3. list.isEmpty()跟list.size()差不多 只不过返回的时布尔类型。
+
+
+
+当list.add(null) ，此时list.size()=1，所以list.isEmpty()=false
+
+
+
+# 65. stream
+
+
+
+stream filter 多条件过滤
+
+```java
+			Stream<ConstructionDataDTO> dtoStream = dtoList.stream();
+            List<ConstructionDataDTO> collect = dtoStream.filter(item -> {
+                return seachMap.entrySet().stream().allMatch(map -> {
+                    return map.getValue().equals(item.getPipelineName())
+                            || map.getValue().equals(item.getPipelineNumber())
+                            || map.getValue().equals(item.getSmys())
+                            || map.getValue().equals(item.getType());
+                });
+            }).collect(Collectors.toList());
+```
 
