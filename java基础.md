@@ -2815,7 +2815,7 @@ public enum Title {
 
 
 
-stream filter 多条件过滤
+1. stream filter 多条件过滤
 
 ```java
 			Stream<ConstructionDataDTO> dtoStream = dtoList.stream();
@@ -2829,7 +2829,15 @@ stream filter 多条件过滤
             }).collect(Collectors.toList());
 ```
 
+2. sorted()
 
+   ```java
+   list.stream().sorted(Comparator.comparing(Student::getAge)) 
+   
+   list.stream().sorted(Comparator.comparing(Student::getAge).reversed()) 
+   ```
+
+   
 
 
 
