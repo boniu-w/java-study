@@ -2466,7 +2466,7 @@ mybatis-plus:
 // 只查询指定字段
 wrapper.select("id", "name").in("id",set);
 
-// 排除指定字段查询
+// 排除指定字段查询, 不查询这些字段
  	@Test
     public void selectByWrapper11() {
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
@@ -2478,6 +2478,12 @@ wrapper.select("id", "name").in("id",set);
 ```
 
 
+
+## 5.  关于日期的 一些操作
+
+```java
+queryWrapper.apply("DATE_FORMAT(assessment_date,'%Y-%m-%d') = '" + assessmentDate.trim().substring(0, 10) + "'");
+```
 
 
 
@@ -2815,7 +2821,7 @@ public enum Title {
 
 
 
-1. stream filter 多条件过滤
+## 1. stream filter 多条件过滤
 
 ```java
 			Stream<ConstructionDataDTO> dtoStream = dtoList.stream();
@@ -2829,15 +2835,21 @@ public enum Title {
             }).collect(Collectors.toList());
 ```
 
-2. sorted()
+## 2. sorted()
 
-   ```java
-   list.stream().sorted(Comparator.comparing(Student::getAge)) 
-   
-   list.stream().sorted(Comparator.comparing(Student::getAge).reversed()) 
-   ```
+```java
+list.stream().sorted(Comparator.comparing(Student::getAge)) 
 
-   
+list.stream().sorted(Comparator.comparing(Student::getAge).reversed()) 
+```
+
+
+
+## 3.  stream parallelStream
+
+**串行流**：适合存在线程安全问题、阻塞任务、重量级任务，以及需要使用同一事务的逻辑。
+
+**并行流**：适合没有线程安全问题、较单纯的数据处理任务
 
 
 
@@ -2903,3 +2915,87 @@ public enum Title {
 | r    | “HH:MM:SS PM”格式（12时制） | 02:25:51 下午                    |
 | T    | “HH:MM:SS”格式（24时制）    | 14:28:16                         |
 | R    | “HH:MM”格式（24时制）       | 14:28                            |
+
+
+
+## 2. (String)、toString、String.valueOf 的区别
+
+
+
+1. string.valueof 尽量不要用 string.valueof
+
+
+
+```java
+ /*****************************************************
+    * @params:
+    * @description: (String)、toString、String.valueOf 的区别
+    * @author: wg
+    * @date: 2021/8/12 11:46
+    *****************************************************/
+    public static void main(String[] args) {
+        Object s = null;
+
+        System.out.println(String.valueOf(s) == null); // false
+        System.out.println(String.valueOf(s).equals("null")); // true
+
+        if (StringUtils.isBlank(String.valueOf(s))){
+            System.out.println("s is blank");
+        }
+
+        String s1 = (String) s; // 不报异常
+        s.toString(); // 报异常  空指针
+        
+        Object a = new Integer(1);
+        String as = (String) a; // 报异常 ClassCastException  .Integer cannot be cast to java.lang.String
+    }
+```
+
+2.  tostring()
+
+   params 是个map, 
+
+```java
+String pipelineNumber =  params.get("pipelineNumber").toString(); // 会报异常
+if (params.containsKey("pipelineNumber") && StringUtils.isNotBlank(pipelineNumber)) {
+
+}
+```
+
+如上例子, 如果 params.get("pipelineNumber") 为 null, 或 params 没有 pipelineNumber 这个key,  那么 在tostring() 这个步骤就会 报错, 下面的if 就不会 运行了
+
+
+
+3. (string) 强转
+
+   ```java
+   String pipelineNumber = (String) params.get("pipelineNumber"); // 不会报异常
+   ```
+
+   
+
+
+
+# 68. pom常见内置变量
+
+```
+${basedir} 项目根目录
+${project.build.directory} 构建目录，缺省为target
+${project.build.outputDirectory} 构建过程输出目录，缺省为target/classes
+${project.build.finalName} 产出物名称，缺省为${project.artifactId}-${project.version}
+${project.packaging} 打包类型，缺省为jar
+${project.xxx} 当前pom文件的任意节点的内容
+```
+
+
+
+
+
+# 69. github 库的token
+
+有效期3个月
+
+```
+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
+```
+
