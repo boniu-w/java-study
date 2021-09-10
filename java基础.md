@@ -1100,6 +1100,18 @@ private Integer count;
 
 
 
+```java
+ @TableField(value = "`assessment_staff`", updateStrategy = FieldStrategy.IGNORED)
+```
+
+其中  updateStrategy = FieldStrategy.IGNORED 的意思是 可以把这个字段更新为null, 
+
+另外, 更新时 是 全字段更新, 即 假如前端没有 传这个 字段 , 更新时, 就会把这个字段更新为 null 
+
+
+
+
+
 # 39. aop
 
 ```java
@@ -2487,6 +2499,18 @@ queryWrapper.apply("DATE_FORMAT(assessment_date,'%Y-%m-%d') = '" + assessmentDat
 
 
 
+## 6. 一些注解
+
+
+
+```java
+ @TableField(value = "`assessment_staff`", updateStrategy = FieldStrategy.IGNORED)
+```
+
+其中  updateStrategy = FieldStrategy.IGNORED 的意思是 可以把这个字段更新为null, 
+
+另外, 更新时 是 全字段更新, 即 假如前端没有 传这个 字段 , 更新时, 就会把这个字段更新为 null 
+
 
 
 # 57. 一些代码
@@ -2998,4 +3022,8 @@ ${project.xxx} 当前pom文件的任意节点的内容
 ```
 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
 ```
+
+
+
+# 64. 同一个包内, @requestmapping 不能有相同的value
 
