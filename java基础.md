@@ -845,6 +845,7 @@ netstat -ano
 netstat -aon|findstr "8080"  // 根据端口号查pid
 tasklist|findstr "2722"  // 根据pid 查 程序
 taskkill /f /t /im 程序名;
+taskkill /f /pid pid号
 
 ```
 
@@ -2253,6 +2254,311 @@ public List<student> selectuser(@Param(value = "page")int pn ,@Param(value = "st
 
 
 
+## 2. mybatis的2个内置参数
+
+> _parameter
+>
+> _databaseId
+
+
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sevenme.pipelinemanager.offshorepipeline.mapper.RiskAssessmentHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.sevenme.pipelinemanager.offshorepipeline.model.RiskAssessmentHistory">
+    <id column="id" jdbcType="CHAR" property="id" />
+    <result column="design_id" jdbcType="CHAR" property="designId" />
+    <result column="pipeline_number" jdbcType="VARCHAR" property="pipelineNumber" />
+    <result column="pipeline_name" jdbcType="VARCHAR" property="pipelineName" />
+    <result column="section_history_id" jdbcType="CHAR" property="sectionHistoryId" />
+    <result column="assessment_date" jdbcType="TIMESTAMP" property="assessmentDate" />
+    <result column="assessment_staff" jdbcType="VARCHAR" property="assessmentStaff" />
+    <result column="max_risk_level" jdbcType="VARCHAR" property="maxRiskLevel" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, design_id, pipeline_number, pipeline_name, section_history_id, assessment_date, 
+    assessment_staff, max_risk_level, create_time, update_time
+  </sql>
+  <select id="selectByExample" parameterType="com.sevenme.pipelinemanager.offshorepipeline.model.RiskAssessmentHistoryExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from risk_assessment_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from risk_assessment_history
+    where id = #{id,jdbcType=CHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from risk_assessment_history
+    where id = #{id,jdbcType=CHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.sevenme.pipelinemanager.offshorepipeline.model.RiskAssessmentHistoryExample">
+    delete from risk_assessment_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.sevenme.pipelinemanager.offshorepipeline.model.RiskAssessmentHistory">
+    insert into risk_assessment_history (id, design_id, pipeline_number, 
+      pipeline_name, section_history_id, assessment_date, 
+      assessment_staff, max_risk_level, create_time, 
+      update_time)
+    values (#{id,jdbcType=CHAR}, #{designId,jdbcType=CHAR}, #{pipelineNumber,jdbcType=VARCHAR}, 
+      #{pipelineName,jdbcType=VARCHAR}, #{sectionHistoryId,jdbcType=CHAR}, #{assessmentDate,jdbcType=TIMESTAMP}, 
+      #{assessmentStaff,jdbcType=VARCHAR}, #{maxRiskLevel,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.sevenme.pipelinemanager.offshorepipeline.model.RiskAssessmentHistory">
+    insert into risk_assessment_history
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="designId != null">
+        design_id,
+      </if>
+      <if test="pipelineNumber != null">
+        pipeline_number,
+      </if>
+      <if test="pipelineName != null">
+        pipeline_name,
+      </if>
+      <if test="sectionHistoryId != null">
+        section_history_id,
+      </if>
+      <if test="assessmentDate != null">
+        assessment_date,
+      </if>
+      <if test="assessmentStaff != null">
+        assessment_staff,
+      </if>
+      <if test="maxRiskLevel != null">
+        max_risk_level,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=CHAR},
+      </if>
+      <if test="designId != null">
+        #{designId,jdbcType=CHAR},
+      </if>
+      <if test="pipelineNumber != null">
+        #{pipelineNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="pipelineName != null">
+        #{pipelineName,jdbcType=VARCHAR},
+      </if>
+      <if test="sectionHistoryId != null">
+        #{sectionHistoryId,jdbcType=CHAR},
+      </if>
+      <if test="assessmentDate != null">
+        #{assessmentDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assessmentStaff != null">
+        #{assessmentStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="maxRiskLevel != null">
+        #{maxRiskLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.sevenme.pipelinemanager.offshorepipeline.model.RiskAssessmentHistoryExample" resultType="java.lang.Long">
+    select count(*) from risk_assessment_history
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update risk_assessment_history
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=CHAR},
+      </if>
+      <if test="record.designId != null">
+        design_id = #{record.designId,jdbcType=CHAR},
+      </if>
+      <if test="record.pipelineNumber != null">
+        pipeline_number = #{record.pipelineNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.pipelineName != null">
+        pipeline_name = #{record.pipelineName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sectionHistoryId != null">
+        section_history_id = #{record.sectionHistoryId,jdbcType=CHAR},
+      </if>
+      <if test="record.assessmentDate != null">
+        assessment_date = #{record.assessmentDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.assessmentStaff != null">
+        assessment_staff = #{record.assessmentStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="record.maxRiskLevel != null">
+        max_risk_level = #{record.maxRiskLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update risk_assessment_history
+    set id = #{record.id,jdbcType=CHAR},
+      design_id = #{record.designId,jdbcType=CHAR},
+      pipeline_number = #{record.pipelineNumber,jdbcType=VARCHAR},
+      pipeline_name = #{record.pipelineName,jdbcType=VARCHAR},
+      section_history_id = #{record.sectionHistoryId,jdbcType=CHAR},
+      assessment_date = #{record.assessmentDate,jdbcType=TIMESTAMP},
+      assessment_staff = #{record.assessmentStaff,jdbcType=VARCHAR},
+      max_risk_level = #{record.maxRiskLevel,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sevenme.pipelinemanager.offshorepipeline.model.RiskAssessmentHistory">
+    update risk_assessment_history
+    <set>
+      <if test="designId != null">
+        design_id = #{designId,jdbcType=CHAR},
+      </if>
+      <if test="pipelineNumber != null">
+        pipeline_number = #{pipelineNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="pipelineName != null">
+        pipeline_name = #{pipelineName,jdbcType=VARCHAR},
+      </if>
+      <if test="sectionHistoryId != null">
+        section_history_id = #{sectionHistoryId,jdbcType=CHAR},
+      </if>
+      <if test="assessmentDate != null">
+        assessment_date = #{assessmentDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="assessmentStaff != null">
+        assessment_staff = #{assessmentStaff,jdbcType=VARCHAR},
+      </if>
+      <if test="maxRiskLevel != null">
+        max_risk_level = #{maxRiskLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=CHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sevenme.pipelinemanager.offshorepipeline.model.RiskAssessmentHistory">
+    update risk_assessment_history
+    set design_id = #{designId,jdbcType=CHAR},
+      pipeline_number = #{pipelineNumber,jdbcType=VARCHAR},
+      pipeline_name = #{pipelineName,jdbcType=VARCHAR},
+      section_history_id = #{sectionHistoryId,jdbcType=CHAR},
+      assessment_date = #{assessmentDate,jdbcType=TIMESTAMP},
+      assessment_staff = #{assessmentStaff,jdbcType=VARCHAR},
+      max_risk_level = #{maxRiskLevel,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=CHAR}
+  </update>
+
+</mapper>
+```
+
+
+
 
 
 # 55. 开发英语
@@ -2877,6 +3183,26 @@ list.stream().sorted(Comparator.comparing(Student::getAge).reversed())
 
 
 
+## 4. peek, map
+
+1. peek接收一个Consumer，而map接收一个Function。
+2. Consumer是没有返回值的，它只是对Stream中的元素进行某些操作，但是操作之后的数据并不返回到Stream中，所以Stream中的元素还是原来的元素。
+3. 而Function是有返回值的，这意味着对于Stream的元素的所有操作都会作为新的结果返回到Stream中
+
+#### 中间操作和终止操作
+
+1. 一个java 8的stream是由三部分组成的。数据源，零个或一个或多个中间操作，一个或零个终止操作。
+
+2. 中间操作是对数据的加工，注意，中间操作是lazy操作，并不会立马启动，需要等待终止操作才会执行。
+
+3. 终止操作是stream的启动操作，只有加上终止操作，stream才会真正的开始执行。
+
+4. 从Java 9开始，如果元素的数量预先已知并且在流中保持不变，则由于性能优化，将不会执行.peek()语句。可以通过命令(正式)更改元素数量(例如， .filter(x-> true)
+
+5. 在没有任何终端操作的情况下使用peek不会执行任何操作
+
+
+
 # 66. function
 
 
@@ -3026,4 +3352,70 @@ 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
 
 
 # 64. 同一个包内, @requestmapping 不能有相同的value
+
+
+
+
+
+# 65. PostMapping  PutMapping
+
+如我们发送两个请求，服务器端是什么样的行为？
+
+如果产生了不相同的效果，那就说明这个服务不是idempotent的，因为多次使用产生了副作用了嘛；如果是这种情况，每次返回结果不一样的时候，应该使用POST方法，
+
+如果后一个请求把第一个请求覆盖掉了，那这个服务就是idempotent的。如果是这种情况，应该使用PUT方法。
+
+常见的有:
+
+  如果执行添加操作, 后面的添加请求不会覆盖前面的请求, 所以使用@Postmapping
+
+  如果执行修改操作, 后面的修改请求会把前面的请求给覆盖掉, 所以使用@PutMapping
+
+
+
+# 66. log4j 等级
+
+
+
+ off, fatal, error, warn, info, debug, trace, all
+
+
+
+# 67. springboot 配置 https
+
+```
+# 配置https
+server.ssl.enabled=true
+server.ssl.key-store=d:/tomcat.keystore
+server.ssl.key-store-type=JKS
+server.ssl.key-store-password=123456
+server.ssl.key-alias=tomcat
+```
+
+
+
+![](.\img\jdk配置https过程.png)
+
+
+
+下面的命令也是: 
+
+> keytool -genkey -alias tomcat -keypass 123456 -keyalg RSA -keysize 2048 -validity 36500 -keystore D:/tomcat.keystore -storepass 123456
+>
+> 创建了一个名为tomcat.keystore的别名也为tomcat.keystore的采用RSA加密算法的有效期为100年的证书文件
+> genkey    生成文件。
+> alias        别名。
+> keyalg     加密算法。
+> validity    有效期。
+> keystore  文件名。
+
+
+
+# 68. 静态代码块
+
+随着类的加载而执行，而且只执行一次,  执行完成便销毁, 它仅能初始化类变量
+
+
+
+
 
