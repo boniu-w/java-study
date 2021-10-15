@@ -3419,3 +3419,288 @@ server.ssl.key-alias=tomcat
 
 
 
+# 69. 对象的销毁
+
+>  finalize
+
+在 Java 虚拟机的堆区，每个对象都可能处于以下三种状态之一。
+
+(1) 可触及状态：当一个对象被创建后，只要程序中还有引用变量引用它，那么它就始终处于可触及状态。
+
+(2) 可复活状态：当程序不再有任何引用变量引用该对象时，该对象就进入可复活状态。在这个状态下，垃圾回收器会准备释放它所占用的内存，在释放之前，会调用它及其他处于可复活状态的对象的 finalize() 方法，这些 finalize() 方法有可能使该对象重新转到可触及状态。
+
+(3) 不可触及状态：当 Java 虚拟机执行完所有可复活对象的 finalize() 方法后，如果这些方法都没有使该对象转到可触及状态，垃圾回收器才会真正回收它占用的内存。
+
+
+
+> 一个对象被当作垃圾回收的情况主要如下两种。
+> 1. 对象的引用超过其作用范围。
+>   {
+>    Object o=new Object();    //对象o的作用范围，超过这个范围对象将被视为垃圾
+>   }
+> 2. 对象被赋值为 null。
+>   {
+>    Object o=new Object();
+>    o=null;    //对象被赋值为null将被视为垃圾
+>   }
+
+
+
+注: 调用 System.gc() 或者 Runtime.gc() 方法也不能保证回收操作一定执行，它只是提高了 Java 垃圾回收器尽快回收垃圾的可能性
+
+
+
+java中的并非总是被垃圾回收，也就是说对象可能不被回收。一般程序只要不到濒临存储空间用光，垃圾回收器一般都不会主动回收内存，
+
+```java
+package wg.application.gc;
+
+import java.math.BigDecimal;
+
+public class GcEntity {
+    private BigDecimal money;
+
+    public GcEntity(BigDecimal money) {
+        this.money = money;
+    }
+
+    public GcEntity() {
+    }
+
+    public BigDecimal getMoney() {
+        return money;
+    }
+
+    public void setMoney(BigDecimal money) {
+        this.money = money;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        if (money.doubleValue() <= 0D) {
+            System.out.println("dead : " + money);
+        } else {
+            System.out.println("success : " + money);
+        }
+
+        super.finalize();
+    }
+}
+
+```
+
+
+
+```java
+ @Test
+    public void gcTest() {
+        GcEntity gcEntity = new GcEntity(new BigDecimal(10.00));
+        new Object();
+        new GcEntity(new BigDecimal(11.00));
+        System.gc();
+    }
+```
+
+执行结果为: 
+
+ > success : 11
+
+
+
+
+
+
+
+# 70. 修饰符
+
+
+
+|           |                                                              |                                                              |
+| --------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| public    |                                                              |                                                              |
+| protected | **子类与基类不在同一包中**：那么在子类中，子类实例可以访问其从基类继承而来的 protected 方法，而不能访问基类实例的protected方法。<br /> **子类与基类在同一包中**：被声明为 protected 的变量、方法和构造器能被同一个包中的任何其他类访问； | protected 可以修饰数据成员，构造方法，方法成员，**不能修饰类（内部类除外）**。 |
+| private   | 变量和构造方法只能被所属类访问，                             | 类和接口不能声明为 **private**。                             |
+| default   | 对同一个包内的类是可见的                                     |                                                              |
+|           |                                                              |                                                              |
+
+
+
+| 饰符        | 当前类 | 同一包内 | 子孙类(同一包) | 子孙类(不同包)                                               | 其他包 |
+| ----------- | ------ | -------- | -------------- | ------------------------------------------------------------ | ------ |
+| `public`    | Y      | Y        | Y              | Y                                                            | Y      |
+| `protected` | Y      | Y        | Y              | Y/N（[说明](https://www.runoob.com/java/java-modifier-types.html#protected-desc)） | N      |
+| `default`   | Y      | Y        | Y              | N                                                            | N      |
+| `private`   | Y      | N        | N              | N                                                            | N      |
+
+
+
+## protected
+
+```java
+package p2;
+class MyObject2 {
+    protected Object clone() throws CloneNotSupportedException{
+       return super.clone();
+    }
+}
+ 
+package p22;
+public class Test2 extends MyObject2 {
+    public static void main(String args[]) {
+       MyObject2 obj = new MyObject2();
+       obj.clone(); // Compile Error         ----（1）
+ 
+       Test2 tobj = new Test2();
+       tobj.clone(); // Complie OK         ----（2）
+    }
+}
+```
+
+>  详情: https://www.runoob.com/w3cnote/java-protected-keyword-detailed-explanation.html
+
+
+
+
+
+- 父类中声明为 public 的方法在子类中也必须为 public。
+- 父类中声明为 protected 的方法在子类中要么声明为 protected，要么声明为 public，不能声明为 private。
+- 父类中声明为 private 的方法，不能够被继承。
+
+
+
+## 非访问修饰符
+
+为了实现一些其他的功能，Java 也提供了许多非访问修饰符。
+
+static 修饰符，用来修饰类方法和类变量。
+
+final 修饰符，用来修饰类、方法和变量，final 修饰的类不能够被继承，修饰的方法不能被继承类重新定义，修饰的变量为常量，是不可修改的。
+
+abstract 修饰符，用来创建抽象类和抽象方法。
+
+synchronized 和 volatile 修饰符，主要用于线程的编程
+
+
+
+# 71. 为什么要用spring管理bean
+
+![](.\img\a28c9-718zl.png)
+
+
+
+![](.\img\ahqyw-jl4b3.png)
+
+
+
+InstantiationAwareBeanPostProcessor
+
+1. 实例化前置
+
+> InstantiationAwareBeanPostProcessor.postProcessBeforeInstantiation(Class<?> beanClass, String beanName)
+
+2. 实例化对象 doCreateBean
+
+3. 实例化后置
+
+> InstantiationAwareBeanPostProcessor.postProcessAfterInstantiation(Object bean, String beanName)
+
+返回值是决定要不要调用 postProcessPropertyValues
+
+4. 属性修改
+
+> InstantiationAwareBeanPostProcessor.PropertyValues postProcessPropertyValues(PropertyValues pvs, PropertyDescriptor[] pds, Object bean, String beanName)
+
+5. 给用户属性赋值
+
+   用户属性指的是用spring 的人自定义的bean对象属性，像 User、Student、Teacher 、UserService、IndexService 这类的对象都是自定义bean对象，第5步主要给这类属性进行赋值操作，使用的是  AbstractAutowireCapableBeanFactory.populateBean() 方法进行赋值；
+
+6. 给容器属性赋值
+
+   
+
+# 72. swagger
+
+ ## 1. apiimplicitparam datatype
+
+```java
+public class Types {
+  private Types() {
+    throw new UnsupportedOperationException();
+  }
+ 
+  private static final Set<String> baseTypes = newHashSet(
+      "int",
+      "date",
+      "string",
+      "double",
+      "float",
+      "boolean",
+      "byte",
+      "object",
+      "long",
+      "date-time",
+      "__file",
+      "biginteger",
+      "bigdecimal",
+      "uuid");
+  private static final Map<Type, String> typeNameLookup = ImmutableMap.<Type, String>builder()
+      .put(Long.TYPE, "long")
+      .put(Short.TYPE, "int")
+      .put(Integer.TYPE, "int")
+      .put(Double.TYPE, "double")
+      .put(Float.TYPE, "float")
+      .put(Byte.TYPE, "byte")
+      .put(Boolean.TYPE, "boolean")
+      .put(Character.TYPE, "string")
+ 
+      .put(Date.class, "date-time")
+      .put(java.sql.Date.class, "date")
+      .put(String.class, "string")
+      .put(Object.class, "object")
+      .put(Long.class, "long")
+      .put(Integer.class, "int")
+      .put(Short.class, "int")
+      .put(Double.class, "double")
+      .put(Float.class, "float")
+      .put(Boolean.class, "boolean")
+      .put(Byte.class, "byte")
+      .put(BigDecimal.class, "bigdecimal")
+      .put(BigInteger.class, "biginteger")
+      .put(Currency.class, "string")
+      .put(UUID.class, "uuid")
+      .put(MultipartFile.class, "__file")
+      .build();
+ 
+  public static String typeNameFor(Type type) {
+    return typeNameLookup.get(type);
+  }
+ 
+  public static boolean isBaseType(String typeName) {
+    return baseTypes.contains(typeName);
+  }
+ 
+  public static boolean isBaseType(ResolvedType type) {
+    return baseTypes.contains(typeNameFor(type.getErasedType()));
+  }
+ 
+  public static boolean isVoid(ResolvedType returnType) {
+    return Void.class.equals(returnType.getErasedType()) || Void.TYPE.equals(returnType.getErasedType());
+  }
+}
+```
+
+
+
+## 2. 
+
+> allowMultiple=true————表示是数组格式的参数 
+> dataType="String"————表示数组中参数的类型
+>
+> dataType="String" 代表请求参数类型为String类型，当然也可以是Map、User、int等；
+> paramType="body" 代表参数应该放在请求的什么地方：
+>
+>     header-->放在请求头。请求参数的获取：@RequestHeader(代码中接收注解)
+>     query -->用于get请求的参数拼接。请求参数的获取：@RequestParam(代码中接收注解)
+>     path  -->（用于restful接口）-->请求参数的获取：@PathVariable(代码中接收注解)
+>     body  -->放在请求体。请求参数的获取：@RequestBody(代码中接收注解)
+>     form  -->（不常用）
