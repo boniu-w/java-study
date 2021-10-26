@@ -843,8 +843,8 @@ String s_utf8 = new String(s_iso88591.getBytes("ISO8859-1"),"UTF-8")
 ```
 netstat -ano
 netstat -aon|findstr "8080"  // 根据端口号查pid
-tasklist|findstr "2722"  // 根据pid 查 程序
-taskkill /f /t /im 程序名;
+# tasklist|findstr "2722"  // 根据pid 查 程序
+# taskkill /f /t /im 程序名;
 taskkill /f /pid pid号
 
 ```
