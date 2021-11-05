@@ -3704,3 +3704,214 @@ public class Types {
 >     path  -->（用于restful接口）-->请求参数的获取：@PathVariable(代码中接收注解)
 >     body  -->放在请求体。请求参数的获取：@RequestBody(代码中接收注解)
 >     form  -->（不常用）
+
+
+
+
+
+# 73. 定时任务
+
+## 1. springboot 的定时任务
+
+在启动类上加 @EnableScheduling
+
+然后在需要定时的方法上加 @Scheduled 注解
+
+cron 表达式 由 6位 构成 分别是
+
+秒 分 时 日 月  周(周几)
+
+
+
+# 74 assert 断言
+
+assert [boolean 表达式] 
+
+如果为 true 则程序继续执行
+
+如果为false，则程序抛出AssertionError，并终止执行
+
+
+
+# 75 调用 service 的方法 工具类, 普通类与工具类调用 service 层  @PostConstruct 
+
+
+
+```java
+package com.cnooc.cpet.pias.util;
+
+import com.cnooc.cpet.pias.dao.*;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+@Component
+public class SevenMeUtil {
+	@Resource
+    private Asmeb31gCodeDao asmeb31gCodeDao;
+
+    @Resource
+    private Syt6151CodeDao syt6151CodeDao;
+
+    @Resource
+    private Syt6477CodeDao syt6477CodeDao;
+
+    @Resource
+    private Syt10048CodeDao syt10048CodeDao;
+
+    @Resource
+    private Dnvrpf101CodeDao dnvrpf101CodeDao;
+
+    @Resource
+    private Api579CodeDao api579CodeDao;
+
+    @Resource
+    private Bs7910CodeDao bs7910CodeDao;
+
+    public static SevenMeUtil sevenMeUtil;
+
+    @PostConstruct
+    public void init() {
+        sevenMeUtil = this;
+    }
+
+    /************************************************************************
+     * @description: 通过标准表的id 和 标准名称 获取 标准表的 名称
+     * @author: wg
+     * @date: 17:31  2021/11/4
+     * @params:
+     * @return:
+     ************************************************************************/
+    public static Object getStandardTable(String codeId, String standard) {
+        if (standard.contains("SY/T 6151")) {
+            return sevenMeUtil.syt6151CodeDao.selectById(codeId);
+        }
+        if (standard.contains("SY/T 6477")) {
+            return sevenMeUtil.syt6477CodeDao.selectById(codeId);
+        }
+        if (standard.contains("SY/T 10048")) {
+            return sevenMeUtil.syt10048CodeDao.selectById(codeId);
+        }
+        if (standard.contains("DNVGL RP F101")) {
+            return sevenMeUtil.dnvrpf101CodeDao.selectById(codeId);
+        }
+        if (standard.contains("579")) {
+            return sevenMeUtil.api579CodeDao.selectById(codeId);
+        }
+        if (standard.contains("7910")) {
+            return sevenMeUtil.bs7910CodeDao.selectById(codeId);
+        }
+
+        if (standard.contains("ASME B31G")) {
+            return sevenMeUtil.asmeb31gCodeDao.selectById(codeId);
+        }
+
+        return null;
+    }
+}
+```
+
+
+
+@PostConstruct
+
+​	**该注解被用来修饰一个非静态的void（）方法。被@PostConstruct修饰的方法会在服务器加载Servlet的时候运行，并且只会被服务器执行一次。PostConstruct在构造函数之后执行，init（）方法之前执行**
+
+​	通常我们会是在Spring框架中使用到@PostConstruct注解 该注解的方法在整个Bean初始化中的执行顺序：
+
+Constructor(构造方法) -> @Autowired(依赖注入) -> @PostConstruct(注释的方法)
+
+​	应用：在静态方法中调用依赖注入的Bean中的方法。
+
+
+
+# 76. http-nio-8080 springboot tomcat
+
+
+
+
+
+![](.\img\8d51dd0856c4cc3a218bbef4b28e7df0.png)
+
+
+
+
+
+![](.\img\b5d45e86fdcbf09f3eb00bd63d860751.png)
+
+
+
+
+
+# 77. classpath 到底指向哪
+
+  在 target 里面
+
+```
+classpath:mapper/*.xml
+```
+
+
+
+![](.\img\1636083100(1).png)
+
+
+
+
+
+# 78.  logback
+
+> https://www.cnblogs.com/warking/p/5710303.html
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
