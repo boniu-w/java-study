@@ -3871,7 +3871,11 @@ classpath:mapper/*.xml
 
 
 
+# 79. Integer
 
+Integer.getInteger()
+
+Integer.vauluOf()
 
 
 
