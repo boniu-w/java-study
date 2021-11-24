@@ -34,9 +34,17 @@
 	4. request.getParameter()表示接收参数，参数为页面提交的参数。包括：表单提交的参数、URL重写(就是xxx?id=1中的id)传的参数等，因此这个并没有设置参数的
 	 方法(没有setParameter())，而且接收参数返回的不是Object，而是String类型。
 
-# 4. 数组:  定义数组
+# 4. 数组
+
+## 1. 定义数组
 
 	int[] array = {1,2,3};  // 用大括号 而不是 中括号
+	String[] command = new String[10];
+
+
+
+
+## 2. 
 
 
 
@@ -2807,7 +2815,7 @@ queryWrapper.apply("DATE_FORMAT(assessment_date,'%Y-%m-%d') = '" + assessmentDat
 
 ## 6. 一些注解
 
-
+### 1. updateStrategy = FieldStrategy.IGNORED
 
 ```java
  @TableField(value = "`assessment_staff`", updateStrategy = FieldStrategy.IGNORED)
@@ -2816,6 +2824,8 @@ queryWrapper.apply("DATE_FORMAT(assessment_date,'%Y-%m-%d') = '" + assessmentDat
 其中  updateStrategy = FieldStrategy.IGNORED 的意思是 可以把这个字段更新为null, 
 
 另外, 更新时 是 全字段更新, 即 假如前端没有 传这个 字段 , 更新时, 就会把这个字段更新为 null 
+
+缺点:  不能 指定字段更新;
 
 
 
@@ -3192,14 +3202,23 @@ list.stream().sorted(Comparator.comparing(Student::getAge).reversed())
 #### 中间操作和终止操作
 
 1. 一个java 8的stream是由三部分组成的。数据源，零个或一个或多个中间操作，一个或零个终止操作。
-
 2. 中间操作是对数据的加工，注意，中间操作是lazy操作，并不会立马启动，需要等待终止操作才会执行。
-
 3. 终止操作是stream的启动操作，只有加上终止操作，stream才会真正的开始执行。
-
 4. 从Java 9开始，如果元素的数量预先已知并且在流中保持不变，则由于性能优化，将不会执行.peek()语句。可以通过命令(正式)更改元素数量(例如， .filter(x-> true)
-
 5. 在没有任何终端操作的情况下使用peek不会执行任何操作
+
+
+
+## 5. 取 对象 list 的 最大 最小
+
+```java
+             T t1 = list.stream()
+                     .filter((T t) -> getter(detailFieldMap.get("remainStrengthDetailFieldName"), t) != null)
+                     .min(Comparator.comparing(e -> (BigDecimal) getter(detailFieldMap.get("remainStrengthDetailFieldName"), e)))
+                     .get();
+```
+
+
 
 
 
@@ -3879,6 +3898,43 @@ Integer.vauluOf()
 
 
 
+# 80.  匿名内部类
+
+## 1. effectively final
+
+  Java 8 之后，在匿名类或 Lambda 表达式中访问的局部变量，如果不是 final 类型的话，编译器自动加上 final 修饰符，即 Java8 新特性：effectively final。
+
+思考
+
+前面一直说 Lambda 表达式或者匿名内部类不能访问非 final 的局部变量，这是为什么呢?
+
+- 首先思考`外部的局部变量 finalI 和匿名内部类里面的 finalI 是否是同一个变量？`
+
+> 我们知道，每个方法在执行的同时都会创建一个栈帧用于存储局部变量表、操作数栈、动态链接，方法出口等信息，每个方法从调用直至执行完成的过程，就对应着一个栈帧在虚拟机栈中入栈到出栈的过程（《深入理解Java虚拟机》第2.2.2节 Java虚拟机栈）。
+
+
+
+  就是说在执行方法的时候，局部变量会保存在栈中，方法结束局部变量也会出栈，随后会被垃圾回收掉，而此时，内部类对象可能还存在，如果内部类对象这时直接去访问局部变量的话就会出问题，因为外部局部变量已经被回收了，解决办法就是把匿名内部类要访问的局部变量复制一份作为内部类对象的成员变量，查阅资料或者通过反编译工具对代码进行反编译会发现，底层确实定义了一个新的变量，通过内部类构造函数将外部变量复制给内部类变量。
+
+- 为何`还需要用final修饰？`
+
+  其实复制变量的方式会造成一个`数据不一致`的问题，在执行方法的时候`局部变量的值改变了却无法通知匿名内部类的变量`，随着程序的运行，就会导致程序运行的结果与预期不同，于是使用final修饰这个变量，使它成为一个常量，这样就保证了数据的一致性。
+
+
+
+
+
+# 81. cmd
+
+## 1. cmd命令执行窗口开闭指令
+
+> cmd /c dir 是执行完dir命令后关闭命令窗口。
+>
+> cmd /k dir 是执行完dir命令后不关闭命令窗口。
+>
+> cmd /c start dir 会打开一个新窗口后执行dir指令，原窗口会关闭。
+>
+> cmd /k start dir 会打开一个新窗口后执行dir指令，原窗口不会关闭。
 
 
 
@@ -3886,24 +3942,169 @@ Integer.vauluOf()
 
 
 
+# 81. io
+
+## 1. 下载
+
+```java
+public void downloadFile(HttpServletResponse response, File file) {
+    String fileName = "";
+    OutputStream outputStream = null;
+    try {
+        /************ 设置响应header -> 开始  ************/
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        response.setContentType("application/vnd.ms-excel");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        response.addHeader("Pargam", "no-cache");
+        response.addHeader("Cache-Control", "no-cache");
+        /************ 设置响应header -> 结束  ************/
+
+        /************ 流 -> 开始 ************/
+        outputStream = response.getOutputStream();
+        byte[] buffer = new byte[1024];
+        FileInputStream fileInputStream = new FileInputStream(file);
+        int len;
+        while ((len = fileInputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, len);
+        }
+        outputStream.flush();
+        fileInputStream.close();
+        /************ 流 -> 结束 ************/
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (outputStream != null) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+}
+```
 
 
 
 
 
+## 2. 复制 粘贴 下载
 
+```java
+/************************************************************************
+ * @description: 先从数据库 读取相关数据, 写入 服务器指定位置
+ * @author: wg
+ * @date: 15:24  2021/11/24
+ * @params:
+ * @return:
+ ************************************************************************/
+public File createDataFile(String corrosionAssessmentHistoryId) {
+    CorrosionAssessmentHistoryEntity entity = baseDao.selectById(corrosionAssessmentHistoryId);
+    String reportContent = entity.getReportContent();
 
+    String path = "d:\\sevenme";
+    // String fileName = "report-" + entity.getAssessmentCode() + "-" + entity.getAssessmentDate() + ".md";
+    String fileName = "report-.md";
+    File file = new File(path, fileName);
+    if (!file.exists()) {
+        file.getParentFile().mkdir();
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    StringReader stringReader = new StringReader(reportContent);
+    // 把这个 写成 md
+    try {
+        BufferedReader bufferedReader = new BufferedReader(stringReader);
+        BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+        char[] chars = new char[1024];
+        int len;
+        while ((len = bufferedReader.read(chars)) != -1) {
+            bufferedWriter.write(chars, 0, len);
+        }
+        bufferedWriter.flush();
+        bufferedWriter.close();
+        bufferedReader.close();
+        return file;
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return null;
+}
 
+/************************************************************************
+ * @description: 把 md 转成 docx
+ * @author: wg
+ * @date: 15:49  2021/11/24
+ * @params:
+ * @return:
+ ************************************************************************/
+public int parseToDocx() {
+    String[] command = new String[]{"E:\\pandoc-2.16.1\\pandoc.exe", "d:\\wg\\wg.md", "-o", "D:\\wg\\wg.docx"};
+    File file = new File("E:\\pandoc-2.16.1");
+    ProcessBuilder processBuilder = new ProcessBuilder();
+    processBuilder.command(command);
+    processBuilder.directory(file); //设置工作目录
+    processBuilder.redirectErrorStream(true);
 
+    try {
+        Process process = processBuilder.start();
+        int i = process.waitFor();
+        System.out.println(i);
+        return i;
+    } catch (IOException | InterruptedException e) {
+        e.printStackTrace();
+    }
+    return -1;
+}
 
+/************************************************************************
+ * @description: 下载
+ * @author: wg
+ * @date: 16:21  2021/11/24
+ * @params:
+ * @return:
+ ************************************************************************/
+public void downloadFile(HttpServletResponse response, File file) {
+    String fileName = "report-" + System.currentTimeMillis() + ".docx";
+    OutputStream outputStream = null;
+    try {
+        /************ 设置响应header -> 开始  ************/
+        fileName = new String(fileName.getBytes(), "ISO8859-1");
+        response.setCharacterEncoding("utf-8");
+        response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        response.addHeader("Pargam", "no-cache");
+        response.addHeader("Cache-Control", "no-cache");
+        /************ 设置响应header -> 结束  ************/
 
-
-
-
-
-
-
-
+        /************ 流 -> 开始 ************/
+        outputStream = response.getOutputStream();
+        byte[] buffer = new byte[1024];
+        FileInputStream fileInputStream = new FileInputStream(file);
+        int len;
+        while ((len = fileInputStream.read(buffer)) > 0) {
+            outputStream.write(buffer, 0, len);
+        }
+        outputStream.flush();
+        fileInputStream.close();
+        /************ 流 -> 结束 ************/
+    } catch (IOException e) {
+        e.printStackTrace();
+    } finally {
+        if (outputStream != null) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+```
 
 
 
