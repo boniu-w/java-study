@@ -3220,6 +3220,12 @@ list.stream().sorted(Comparator.comparing(Student::getAge).reversed())
 
 
 
+## 6. group
+
+```java
+Map<String, List<InformationSchema>> collect = informationSchemaDao.selectInformationSchema(tableName).stream().collect(Collectors.groupingBy(InformationSchema::getColumnName));
+```
+
 
 
 # 66. function
@@ -3284,6 +3290,15 @@ list.stream().sorted(Comparator.comparing(Student::getAge).reversed())
 | r    | “HH:MM:SS PM”格式（12时制） | 02:25:51 下午                    |
 | T    | “HH:MM:SS”格式（24时制）    | 14:28:16                         |
 | R    | “HH:MM”格式（24时制）       | 14:28                            |
+
+
+
+### 1. 左对齐
+
+```java
+// 左对齐, 10 是总长度 ; 右对齐的话 改成 %10s
+String.format("%-10s", str)
+```
 
 
 
@@ -4110,7 +4125,17 @@ public void downloadFile(HttpServletResponse response, File file) {
 
 
 
+# 81. 加密与安全
 
+## 1. 哈希
+
+| 算法       | 输出长度（位） | 输出长度（字节） |
+| ---------- | -------------- | ---------------- |
+| MD5        | 128 bits       | 16 bytes         |
+| SHA-1      | 160 bits       | 20 bytes         |
+| RipeMD-160 | 160 bits       | 20 bytes         |
+| SHA-256    | 256 bits       | 32 bytes         |
+| SHA-512    | 512 bits       | 64 bytes         |
 
 
 
