@@ -3001,6 +3001,47 @@ public enum Title {
 
 ````
 
+## 8. LinkedMultiValueMap
+
+```java
+    public static LinkedMultiValueMap<Object, Object> getRiskMap(List<RiskAssessmentHistoryEntity> historyEntityList) {
+        LinkedMultiValueMap<Object, Object> multiValueMap = new LinkedMultiValueMap<>();
+        if (historyEntityList.size() > 0) {
+            Map<String, List<RiskAssessmentHistoryEntity>> assessmentCodeMap = historyEntityList.stream()
+                    .filter(t -> !ObjectUtils.isEmpty(t.getAssessmentCode()))
+                    .collect(Collectors.groupingBy(RiskAssessmentHistoryEntity::getAssessmentCode));
+
+            // HashMap<String, Object> hashMap = new HashMap<>();
+            // Map<String, Map<String, Long>> maxRiskLevelMap = new HashMap<>();
+            // k = assessmentCode
+            assessmentCodeMap.forEach((k, v) -> {
+                List<RiskAssessmentHistoryEntity> entityList = v.stream().filter(t -> StringUtils.isNotBlank(t.getMaxRiskLevel())).collect(Collectors.toList());
+
+                Map<String, Long> countMap = entityList.stream()
+                        .collect(Collectors.groupingBy(RiskAssessmentHistoryEntity::getMaxRiskLevel, Collectors.counting()));
+                multiValueMap.add(k, countMap);
+                // HashMap<String, Long> stringLongHashMap = new HashMap<>();
+                // countMap.forEach((k1, v1) -> stringLongHashMap.put(k1 + "个数", v1));
+                // multiValueMap.add(k, stringLongHashMap);
+
+                // HashMap<String, String> percentageMap = new HashMap<>();
+                //
+                // countMap.forEach((riskLevel, count) -> {
+                //     BigDecimal multiply = new BigDecimal(count).divide(new BigDecimal(entityList.size()), 10, RoundingMode.HALF_UP).multiply(new BigDecimal(100)).setScale(2, RoundingMode.HALF_UP);
+                //     // percentageMap.put(riskLevel, multiply.toString());
+                //     percentageMap.put(riskLevel + "百分比", multiply.toString());
+                // });
+                //
+                // multiValueMap.add(k, percentageMap);
+            });
+
+            multiValueMap.forEach((k, v) -> System.out.println(k + " = " + v));
+            return multiValueMap;
+        }
+        return multiValueMap;
+    }
+```
+
 
 
 
@@ -3183,6 +3224,17 @@ list.stream().sorted(Comparator.comparing(Student::getAge))
 list.stream().sorted(Comparator.comparing(Student::getAge).reversed()) 
 ```
 
+```java
+detailEntityList = detailEntityList.stream()
+                .filter(detail -> getter(detailFieldMap.get("limitFractureRatioHistoryFieldName"), detail) != null)
+                .sorted(Comparator.comparing(e -> {
+                    BigDecimal limitFractureRatio = new BigDecimal(getter(detailFieldMap.get("limitFractureRatioHistoryFieldName"), e).toString());
+                    BigDecimal fractureRatio = new BigDecimal(getter(detailFieldMap.get("fractureRatioHistoryFieldName"), e).toString());
+                    return limitFractureRatio.subtract(fractureRatio).divide(limitFractureRatio, 10, RoundingMode.HALF_UP).setScale(3, RoundingMode.HALF_UP);
+                }, (e1, e2) -> e1.compareTo(e2))) // 从小到大 排
+                .collect(Collectors.toList());
+```
+
 
 
 ## 3.  stream parallelStream
@@ -3356,7 +3408,140 @@ if (params.containsKey("pipelineNumber") && StringUtils.isNotBlank(pipelineNumbe
    String pipelineNumber = (String) params.get("pipelineNumber"); // 不会报异常
    ```
 
-   
+
+
+
+## 3. 字符串的最大长度
+
+简单总结
+
+String 的长度是有限制的。
+
+- 编译期的限制：字符串的UTF8编码值的字节数不能超过65535，字符串的长度不能超过65534；
+- 运行时限制：字符串的长度不能超过2^31-1，占用的内存数不能超过虚拟机能够提供的最大值
+
+
+
+### 编译期限制
+
+有JVM虚拟机相关知识的同学肯定知道，下面定义的字符串常量“自由之路”会被放入方法区的常量池中。
+
+```java
+String s = "自由之路";
+System.out.println(s);
+```
+
+Stirng 长度之所以会受限制，是因JVM规范对常量池有所限制。常量池中的每一种数据项都有自己的类型。Java中的UTF-8编码的Unicode字符串在常量池中以CONSTANT_Utf8类型表示。
+
+CONSTANT_Utf8的数据结构如下：
+
+```
+CONSTANT_Utf8_info {
+    u1 tag;
+    u2 length;
+    u1 bytes[length];
+}
+```
+
+我们重点关注下长度为 length 的那个bytes数组，这个数组就是真正存储常量数据的地方，而 length 就是数组可以存储的最大字节数。length 的类型是u2，u2是无符号的16位整数，因此理论上允许的的最大长度是2^16-1=65535。所以上面byte数组的最大长度可以是65535。
+
+```java
+//65535个d，编译报错
+String s = "dd..dd";
+
+//65534个d，编译通过
+String s1 = "dd..d";
+```
+
+上面的列子中长度为65535的字符串s还是编译失败了，但是长度为65534的字符串 s1 编译是成功的。这个好像和我们刚刚的结论不符合。
+
+其实，这是Javac编译器的额外限制。在Javac的源代码中可以找到以下代码：
+
+```java
+private void checkStringConstant(DiagnosticPosition var1, Object var2) {
+    if (this.nerrs == 0 && var2 != null && var2 instanceof String &&   ((String)var2).length() >= 65535) {
+        this.log.error(var1, "limit.string", new Object[0]);
+        ++this.nerrs;
+    }
+}
+```
+
+代码中可以看出，当参数类型为String，并且长度大于等于65535的时候，就会导致编译失败。
+
+这里需要重点强调下的是：String 的限制还有一个部分，那就是对字符串底层存储的字节数的限制。**也就是说：在编译时，一个字符串的长度大于等于65535或者底层存储占用的字节数大于65535时就会报错**。这句话可能比较抽象，下面举个列子就清楚了。
+
+Java中的字符常量都是使用UTF8编码的，UTF8编码使用1~4个字节来表示具体的Unicode字符。所以有的字符占用一个字节，而我们平时所用的大部分中文都需要3个字节来存储。
+
+```java
+//65534个字母，编译通过
+String s1 = "dd..d";
+
+//21845个中文”自“,编译通过
+String s2 = "自自...自";
+
+//一个英文字母d加上21845个中文”自“，编译失败
+String s3 = "d自自...自";
+```
+
+对于s1，一个字母d的UTF8编码占用一个字节，65534字母占用65534个字节，长度是65534，长度和存储都没超过限制，所以可以编译通过。
+
+对于s2，一个中文占用3个字节，21845个正好占用65535个字节，而且字符串长度是21845，长度和存储也都没超过限制，所以可以编译通过。
+
+对于s3，一个英文字母d加上21845个中文”自“占用65536个字节，超过了存储最大限制，编译失败。
+
+### 运行时限制
+
+String 运行时的限制主要体现在 String 的构造函数上。下面是 String 的一个构造函数：
+
+```java
+public String(char value[], int offset, int count) {
+    ...
+}
+```
+
+上面的count值就是字符串的最大长度。在Java中，int的最大长度是2^31-1。所以在运行时，String 的最大长度是2^31-1。
+
+但是这个也是理论上的长度，实际的长度还要看你JVM的内存。我们来看下，最大的字符串会占用多大的内存。
+
+```
+(2^31-1)*2*16/8/1024/1024/1024 = 4GB
+```
+
+所以在最坏的情况下，一个最大的字符串要占用4GB的内存。如果你的虚拟机不能分配这么多内存的话，会直接报错的。
+
+JDK9以后对String的存储进行了优化。底层不再使用char数组存储字符串，而是使用byte数组。对于LATIN1字符的字符串可以节省一倍的
+
+
+
+## 4.  isNotBlank, isEmpty (org.apache.commons.lang3)
+
+isEmpty判断的范围更小
+
+isNotBlank 还检查了 空白字符
+
+```java
+/** It is a Unicode space character ({@link #SPACE_SEPARATOR},
+*      {@link #LINE_SEPARATOR}, or {@link #PARAGRAPH_SEPARATOR})
+*      but is not also a non-breaking space ({@code '\u005Cu00A0'},
+*      {@code '\u005Cu2007'}, {@code '\u005Cu202F'}).  
+*/
+public static boolean isBlank(CharSequence cs) {
+        int strLen;
+        if (cs != null && (strLen = cs.length()) != 0) {
+            for(int i = 0; i < strLen; ++i) {
+                if (!Character.isWhitespace(cs.charAt(i))) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            return true;
+        }
+    }
+```
+
+
 
 
 
@@ -3757,13 +3942,15 @@ cron 表达式 由 6位 构成 分别是
 
 
 
-# 74 assert 断言
+# 74 assert 
 
 assert [boolean 表达式] 
 
 如果为 true 则程序继续执行
 
 如果为false，则程序抛出AssertionError，并终止执行
+
+> 断言  只在 测试的时候有用, catch 捕获不到 断言异常 AssertionError 因为 他是 error 不是 异常
 
 
 
@@ -4141,7 +4328,105 @@ public void downloadFile(HttpServletResponse response, File file) {
 
 
 
+# 82. 随机, 随机数
+
+## 1. 伪随机数
+
+所谓伪随机数，是指只要给定一个初始的种子，产生的随机数序列是完全一样的。如果不给定种子，就使用系统当前时间戳作为种子。
+
+有童鞋问，每次运行程序，生成的随机数都是不同的，没看出伪随机数的特性来。
+
+这是因为我们创建Random实例时，如果不给定种子，就使用系统当前时间戳作为种子，因此每次运行时，种子不同，得到的伪随机数序列就不同。
+
+
+
+## 2. 真随机
+
+实际上真正的真随机数只能通过量子力学原理来获取，而我们想要的是一个不可预测的安全的随机数，SecureRandom就是用来创建安全的随机数的：
 
 
 
 
+
+# 83. 删除 与 主表 关联 的 所有表的 数据 
+
+```java
+    public static int count;
+    public static int step;
+
+	/************************************************************************
+     * @description: 删除 与 主表 关联 的 所有表的 数据 , 感觉 成功了
+     * @author: wg
+     * @date: 16:20  2021/11/30
+     * @params:
+     * masterTableName = basic_data
+     * masterTableId = basic_data.id
+     * @return:
+     ************************************************************************/
+    public static void deleteAllRelation(String masterTableName, String masterTableId) {
+        String tableName = "";
+        String columnName = "";
+        List<InformationSchema> informationSchemas = sevenMeUtil.informationSchemaDao.selectInformationSchema(masterTableName);
+        if (informationSchemas.size() > 0) {
+            for (InformationSchema informationSchema : informationSchemas) {
+                tableName = informationSchema.getTableName(); // corrosion_assessment_history
+                columnName = informationSchema.getColumnName(); // basic_data_id
+                List<String> ids = sevenMeUtil.informationSchemaDao.getIds(tableName, columnName, masterTableId);
+                if (ids.size() > 0) {
+                    List<InformationSchema> schemaList = sevenMeUtil.informationSchemaDao.selectInformationSchema(tableName);
+                    if (schemaList.size() == 0) {
+                        System.out.println("第 " + count + " 次删除, 删除的是 " + tableName + " 里面的相关数据");
+                        count++;
+                        //  delete from api5792007_detail where corrosion_assessment_history_id = #{masterTableId}
+                        // sevenMeUtil.informationSchemaDao.deleteData(tableName, columnName, masterTableId);
+                    } else {
+                        for (String id : ids) {
+                            deleteAllRelation(tableName, id);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void deleteAllRelationByStepOrder(String masterTableName, String masterTableId, int stepOrder) {
+        String tableName = "";
+        String columnName = "";
+        List<InformationSchema> informationSchemas = sevenMeUtil.informationSchemaDao.selectInformationSchema(masterTableName);
+        if (informationSchemas.size() > 0) {
+            for (InformationSchema informationSchema : informationSchemas) {
+                tableName = informationSchema.getTableName();
+                columnName = informationSchema.getColumnName();
+                List<String> ids = sevenMeUtil.informationSchemaDao.getIds(tableName, columnName, masterTableId);
+                if (ids.size() > 0) {
+                    step++;
+                    if (step == stepOrder) {
+                        System.out.println("删除, 超过 " + stepOrder + " 次 关联, 给出提示 --- ");
+                        return;
+                    }
+                    List<InformationSchema> schemaList = sevenMeUtil.informationSchemaDao.selectInformationSchema(tableName);
+                    if (schemaList.size() == 0) {
+                        count++;
+                        System.out.println("第 " + count + " 次删除, 删除的是 " + tableName + " 里面的相关数据");
+                        //  delete from api5792007_detail where corrosion_assessment_history_id = #{masterTableId}
+                        // sevenMeUtil.informationSchemaDao.deleteData(tableName, columnName, masterTableId);
+                    } else {
+                        for (String id : ids) {
+                            deleteAllRelation(tableName, id);
+                        }
+                    }
+                }
+            }
+        }
+    }
+```
+
+
+
+# 84. Map
+
+## 1. put, putIfAbsent
+
+> put: 放入数据时，如果放入数据的key已经存在与Map中，最后放入的数据会覆盖之前存在的数据
+>
+> putIfAbsent: 在放入数据时，如果存在重复的key，那么putIfAbsent不会放入值。
