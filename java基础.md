@@ -3336,12 +3336,41 @@ Map<String, List<InformationSchema>> collect = informationSchemaDao.selectInform
 
 | 标志 | 说明                        | 示例                             |
 | :--- | :-------------------------- | :------------------------------- |
-| c    | 包括全部日期和时间信息      | 星期六 十月 27 14:21:20 CST 2007 |
-| F    | “年-月-日”格式              | 2007-10-27                       |
-| D    | “月/日/年”格式              | 10/27/07                         |
-| r    | “HH:MM:SS PM”格式（12时制） | 02:25:51 下午                    |
-| T    | “HH:MM:SS”格式（24时制）    | 14:28:16                         |
-| R    | “HH:MM”格式（24时制）       | 14:28                            |
+| %tc  | 包括全部日期和时间信息      | 星期六 十月 27 14:21:20 CST 2007 |
+| %tF  | “年-月-日”格式              | 2007-10-27                       |
+| %tD  | “月/日/年”格式              | 10/27/07                         |
+| %tr  | “HH:MM:SS PM”格式（12时制） | 02:25:51 下午                    |
+| %tT  | “HH:MM:SS”格式（24时制）    | 14:28:16                         |
+| %tR  | “HH:MM”格式（24时制）       | 14:28                            |
+
+转换符	说明	结果
+%tH	小时(00~23)	15
+%tI	小时(01~12)	03
+%tk	小时(0~23)	15
+%tl	小时(1~12)	3
+%tM	分钟(00~59)	35
+%tS	秒(00~59)	55
+%tL	毫秒(000~999)	923
+%tN	9位数微妙(000000000~999999999)	923000000
+%tp	当前语言环境下上午/下午	下午
+%tz	时区	+0800
+%tZ	时区	CST
+%ts	从1970-01-01 00:00:00 到现在的秒	1526196955
+%tQ	从1970-01-01 00:00:00 到现在的毫秒	1526196955923
+
+
+
+转换符	说明	结果
+%tb	指定语言环境下的月份简称	五月
+%tB	指定语言环境下的月份全称	五月
+%ta	指定语言环境下周几的简称	星期日
+%tA	指定语言环境下周几的全称	星期日
+%ty	2位数的年份	18
+%tY	4位数年份	2018
+%tm	月份	05
+%te	一个月中的某一天(1~31)	13
+%td	一个月中的某一天(01~31)	13
+%tj	一年中第几天	133
 
 
 
@@ -4088,7 +4117,7 @@ classpath:mapper/*.xml
 
 # 78.  logback
 
-> https://www.cnblogs.com/warking/p/5710303.html
+> `https://www.cnblogs.com/warking/p/5710303.html`
 
 
 
@@ -4430,3 +4459,314 @@ public void downloadFile(HttpServletResponse response, File file) {
 > put: 放入数据时，如果放入数据的key已经存在与Map中，最后放入的数据会覆盖之前存在的数据
 >
 > putIfAbsent: 在放入数据时，如果存在重复的key，那么putIfAbsent不会放入值。
+
+
+
+# 85. 为什么环境变量要大写
+
+
+
+> 在Windows下是不区分大小写的，所以在Windows下怎么写都能获取到值。
+>
+> 而Linux下不同，区分大小写，无论是变量还是命令，大小写都会导致输出的值不一样。比如环境变量ENV和env可以定义不同的值，到最后输出这两个变量时也会不一样。
+
+
+
+# 86. 内存溢出, 内存泄露
+
+> 内存泄露 ：程序中已动态分配的堆内存由于某种原因程序未释放或无法释放，造成系统内存的浪费，导致程序运行速度减慢甚至系统崩溃等严重后果。
+>
+> 内存溢出： 没有足够的内存,就是内存不够用
+
+
+
+## 内存泄露: 
+
+​	内存泄漏缺陷具有隐蔽性、积累性的特征，比其他内存非法访问错误更难检测。因为内存泄漏的产生原因是内存块未被释放，属于遗漏型缺陷而不是过错型缺陷。此外，内存泄漏通常不会直接产生可观察的错误症状，而是逐渐积累，降低系统整体性能，极端的情况下可能使系统崩溃。
+
+
+
+# 87. maven
+
+## 1. 忽略 test 异常
+
+maven-3.5.4 , 经过test 项目验证, 第一次是可以, 过几天 再试的时候 不行了
+
+```shell
+mvn test "-Dmaven.test.failure.ignore=ture"
+mvn install "-DskipTests=true"
+```
+
+
+
+# 88. bigdecimal
+
+## 1. double, float 转 bigdecimal 时 推荐用静态方法 valueof()
+
+```java
+
+ public void test02() {
+        double a = 0.1D;
+        BigDecimal ade = new BigDecimal(a);
+        System.out.println(ade); // 0.1000000000000000055511151231257827021181583404541015625
+
+        BigDecimal aval = BigDecimal.valueOf(a);
+        System.out.println(aval); // 0.1
+    }
+```
+
+
+
+# 89. 希腊字母
+
+​	
+
+| 序号 | 大写  | 小写 | 英语音标注音                    | 英文    | 汉语名称          | 常用指代意义                                                 |
+| ---- | ----- | ---- | ------------------------------- | ------- | ----------------- | ------------------------------------------------------------ |
+| 1    | Α     | α    | /'ælfə/                         | alpha   | 阿尔法            | 角度、系数、[角加速度](https://baike.baidu.com/item/%E8%A7%92%E5%8A%A0%E9%80%9F%E5%BA%A6/4166196)、第一个、[电离度](https://baike.baidu.com/item/%E7%94%B5%E7%A6%BB%E5%BA%A6/554241)、转化率 |
+| 2    | Β     | β    | /'bi:tə/ 或 /'beɪtə/            | beta    | 贝塔              | 角度、系数、磁通系数                                         |
+| 3    | Γ     | γ    | /'gæmə/                         | gamma   | 伽玛              | [电导系数](https://baike.baidu.com/item/%E7%94%B5%E5%AF%BC%E7%B3%BB%E6%95%B0/22289558)、角度、[比热容比](https://baike.baidu.com/item/%E6%AF%94%E7%83%AD%E5%AE%B9%E6%AF%94/3703101) |
+| 4    | Δ     | δ    | /'deltə/                        | delta   | 得尔塔/德尔塔     | 变化量、[焓变](https://baike.baidu.com/item/%E7%84%93%E5%8F%98/6449903)、[熵变](https://baike.baidu.com/item/%E7%86%B5%E5%8F%98/3195222)、[屈光度](https://baike.baidu.com/item/%E5%B1%88%E5%85%89%E5%BA%A6/3199182)、一元二次方程中的[判别式](https://baike.baidu.com/item/%E5%88%A4%E5%88%AB%E5%BC%8F/10834494)、[化学位移](https://baike.baidu.com/item/%E5%8C%96%E5%AD%A6%E4%BD%8D%E7%A7%BB/3823772) |
+| 5    | Ε     | ε,ϵ  | /'epsɪlɒn/                      | epsilon | 艾普西隆/厄普西隆 | 对数之基数、[介电常数](https://baike.baidu.com/item/%E4%BB%8B%E7%94%B5%E5%B8%B8%E6%95%B0/1017137)、[电容率](https://baike.baidu.com/item/%E7%94%B5%E5%AE%B9%E7%8E%87/5333701)、[应变](https://baike.baidu.com/item/%E5%BA%94%E5%8F%98/13858771) |
+| 6    | Ζ     | ζ    | /'zi:tə/                        | zeta    | 泽塔              | 系数、[方位角](https://baike.baidu.com/item/%E6%96%B9%E4%BD%8D%E8%A7%92/493239)、[阻抗](https://baike.baidu.com/item/%E9%98%BB%E6%8A%97/332224)、[相对黏度](https://baike.baidu.com/item/%E7%9B%B8%E5%AF%B9%E9%BB%8F%E5%BA%A6/4520289) |
+| 7    | Η     | η    | /'i:tə/                         | eta     | 伊塔              | 迟滞系数、[机械效率](https://baike.baidu.com/item/%E6%9C%BA%E6%A2%B0%E6%95%88%E7%8E%87/2685290) |
+| 8    | Θ     | θ    | /'θi:tə/                        | theta   | 西塔              | 温度、角度                                                   |
+| 9    | Ι     | ι    | /aɪ'əʊtə/                       | iota    | 约(yāo)塔         | 微小、一点                                                   |
+| 10   | Κ     | κ    | /'kæpə/                         | kappa   | 卡帕              | 介质常数、[绝热指数](https://baike.baidu.com/item/%E7%BB%9D%E7%83%AD%E6%8C%87%E6%95%B0/8099046) |
+| 11   | Λ     | λ    | /'læmdə/                        | lambda  | 拉姆达            | [波长](https://baike.baidu.com/item/%E6%B3%A2%E9%95%BF/829184)、体积、[导热系数](https://baike.baidu.com/item/%E5%AF%BC%E7%83%AD%E7%B3%BB%E6%95%B0/1935502)、[普朗克常数](https://baike.baidu.com/item/%E6%99%AE%E6%9C%97%E5%85%8B%E5%B8%B8%E6%95%B0/812256) |
+| 12   | Μ     | μ    | /mju:/                          | mu      | 谬                | [磁导率](https://baike.baidu.com/item/%E7%A3%81%E5%AF%BC%E7%8E%87/2385561)、微、动摩擦系（因）数、流体动力黏度、货币单位、[莫比乌斯函数](https://baike.baidu.com/item/%E8%8E%AB%E6%AF%94%E4%B9%8C%E6%96%AF%E5%87%BD%E6%95%B0/2567473) |
+| 13   | **Ν** | ν    | /nju:/                          | nu      | 纽                | 磁阻系数、流体运动粘度、光波频率、[化学计量数](https://baike.baidu.com/item/%E5%8C%96%E5%AD%A6%E8%AE%A1%E9%87%8F%E6%95%B0/7264890) |
+| 14   | Ξ     | ξ    | 希腊 /ksi/英美 /ˈzaɪ/ 或 /ˈsaɪ/ | xi      | 克西              | [随机变量](https://baike.baidu.com/item/%E9%9A%8F%E6%9C%BA%E5%8F%98%E9%87%8F/828980)、（小）区间内的一个未知特定值 |
+| 15   | Ο     | ο    | /əuˈmaikrən/或 /ˈɑmɪˌkrɑn/      | omicron | 奥米克戎          | 高阶无穷小函数                                               |
+| 16   | ∏     | π    | /paɪ/                           | pi      | 派                | [圆周率](https://baike.baidu.com/item/%E5%9C%86%E5%91%A8%E7%8E%87/139930)、π(n)表示不大于n的质数个数、连乘 |
+| 17   | Ρ     | ρ    | /rəʊ/                           | rho     | 柔                | [电阻率](https://baike.baidu.com/item/%E7%94%B5%E9%98%BB%E7%8E%87/786893)、柱坐标和极坐标中的极径、[密度](https://baike.baidu.com/item/%E5%AF%86%E5%BA%A6/718381)、[曲率半径](https://baike.baidu.com/item/%E6%9B%B2%E7%8E%87%E5%8D%8A%E5%BE%84/2036643) |
+| 18   | ∑     | σ,ς  | /'sɪɡmə/                        | sigma   | 西格马            | 总和、表面密度、[跨导](https://baike.baidu.com/item/%E8%B7%A8%E5%AF%BC/149772)、[应力](https://baike.baidu.com/item/%E5%BA%94%E5%8A%9B/3075028)、[电导率](https://baike.baidu.com/item/%E7%94%B5%E5%AF%BC%E7%8E%87/1016751) |
+| 19   | Τ     | τ    | /tɔ:/ 或 /taʊ/                  | tau     | 陶                | [时间常数](https://baike.baidu.com/item/%E6%97%B6%E9%97%B4%E5%B8%B8%E6%95%B0/3417132)、[切应力](https://baike.baidu.com/item/%E5%88%87%E5%BA%94%E5%8A%9B/9613446)、2π（两倍圆周率） |
+| 20   | Υ     | υ    | /ˈipsɪlon/或 /ˈʌpsɪlɒn/         | upsilon | 宇普西隆 [3]      | [位移](https://baike.baidu.com/item/%E4%BD%8D%E7%A7%BB/823868) |
+| 21   | Φ     | φ,ϕ  | /faɪ/                           | phi     | 斐                | [磁通量](https://baike.baidu.com/item/%E7%A3%81%E9%80%9A%E9%87%8F/2386940)、[电通量](https://baike.baidu.com/item/%E7%94%B5%E9%80%9A%E9%87%8F/5307225)、角、[透镜焦度](https://baike.baidu.com/item/%E9%80%8F%E9%95%9C%E7%84%A6%E5%BA%A6/6475897)、[热流量](https://baike.baidu.com/item/%E7%83%AD%E6%B5%81%E9%87%8F/5727729)、[电势](https://baike.baidu.com/item/%E7%94%B5%E5%8A%BF/2869498)、直径、[欧拉函数](https://baike.baidu.com/item/%E6%AC%A7%E6%8B%89%E5%87%BD%E6%95%B0/1944850)、[空集](https://baike.baidu.com/item/%E7%A9%BA%E9%9B%86/5016874)、相位、孔隙度 |
+| 22   | Χ     | χ    | /kaɪ/                           | chi     | 希 [3]  /恺       | 统计学中有卡方(χ^2)分布                                      |
+| 23   | Ψ     | ψ    | /psaɪ/                          | psi     | 普西              | 角速、介质电通量、ψ函数、[磁链](https://baike.baidu.com/item/%E7%A3%81%E9%93%BE/9517557) |
+| 24   | Ω     | ω    | /'əʊmɪɡə/或 /oʊ'meɡə/           | omega   | 奥米伽/欧米伽     | 欧姆、[角速度](https://baike.baidu.com/item/%E8%A7%92%E9%80%9F%E5%BA%A6/1532689)、[角频率](https://baike.baidu.com/item/%E8%A7%92%E9%A2%91%E7%8E%87/11053586)、交流电的电角度、化学中的[质量分数](https://baike.baidu.com/item/%E8%B4%A8%E9%87%8F%E5%88%86%E6%95%B0/8118317)、有机物的[不饱和度](https://baike.baidu.com/item/%E4%B8%8D%E9%A5%B1%E5%92%8C%E5%BA%A6/11047939) |
+
+
+
+# 90. 数据类型
+
+​	
+
+|         | 占用内存          | 默认值 | 取值范围                                      |
+| ------- | ----------------- | ------ | --------------------------------------------- |
+| byte    | 1字节 8位         | 0      | -2^7 ~ 2^7-1  (-128 ~ 127)                    |
+| short   | 2字节 16位        | 0      | -2^15 ~ 2^15-1 (-32768 ~ 32767)               |
+| int     | 4字节 32位        | 0      | -2^31 ~ 2^31-1                                |
+| long    | 8字节 64位        | 0L     |                                               |
+| float   | 4字节 32位        | 0F     |                                               |
+| double  | 8字节             | 0D     |                                               |
+| char    | 2字节 16位unicode | \u0000 | 最小\u0000(十进制等效为0), 最大 \uffff(65535) |
+| boolean | 1位               | false  |                                               |
+|         |                   |        |                                               |
+
+
+
+ float
+
+```java
+	@Test
+    public void floatTest() {
+        float a = 1.0000001f;
+        float b = 1.00000016f;
+        float c = 1000.0000001f;
+        float d = 1000.0001f;
+        float e = 1000.00016f;
+        float f = 1000000.11f;
+        float ff = 1000000.15f;
+        float g = 10000000.11f;
+
+        System.out.println(a); // 1.0000001
+        System.out.println(b); // 1.0000001
+        System.out.println(c); // 1000.0
+        System.out.println(d); // 1000.0001
+        System.out.println(e); // 1000.0002
+        System.out.println(f); // 1000000.1
+        System.out.println(ff); // 1000000.1
+        System.out.println(g); // 1.0E7
+        
+        float maxValue = Float.MAX_VALUE;
+        System.out.println("maxValue = " + maxValue); // 3.4028235E38
+    }
+```
+
+
+
+
+
+# 91. pom 配置
+
+​	
+
+
+
+
+
+# 92. 打包项目时
+
+## 1. 将依赖包 和 项目 代码包 分离
+
+## 2. 
+
+
+
+# 93. long 型传到前端, 前端发生了精度缺失问题
+
+**问题描述**: 数据库id 为雪花算法生成, 实体类 该字段是 Long 型, 在返回给前端时, 前端显示, 发生了错误, 此id 值 发生了变化
+
+解决: 
+
+```java
+import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.alibaba.fastjson.serializer.ValueFilter;
+import com.alibaba.fastjson.support.config.FastJsonConfig;
+import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
+import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Configuration
+public class CustomFastJsonHttpMessageConverter {
+    @Bean
+    public HttpMessageConverters fastJsonHttpMessageConverters() {
+        FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
+        FastJsonConfig fastJsonConfig = new FastJsonConfig();
+
+        List<SerializerFeature> list = new ArrayList<>();
+        list.add(SerializerFeature.PrettyFormat);
+        list.add(SerializerFeature.WriteMapNullValue);
+        list.add(SerializerFeature.WriteNullStringAsEmpty);
+        list.add(SerializerFeature.WriteNullListAsEmpty);
+        list.add(SerializerFeature.QuoteFieldNames);
+        list.add(SerializerFeature.WriteDateUseDateFormat);
+        list.add(SerializerFeature.DisableCircularReferenceDetect);
+        list.add(SerializerFeature.WriteBigDecimalAsPlain);
+
+        fastJsonConfig.setSerializerFeatures(list.toArray(new SerializerFeature[list.size()]));
+
+        fastConverter.setFastJsonConfig(fastJsonConfig);
+        HttpMessageConverter<?> converter = fastConverter;
+        fastJsonConfig.setSerializeFilters(new ValueFilter() {
+            @Override
+            public Object process(Object object, String name, Object value) {
+                if (value != null) {
+                    if (value instanceof Long) {
+                        return value.toString();
+                    }
+                }
+                return value;
+            }
+        });
+        return new HttpMessageConverters(converter);
+    }
+}
+```
+
+# 94. scm
+
+software configuration manegerment
+
+
+
+# 95. 序列化
+
+  序列化:  指把堆内存中的 Java 对象数据，通过某种方式把对象存储到磁盘文件中或者传递给其他网络节点（在网络上传输）。这个过程称为序列化。通俗来说就是将数据结构或对象转换成二进制串的过程
+
+
+
+**为什么要序列化?**
+
+1. 在分布式系统中，此时需要把对象在网络上传输，就得把对象数据转换为二进制形式，需要共享的数据的 JavaBean 对象，都得做序列化。
+2. 服务器钝化：如果服务器发现某些对象好久没活动了，那么服务器就会把这些内存中的对象持久化在本地磁盘文件中（Java对象转换为二进制文件）；如果服务器发现某些对象需要活动时，先去内存中寻找，找不到再去磁盘文件中反序列化我们的对象数据，恢复成 Java 对象。这样能节省服务器内存
+
+**网络传输中 使用 对象 不行吗?**
+
+  不行, 因为网络上只能传输字节，不能传输对象; 在网络传输之前，必须要把传输对象转换成字节数组.
+
+# 96. 端口
+
+1-1024是tcp协议保留端口  尽量不要使用
+
+
+
+# 97. 线程
+
+## 1. join(), wait()
+
+Thread类中的join方法的主要作用就是同步，它可以使得线程之间的并行执行变为串行执行。具体看代码：
+
+```java
+public class JoinTest {
+    public static void main(String [] args) throws InterruptedException {
+        ThreadJoinTest t1 = new ThreadJoinTest("小");
+        ThreadJoinTest t2 = new ThreadJoinTest("中");
+        ThreadJoinTest t3 = new ThreadJoinTest("大");
+        t1.start();
+        /**join的意思是使得放弃当前线程的执行，并返回对应的线程，例如下面代码的意思就是：
+         程序在main线程中调用t1线程的join方法，则main线程放弃cpu控制权，并返回t1线程继续执行直到线程t1执行完毕
+         所以结果是t1线程执行完后，才到主线程执行，相当于在main线程中同步t1线程，t1执行完了，main线程才有执行的机会
+         */
+        t3.start();
+        t1.join();
+        t2.start();
+    }
+
+}
+class ThreadJoinTest extends Thread{
+    public ThreadJoinTest(String name){
+        super(name);
+    }
+    @Override
+    public void run(){
+        for(int i=0;i<1000;i++){
+            System.out.println(this.getName() + ":" + i);
+        }
+    }
+}
+```
+
+
+
+> t1.start();
+>
+> t2.start();
+>
+> t3.start();
+
+t1, t2, t3 交替执行
+
+
+
+> t1.start();
+>
+> t3.start();
+>
+> t1.join();
+>
+> t2.start();
+
+t1 , t3 交替执行,   此时, t1.join() 方法 进入,  使 t1 wait() , 此时 t1, t3 仍在交替执行,  等待 t1 执行完, t3 不用执行完, 之后 t2 run 
+
+
+
+> t1.start();
+>
+> t1.join(10);
+>
+> t2.start();
+
+t1 run 然后 锁住 synchronized t1 10毫秒 , 等t1 执行10毫秒后, t2 执行
+
+
+
+可见, join()  相当于在当前位置 放一块砖头, 使当前 管道 阻塞, 使下方的方法暂时不执行, 等待前方的线程执行完;
