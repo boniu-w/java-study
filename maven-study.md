@@ -12,6 +12,16 @@
 
    > gpg --send-keys [用户ID] --keyserver hkp://subkeys.pgp.net
 
+   上面命令不管用了, 这个管用, 实际操作下面的第一个能成功
+
+   ```shell
+   gpg --keyserver hkp://keyserver.ubuntu.com:11371 --send-keys 你的公钥
+   gpg --keyserver hkp://pool.sks-keyservers.net:11371 --send-keys 你的公钥
+   gpg --keyserver hkp://pgp.mit.edu:11371 --send-keys 你的公钥
+   ```
+
+   
+
 4. 编辑 项目所用 maven 的 settings.xml , 其中 server.id  填 固定的 ossrh , 原因还没搞懂
 
    ```xml
@@ -214,22 +224,4 @@ Process finished with exit code 0
   其中 test-0.0.1-20220127.031452-1.jar 就是 我们的包, sources.jar 是源码包, 
 
 
-
-
-
-
-
-# 2. gpg
-
-```
-gpg --list-keys
-```
-
-  
-
-|                 |          |      |
-| --------------- | -------- | ---- |
-| gpg --list-keys | 密钥列表 |      |
-| gpg --gen-key   | 生成密钥 |      |
-|                 |          |      |
 

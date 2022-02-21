@@ -3651,11 +3651,45 @@ server.ssl.key-alias=tomcat
 > keytool -genkey -alias tomcat -keypass 123456 -keyalg RSA -keysize 2048 -validity 36500 -keystore D:/tomcat.keystore -storepass 123456
 >
 > 创建了一个名为tomcat.keystore的别名也为tomcat.keystore的采用RSA加密算法的有效期为100年的证书文件
-> genkey    生成文件。
-> alias        别名。
-> keyalg     加密算法。
-> validity    有效期。
-> keystore  文件名。
+> -genkey    生成文件。
+> -alias        别名。
+> -keyalg     指定加密算法。
+> -validity    有效期 天数。
+> -keystore  指定文件文件名。
+
+
+
+最新的用 -genkeypair (-genkey 是老版本的命令) , 参见 `https://docs.oracle.com/javase/8/docs/technotes/tools/unix/keytool.html`
+
+```shell
+# 生成 .keystore
+keytool -genkeypair -alias tomcat9-wg01 -keypass 123456 -keyalg RSA -keysize 2048 -validity 36500 -keystore /usr/local/keystore/tomcat9-wg01.keystore -storepass 123456
+
+# 查看密钥信息
+keytool -list -v -keystore /usr/local/keystore/tomcat9-wg01.keystore -storepass 123456
+
+# 导出证书
+keytool -export -alias tomcat9-wg01 -keystore /usr/local/keystore/tomcat9-wg01.keystore -rfc -file /usr/local/keystore/test.cer
+
+# .cer 转换成 .crt
+openssl x509 -inform PEM -in /usr/local/keystore/test.cer -out /usr/local/keystore/test.crt
+
+# 查看证书详情 keytool -printcert -file 证书名
+keytool -printcert -file test.cer
+
+# .key 转换成 .pem：
+openssl rsa -in test.key -out test.pem
+
+# .crt 转换成 .pem：
+openssl x509 -in test.crt -out test.pem
+
+# .cer 转换成 .crt
+openssl x509 -inform PEM -in test.cer -out test.crt
+
+
+```
+
+
 
 
 
@@ -3968,6 +4002,37 @@ public class Types {
 cron 表达式 由 6位 构成 分别是
 
 秒 分 时 日 月  周(周几)
+
+## 2. renren-fast
+
+```java
+	/**
+	 * 项目启动时，初始化定时器
+	 */
+	@PostConstruct
+	public void init(){
+		List<ScheduleJobEntity> scheduleJobList = this.list();
+		for(ScheduleJobEntity scheduleJob : scheduleJobList){
+			CronTrigger cronTrigger = ScheduleUtils.getCronTrigger(scheduler, scheduleJob.getJobId());
+            //如果不存在，则创建
+            if(cronTrigger == null) {
+                ScheduleUtils.createScheduleJob(scheduler, scheduleJob);
+            }else {
+                ScheduleUtils.updateScheduleJob(scheduler, scheduleJob);
+            }
+		}
+	}
+```
+
+
+
+```java
+Method method = target.getClass().getDeclaredMethod("run", String.class);
+```
+
+
+
+
 
 
 
@@ -4672,9 +4737,15 @@ public class CustomFastJsonHttpMessageConverter {
 }
 ```
 
-# 94. scm
+# 94. 名词解释
 
-software configuration manegerment
+
+
+|      |                                    |      |
+| ---- | ---------------------------------- | ---- |
+| scm  | software configuration manegerment |      |
+|      |                                    |      |
+|      |                                    |      |
 
 
 
@@ -4770,3 +4841,13 @@ t1 run 然后 锁住 synchronized t1 10毫秒 , 等t1 执行10毫秒后, t2 执�
 
 
 可见, join()  相当于在当前位置 放一块砖头, 使当前 管道 阻塞, 使下方的方法暂时不执行, 等待前方的线程执行完;
+
+
+
+# 98. 上传jar包到maven中央库
+
+
+
+
+
+# 99. arrayduque
