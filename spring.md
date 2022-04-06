@@ -87,3 +87,23 @@ spring不在需要就行明确的引用关系传递，直接通过配置完成�
 所有框架几乎都可以在spring中整合在一起使用；
 
 spring编程 = Factory设计模式 + Proxy设计模式。
+
+
+
+# 1. spring bean
+
+Spring在创建Bean的过程中分为三步
+
+1. 实例化，对应方法：`AbstractAutowireCapableBeanFactory`中的`createBeanInstance`方法
+2. 属性注入，对应方法：`AbstractAutowireCapableBeanFactory`的`populateBean`方法
+3. 初始化，对应方法：`AbstractAutowireCapableBeanFactory`的`initializeBean`
+
+这些方法在之前源码分析的文章中都做过详细的解读了，如果你之前没看过我的文章，那么你只需要知道
+
+1. 实例化，简单理解就是new了一个对象
+2. 属性注入，为实例化中new出来的对象填充属性
+3. 初始化，执行aware接口中的方法，初始化方法，完成`AOP`代理
+
+
+
+![](.\img\create-bean.png)

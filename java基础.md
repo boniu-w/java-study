@@ -937,6 +937,26 @@ taskkill /f /pid pid号
 
 
 
+@JsonFormat 当写成json字符串时, 会变成 yyyy-MM-dd HH:mm:ss 这样形式, 例: user 的 birthday 字段加这个注解
+
+```java
+    public void test1() {
+        User user = new User();
+        user.setName("123");
+        user.setBirthday(new Date());
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            String userJsonString = objectMapper.writeValueAsString(user);
+            System.out.println(userJsonString);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
+```
+
+
+
 
 
 # 34. 前台请求有数据,后台接收不到
@@ -3216,6 +3236,20 @@ public enum Title {
             }).collect(Collectors.toList());
 ```
 
+
+
+两个list 
+
+```java
+dictDTOList.stream().filter(item -> {
+            return dictTypeDTOList.stream().map(CommonDictTypeDTO::getId).collect(Collectors.toList()).contains(item.getCommonDictTypeId());
+        }).collect(Collectors.toList());
+```
+
+
+
+
+
 ## 2. sorted()
 
 ```java
@@ -3277,6 +3311,19 @@ detailEntityList = detailEntityList.stream()
 ```java
 Map<String, List<InformationSchema>> collect = informationSchemaDao.selectInformationSchema(tableName).stream().collect(Collectors.groupingBy(InformationSchema::getColumnName));
 ```
+
+
+
+## 7. 求和
+
+ ```java
+BigDecimal:
+BigDecimal bb =list.stream().map(Plan::getAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+ 
+
+int、double、long:
+double max = list.stream().mapToDouble(User::getHeight).sum();
+ ```
 
 
 
@@ -4174,9 +4221,11 @@ classpath:mapper/*.xml
 
 
 
-![](.\img\1636083100(1).png)
+ ![](.\img\1646103152881.png)
 
 
+
+这里当使用ClassPathResource时会出现一个bug , 具体看 bug记录.md -> 57条
 
 
 
@@ -4667,7 +4716,7 @@ mvn install "-DskipTests=true"
 
 # 91. pom 配置
 
-​	
+68 项 有部分内容	
 
 
 
@@ -4851,3 +4900,433 @@ t1 run 然后 锁住 synchronized t1 10毫秒 , 等t1 执行10毫秒后, t2 执�
 
 
 # 99. arrayduque
+
+
+
+# 100. 各种空格
+
+
+
+| 名称                                            | 代码   | 宽度  | 备注 |                                                              |
+| ----------------------------------------------- | ------ | ----- | ---- | ------------------------------------------------------------ |
+| 制表符(character tabulation)                    | U+0009 | 9     |       水平制表符，实体名称：`&Tab;`                                |
+| 空格(space)                                     | U+0020 | 32    |       最常见的ASCII空格，键盘空格键打出的即是它。宽度随字体不同而变化，通常在字体高度的1/5至1/3之间。 |
+| 不间断空格(no-break space)                      | U+00A0 | 160   |      不间断空格，与U+0020类似，但不会断行。实体名称：`&nbsp;`     |
+| 半宽空白(en quad)                               | U+2000 | 8192  |       早期为铅活字印刷排版制定的半宽空白，宽度是字体高度的一半。U+2002规范等同于此字符；最好使用U+2002。 |
+| 全宽空白(em quad)                               | U+2001 | 8193  |       早期为铅活字印刷排版制定的全宽空白，宽度等于字体高度。U+2003规范等同于此字符；最好使用U+2003。 |
+| 半宽空格(en space)                              | U+2002 | 8194  |       也称半角空格，宽度是字体高度的一半。实体名称：`&ensp;`       |
+| 全宽空格(em space)                              | U+2003 | 8195  |       也称全角空格，宽度等于字体高度。实体名称：`&emsp;`           |
+| 三分之一空格(three-per-em space)                | U+2004 | 8196  |       宽度是字体高度的三分之一。实体名称：`&emsp13;`               |
+| 四分之一空格(four-per-em space)                 | U+2005 | 8197  |       宽度是字体高度的四分之一。实体名称：`&emsp14;`               |
+| 六分之一空格(six-per-em space)                  | U+2006 | 8198  |       宽度是字体高度的六分之一。在计算机排版中，有时等于U+2009。   |
+| 数字空格(figure space)                          | U+2007 | 8199  |       在具有等宽数字的字体中，等于一位数字的宽度。实体名称：`&numsp;` |
+| 标点空格(punctuation space)                     | U+2008 | 8200  |       与字体中的窄标点符号一样宽，即句点或逗号的前进宽度。实体名称：`&puncsp;` |
+| 薄空格(thin space)                              | U+2009 | 8201  |       宽度是字体高度的五分之一（有时是六分之一）。建议用作国际单位制中千位分隔符。与U+2002到U+2008不同，其宽度可能会在排版中调整。实体名称：`&thinsp;` |
+| 头发空格(hair space)                            | U+200A | 8202  |       比薄空格还窄，实体名称：`&hairsp;`                           |
+| 狭窄的不间断空格(narrow no-break space)         | U+202F | 8239  |       类似于U+00A0不间断空格。与蒙古语一起使用时，其宽度通常是正常空格的三分之一；在其他情况下，其宽度有时类似于薄空格（U+2009）的宽度。 |
+| 中等数学空格(medium mathematical space)         | U+205F | 8287  |      MMSP。用于数学公式。字高的四分之一。在数学排版中，空格的宽度通常以字体高的18的整数倍给出，并且4/18字体高可能会在几种情况下使用，例如表达式a + b中的a与+之间以及+与b之间。实体名称：`&MediumSpace;` |
+| 表意空格(ideographic space)                     | U+3000 | 12288 |    CJK（中文、日文和韩文）表意文字中使用的全角空格，宽度等于字体高度。 |
+| 零宽度空格(zero width space)                    | U+200B | 8203  |     ZWSP，零宽度空格。当使用非显式间距的脚本时，用于向文本处理系统指示单词边界。它与软连字符（U+00AD）相似，不同之处在于后者用于表示音节边界，并且在折线处应显示可见的连字符。实体名称：`&ZeroWidthSpace;` |
+| 零宽度非连接符(zero width non-joiner)           | U+200C | 8204  | ‌      ZWNJ，零宽度非连接符。当放置在两个本来可以连接的字符之间时，ZWNJ使它们分别以最终形式和初始形式打印。实体名称：`&zwnj;` |
+| 零宽度连接符(zero width joiner)                 | U+200D | 8205  | ‍     ZWJ，零宽度连接符。当放置在两个无法连接的字符之间时，ZWJ会使它们以连接的形式打印。也可以用于单独显示连接形式。取决于默认情况下是否需要连字或连词，可以诱导（如表情符号和僧伽罗语）或抑制（如梵文）用单个字形替换，同时仍允许使用单独的连接形式（与ZWNJ不同）。实体名称：`&zwj;` |
+| 零宽度词连接符(word joiner)                     | U+2060 | 8288  | ⁠      WJ，词连接符。与U+200B类似，但不会在词内断行。实体名称：`&NoBreak;` |
+| 零宽度不间断空格(zero width non-breaking space) | U+FEFF | 65279 |       主要用作字节顺序标记。从Unicode 3.2开始，不推荐用作不间断的指示。请参阅U+2060。 |
+
+
+
+# 101. 加载配置文件顺序
+
+若application.yml 和bootstrap.yml 在同一目录下：bootstrap.yml 先加载 application.yml后加载
+
+bootstrap.yml 由父Spring ApplicationContext加载。可以理解成系统级别的一些参数配置，这些参数一般是不会变动的. 一旦bootStrap.yml 被加载，则内容不会被覆盖。
+
+application.yml 可以用来定义应用级别的， 应用程序特有配置信息，可以用来配置后续各个模块中需使用的公共参数等。
+
+
+
+在不指定要被加载文件时，默认的加载顺序：由里向外加载，所以最外层的最后被加载，会覆盖里层的属性
+
+
+
+# 102. nacos
+
+
+
+| Spring Cloud Alibaba Version                              | Sentinel Version | Nacos Version | RocketMQ Version | Dubbo Version | Seata Version |
+| --------------------------------------------------------- | ---------------- | ------------- | ---------------- | ------------- | ------------- |
+| 2.2.7.RELEASE*                                            | 1.8.1            | 2.0.3         | 4.6.1            | 2.7.13        | 1.3.0         |
+| 2.2.6.RELEASE                                             | 1.8.1            | 1.4.2         | 4.4.0            | 2.7.8         | 1.3.0         |
+| 2021.1 or 2.2.5.RELEASE or 2.1.4.RELEASE or 2.0.4.RELEASE | 1.8.0            | 1.4.1         | 4.4.0            | 2.7.8         | 1.3.0         |
+| 2.2.3.RELEASE or 2.1.3.RELEASE or 2.0.3.RELEASE           | 1.8.0            | 1.3.3         | 4.4.0            | 2.7.8         | 1.3.0         |
+| 2.2.1.RELEASE or 2.1.2.RELEASE or 2.0.2.RELEASE           | 1.7.1            | 1.2.1         | 4.4.0            | 2.7.6         | 1.2.0         |
+| 2.2.0.RELEASE                                             | 1.7.1            | 1.1.4         | 4.4.0            | 2.7.4.1       | 1.0.0         |
+| 2.1.1.RELEASE or 2.0.1.RELEASE or 1.5.1.RELEASE           | 1.7.0            | 1.1.4         | 4.4.0            | 2.7.3         | 0.9.0         |
+| 2.1.0.RELEASE or 2.0.0.RELEASE or 1.5.0.RELEASE           | 1.6.3            | 1.1.1         | 4.4.0            | 2.7.3         | 0.7.1         |
+
+
+
+| Spring Cloud Alibaba Version      | Spring Cloud Version        | Spring Boot Version |
+| --------------------------------- | --------------------------- | ------------------- |
+| 2.2.7.RELEASE                     | Spring Cloud Hoxton.SR12    | 2.3.12.RELEASE      |
+| 2021.1                            | Spring Cloud 2020.0.1       | 2.4.2               |
+| 2.2.6.RELEASE                     | Spring Cloud Hoxton.SR9     | 2.3.2.RELEASE       |
+| 2.1.4.RELEASE                     | Spring Cloud Greenwich.SR6  | 2.1.13.RELEASE      |
+| 2.2.1.RELEASE                     | Spring Cloud Hoxton.SR3     | 2.2.5.RELEASE       |
+| 2.2.0.RELEASE                     | Spring Cloud Hoxton.RELEASE | 2.2.X.RELEASE       |
+| 2.1.2.RELEASE                     | Spring Cloud Greenwich      | 2.1.X.RELEASE       |
+| 2.0.4.RELEASE(停止维护，建议升级) | Spring Cloud Finchley       | 2.0.X.RELEASE       |
+| 1.5.1.RELEASE(停止维护，建议升级) | Spring Cloud Edgware        | 1.5.X.RELEASE       |
+
+
+
+# 103. apache poi
+
+
+
+```tex
+HSSF － 提供读写Microsoft Excel格式档案的功能。excel 2003 版本
+XSSF － 提供读写Microsoft Excel OOXML格式档案的功能。excel 2007 版本
+HWPF － 提供读写Microsoft Word格式档案的功能。
+HSLF － 提供读写Microsoft PowerPoint格式档案的功能。
+HDGF － 提供读写Microsoft Visio格式档案的功能
+```
+
+
+
+# 104. 数据存储单位
+
+```tex
+8 bit = 1 Byte 一字节
+
+1024 B = 1 KB （KiloByte） [千字节]
+
+1024 KB = 1 MB （MegaByte） [兆字节]
+
+1024 MB = 1 GB （GigaByte） [吉字节]
+
+1024 GB = 1 TB （TeraByte） [太字节]
+
+1024 TB = 1 PB （[PetaByte]） [拍字节]
+
+1024 PB = 1 EB （ExaByte） [艾字节]
+
+1024 EB = 1 ZB （ZetaByte） 泽[字节]
+
+1024 ZB = 1 YB （YottaByte） 尧字节
+
+1024 YB = 1BB（Brontobyte）珀字节
+
+1024 BB = 1 NB （NonaByte） 诺字节
+
+1024 NB = 1 DB （[DoggaByte]）刀字节
+```
+
+
+
+# 105. 注解
+
+1. @Deprecated 
+
+   可以用来注解类、接口、成员方法和成员变量等，用于表示某个元素（类、方法等）已过时。当其他程序使用已过时的元素时，编译器将会给出警告。
+
+
+
+
+
+
+# 106. ObjectMapper
+
+```
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.util.ResourceUtils;
+```
+
+
+
+# 107. minio
+
+minioadmin  minioadmin
+
+```shell
+ setx MINIO_ROOT_USER admin
+ 
+ setx MINIO_ROOT_PASSWORD admin
+ 
+ .\minio.exe server e:\miniodata --console-address ":9001"
+```
+
+
+
+# 108.  方法参数解析器, HandlerMethodArgumentResolver
+
+ 
+
+```java
+import com.sevenme.common.annotation.app.LoginUser;
+import com.sevenme.common.interceptor.AuthorizationInterceptor;
+import com.sevenme.modules.app.integritymanagement.entity.UserEntity;
+import com.sevenme.modules.app.service.UserService;
+import com.sevenme.modules.sys.entity.SysUserEntity;
+import com.sevenme.modules.sys.service.SysUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.support.WebDataBinderFactory;
+import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.ModelAndViewContainer;
+
+import javax.annotation.Resource;
+
+@Component
+public class LoginUserHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
+    @Autowired
+    private UserService userService;
+
+    @Resource
+    private SysUserService sysUserService;
+
+    @Override
+    public boolean supportsParameter(MethodParameter parameter) {
+        return parameter.getParameterType().isAssignableFrom(UserEntity.class) || parameter.getParameterType().isAssignableFrom(SysUserEntity.class) && parameter.hasParameterAnnotation(LoginUser.class);
+    }
+
+    @Override
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer container,
+                                  NativeWebRequest request, WebDataBinderFactory factory) throws Exception {
+        //获取用户ID
+        Object object = request.getAttribute(AuthorizationInterceptor.USER_KEY, RequestAttributes.SCOPE_REQUEST);
+        if(object == null){
+            return null;
+        }
+
+        //获取用户信息
+        // UserEntity user = userService.getById((Long)object);
+        SysUserEntity sysUser = sysUserService.getById((Long) object);
+
+        return sysUser;
+    }
+}
+```
+
+```java
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.sevenme.common.interceptor.AuthorizationInterceptor;
+import com.sevenme.common.utils.DateUtils;
+import com.sevenme.modules.app.resolver.LoginUserHandlerMethodArgumentResolver;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.ResourceHttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.TimeZone;
+
+@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+    @Autowired
+    private AuthorizationInterceptor authorizationInterceptor;
+    @Autowired
+    private LoginUserHandlerMethodArgumentResolver loginUserHandlerMethodArgumentResolver;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(authorizationInterceptor).addPathPatterns("/app/**");
+    }
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(loginUserHandlerMethodArgumentResolver);
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        converters.add(new ByteArrayHttpMessageConverter());
+        converters.add(new StringHttpMessageConverter());
+        converters.add(new ResourceHttpMessageConverter());
+        converters.add(new AllEncompassingFormHttpMessageConverter());
+        converters.add(new StringHttpMessageConverter());
+        converters.add(jackson2HttpMessageConverter());
+    }
+
+    @Bean
+    public MappingJackson2HttpMessageConverter jackson2HttpMessageConverter() {
+        MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+        ObjectMapper mapper = new ObjectMapper();
+
+        //日期格式转换
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.setDateFormat(new SimpleDateFormat(DateUtils.DATE_TIME_PATTERN));
+        mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
+
+        //Long类型转String类型, 解决 long 型传到前端, 精度缺失问题
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addSerializer(Long.class, ToStringSerializer.instance);
+        simpleModule.addSerializer(Long.TYPE, ToStringSerializer.instance);
+        mapper.registerModule(simpleModule);
+
+        converter.setObjectMapper(mapper);
+        return converter;
+    }
+}
+```
+
+
+
+# 109. 字段注解怎么起作用
+
+
+
+
+
+# 110. 时间
+
+### 1. 协调世界时, 世界标准时间 utc
+
+这套时间系统被应用于许多互联网和[万维网](https://baike.baidu.com/item/%E4%B8%87%E7%BB%B4%E7%BD%91)的标准中，例如，[网络时间协议](https://baike.baidu.com/item/%E7%BD%91%E7%BB%9C%E6%97%B6%E9%97%B4%E5%8D%8F%E8%AE%AE)就是协调世界时在互联网中使用的一种方式。
+
+在军事中，协调世界时区会使用“Z”来表示。又由于Z在无线电联络中使用“Zulu”作代称，协调世界时也会被称为"Zulu time"。
+
+中国大陆、中国香港、中国澳门、中国台湾、蒙古国、新加坡、马来西亚、菲律宾、西澳大利亚州的时间与UTC的[时差](https://baike.baidu.com/item/%E6%97%B6%E5%B7%AE/1305648)均为+8，也就是UTC+8。
+
+### 2. 格林尼治标准时
+
+### 3. 原子时
+
+### 4. 恒星时
+
+### 5. 太阳时
+
+### 6. 地方时
+
+### 7. 世界时
+
+### 8. 历书时 (已被原子时取代)
+
+
+
+# 111. 时区
+
+| 时区       | 时区范围        | 时区中心线 |
+| ---------- | --------------- | ---------- |
+| UTC        | 7.5°W~7.5°E     | 0°         |
+| UTC+1      | 7.5°E~22.5°E    | 15°E       |
+| UTC+2      | 22.5°E~37.5°E   | 30°E       |
+| UTC+3      | 37.5°E~52.5°E   | 45°E       |
+| UTC+4      | 52.5°E~67.5°E   | 60°E       |
+| UTC+5      | 67.5°E~82.5°E   | 75°E       |
+| UTC+6      | 82.5°E~97.5°E   | 90°E       |
+| UTC+7      | 97.5°E~112.5°E  | 105°E      |
+| UTC+8      | 112.5°E~127.5°E | 120°E      |
+| UTC+9      | 127.5°E~142.5°E | 135°E      |
+| UTC+10     | 142.5°E~157.5°E | 150°E      |
+| UTC+11     | 157.5°E~172.5°E | 165°E      |
+| 东西十二区 | 172.5°E~172.5°W | 180°       |
+| UTC-11     | 172.5°W~157.5°W | 165°W      |
+| UTC-10     | 157.5°W~142.5°W | 150°W      |
+| UTC-9      | 142.5°W~127.5°W | 135°W      |
+| UTC-8      | 127.5°W~112.5°W | 120°W      |
+| UTC-7      | 112.5°W~97.5°W  | 105°W      |
+| UTC-6      | 97.5°W~82.5°W   | 90°W       |
+| UTC-5      | 82.5°W~67.5°W   | 75°W       |
+| UTC-4      | 67.5°W~52.5°W   | 60°W       |
+| UTC-3      | 52.5°W~37.5°W   | 45°W       |
+| UTC-2      | 37.5°W~22.5°W   | 30°W       |
+| UTC-1      | 22.5°W~7.5°W    | 15°W       |
+
+
+
+
+
+# 112. jackson
+
+	## 1. jackson 常用注解
+
+### 1. @JsonAutoDetect：
+
+ 该注解的作用是配置自动识别的类型
+
+有以下四个属性：
+
+- getterVisibility：定义getter方法的识别范围。
+- isGetterVisibility：定义is-getter方法的识别范围(boolean类型的getter，很少用)。
+- setterVisibility：定义setter方法的识别范围。
+- creatorVisibility：定义构造器识别范围。
+- fieldVisibility：定义属性识别范围。
+
+识别范围是一个枚举，包括：
+ Visibility.ANY：表示从 private 到 public 修饰，都可识别。
+ Visibility.NON_PRIVATE：表示除 private 修饰不可识别，其他都识别。
+ Visibility.PROTECTED_AND_PUBLIC：protected 和 public都识别。
+ Visibility.PUBLIC_ONLY：仅 public 可见。
+ Visibility.NONE：所有皆不可见。
+ Visibility.DEFAULT：缺省，所有被 public 修饰的属性、 getter 和所有 setter皆可见。
+
+### 2. @JsonFormat：
+
+使用在日期属性上，指定封装与转换格式，例如输出日期格式为yyyy-MM-dd HH:mm:ss，可以设置为
+
+```java
+@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+```
+
+### 3. @JsonIgnore：
+
+使用在属性上，也可以使用在set与get方法上，效果都一样，就是忽视。当我们不希望某些字段出现在json字符串上面时，就可以使用该注解忽视该属性
+
+### 4. @JsonIgnoreProperties：
+使用在类上，当需要忽略的属性过多，可以通过该属性设置，该注解的值是一个字符串集合。
+
+### 5. @JsonInclude：
+作用于类上，用于忽略指定值的字段，例如忽略null的字段
+
+### 6. @JsonSerialize：
+可以用于属性上，一般用于指定某种类型属性使用自定义的序列化器，常用与限制Double类型保留指定小数位数。使用步骤如下：
+
+1）自定义Double序列化器
+
+```java
+//泛型传入Double类型
+public class DoubleJsonExchange  extends JsonSerializer<Double> {
+
+    private DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+    @Override
+    public void serialize(Double aDouble,
+                          JsonGenerator jsonGenerator,
+                          SerializerProvider serializerProvider) throws IOException {
+
+        //保留两位小数（四舍五入）
+        jsonGenerator.writeNumber(decimalFormat.format(aDouble));
+
+    }
+
+
+}
+```
+
+2）指定某个Double属性使用自定义序列器
+
+```java
+    @JsonSerialize(using = DoubleJsonExchange.class)
+    private Double pai = 3.145592654321;
+```
+
+
+
+
+
