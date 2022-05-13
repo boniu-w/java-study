@@ -3327,6 +3327,71 @@ double max = list.stream().mapToDouble(User::getHeight).sum();
 
 
 
+## 8. 取差集
+
+注意两个list 的长度
+
+```java
+	@Test
+    public void chajitest() {
+        Student student = new Student();
+        ArrayList<Student> list1 = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            student = new Student();
+            student.setAge(i);
+            list1.add(student);
+
+        }
+
+        ArrayList<Student> list2 = new ArrayList<>(list1);
+        for (int i = 0; i < 1; i++) {
+            student = new Student();
+            student.setAge(4);
+            list2.add(student);
+        }
+
+        // list2.clear();
+        // student = new Student();
+        // student.setAge(4);
+        // list2.add(student);
+
+        System.out.println("list1  ");
+        list1.forEach(System.out::println);
+        System.out.println("list2  ");
+        list2.forEach(st -> System.out.println(st));
+
+        System.out.println();
+        List<Student> collect = list1.stream()
+                .filter(st -> !list2.contains(st))
+                .collect(Collectors.toList());
+        System.out.println("collect差集  " + collect.size());
+        collect.forEach(System.out::println);
+
+        System.out.println();
+        List<Student> collect2 = list2.stream()
+                .filter(st -> !list1.contains(st))
+                .collect(Collectors.toList());
+        System.out.println("collect2差集  " + collect2.size());
+        collect2.forEach(System.out::println);
+    }
+```
+
+
+
+## 9, 取日期最大值的对象
+
+```java
+lastedExpirationDate = spBasicId$AssessmentLife.get(spBasic.getId())
+                        .stream()
+                        .max(Comparator.comparing(AssessmentLifeExtensionHistoryEntity::getAssessmentDate))
+                        .get()
+                        .getLatestDuetime();
+```
+
+
+
+
+
 # 66. function
 
 
