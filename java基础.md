@@ -154,7 +154,9 @@ public void floatJudge() {
 
 
 
-# 9. 两个list 合并去重
+# 9. List
+
+## 1. 两个list 合并去重
 
 1. 用set
 
@@ -168,6 +170,10 @@ public void floatJudge() {
    ```
 
    如果合并的是对象,注意重写equals和hashcode方法;
+
+## 2. 找出 两个list 相同 元素
+
+
 
 # 10. 将map 转换成实体类
 
@@ -1369,9 +1375,9 @@ date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 3. LocaDateTime 转 Date
 
 ```java
-public static Date localDateTime2Date(LocalDateTime localDateTime) {
-        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-    }
+
+   Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
+  
 
 ```
 
@@ -3076,7 +3082,87 @@ public enum Title {
 
 
 
+## 2. 所有整型包装类对象之间值的比较，全部使用 equals 方法比较。
 
+说明：对于 Integer var = ? 在-128 至 127 之间的赋值，Integer 对象是在 IntegerCache.cache 产生，
+会复用已有对象，这个区间内的 Integer 值可以直接使用==进行判断，但是这个区间之外的所有数据，都
+会在堆上产生，并不会复用已有对象，这是一个大坑，推荐使用 equals 方法进行判断。
+
+
+
+## 3. 任何货币金额，均以最小货币单位且整型类型来进行存储。
+
+
+
+## 4. 浮点数之间的等值判断，基本数据类型不能用==来比较, 包装数据类型不能用 equals
+来判断
+
+正例：
+(1) 指定一个误差范围，两个浮点数的差值在此范围之内，则认为是相等的。
+float a = 1.0f - 0.9f;
+float b = 0.9f - 0.8f;
+float diff = 1e-6f;
+if (Math.abs(a - b) < diff) {
+System.out.println("true");
+}
+(2) 使用 BigDecimal 来定义值，再进行浮点数的运算操作。
+BigDecimal a = new BigDecimal("1.0");
+BigDecimal b = new BigDecimal("0.9");
+BigDecimal c = new BigDecimal("0.8");
+BigDecimal x = a.subtract(b);
+BigDecimal y = b.subtract(c);
+if (x.equals(y)) {
+System.out.println("true");
+}
+
+
+
+## 5. 禁止使用构造方法 BigDecimal(double)的方式把 double 值转化为 BigDecimal 对象。
+
+说明：BigDecimal(double)存在精度损失风险，在精确计算或值比较的场景中可能会导致业务逻辑异常。
+
+如：BigDecimal g = new BigDecimal(0.1f); 实际的存储值为：0.10000000149
+
+
+
+## 6. 【强制】判断所有集合内部的元素是否为空，使用 isEmpty()方法，而不是 size()==0 的方式。
+说明：前者的时间复杂度为 O(1)，而且可读性更好。
+
+
+
+## 7. 【强制】使用集合转数组的方法，必须使用集合的 toArray(T[] array)，传入的是类型完全一
+致、长度为 0 的空数组。
+反例：直接使用 toArray 无参方法存在问题，此方法返回值只能是 Object[]类，若强转其它类型数组将出现
+ClassCastException 错误。
+正例：
+List list = new ArrayList<>(2);
+list.add("guan");
+list.add("bao");
+String[] array = list.toArray(new String[0]);
+说明：使用 toArray 带参方法，数组空间大小的 length，
+1） 等于 0，动态创建与 size 相同的数组，性能最好。
+2） 大于 0 但小于 size，重新创建大小等于 size 的数组，增加 GC 负担。
+3） 等于 size，在高并发情况下，数组创建完成之后，size 正在变大的情况下，负面影响与 2 相同。
+4） 大于 size，空间浪费，且在 size 处插入 null 值，存在 NPE 隐患。
+
+
+
+## 8. 【强制】使用工具类 Arrays.asList()把数组转换成集合时，不能使用其修改集合相关的方法，
+它的 add/remove/clear 方法会抛出 UnsupportedOperationException 异常。
+说明：asList 的返回对象是一个 Arrays 内部类，并没有实现集合的修改方法。Arrays.asList 体现的是适配
+器模式，只是转换接口，后台的数据仍是数组。
+String[] str = new String[] { "yang", "hao" };
+List list = Arrays.asList(str);
+第一种情况：list.add("yangguanbao"); 运行时异常。
+第二种情况：str[0] = "changed"; 也会随之修改，反之亦然
+
+
+
+## 9. 泛型通配符`<? extends T>`来接收返回的数据，此写法的泛型集合不能使用 add 方法，
+而 `<? super T>` 不能使用 get 方法，两者在接口调用赋值的场景中容易出错。
+说明：扩展说一下 PECS(Producer Extends Consumer Super)原则：第一、频繁往外读取内容的，适合用 `<? extends T> `
+
+第二、经常往里插入的，适合用`<? super T>`
 
 # 59. java 命令
 
@@ -3248,8 +3334,6 @@ dictDTOList.stream().filter(item -> {
 
 
 
-
-
 ## 2. sorted()
 
 ```java
@@ -3311,6 +3395,24 @@ detailEntityList = detailEntityList.stream()
 ```java
 Map<String, List<InformationSchema>> collect = informationSchemaDao.selectInformationSchema(tableName).stream().collect(Collectors.groupingBy(InformationSchema::getColumnName));
 ```
+
+
+
+对象的某个字段分组, 然后返回 对象的 某一个字段
+
+```java
+  
+            // 试验压力[MPa]
+            Set<Long> spBasicIds = dtoList.stream().map(InstallationDTO::getSpBasicId).collect(Collectors.toSet());
+            QueryWrapper<BaselinePressureTestEntity> baselinePressureTestEntityQueryWrapper = new QueryWrapper<>();
+            baselinePressureTestEntityQueryWrapper.lambda().in(spBasicIds.size() > 0, BaselinePressureTestEntity::getSpBasicId, spBasicIds);
+            Map<Long, List<BigDecimal>> pressureMap = baselinePressureTestDao
+                    .selectList(baselinePressureTestEntityQueryWrapper)
+                    .stream()
+                    .collect(Collectors.groupingBy(BaselinePressureTestEntity::getSpBasicId, Collectors.mapping(BaselinePressureTestEntity::getPressure, Collectors.toList())));
+```
+
+
 
 
 
@@ -3389,6 +3491,24 @@ lastedExpirationDate = spBasicId$AssessmentLife.get(spBasic.getId())
 ```
 
 
+
+## 10. 分组求和
+
+```java
+ Map<String, IntSummaryStatistics> collect1 = scoreDtos
+                .stream()
+                .collect(Collectors.groupingBy(ScoreDto::getGradeClass, Collectors.summarizingInt(ScoreDto::getScore)));
+```
+
+
+
+## 11. 分组求最小
+
+```java
+ Map<String, Optional<ScoreDto>> collect1 = scoreDtos.stream()
+                .filter(item -> StringUtils.isNotBlank(item.getGradeClass()) && item.getScore() != null)
+                .collect(Collectors.groupingBy(ScoreDto::getGradeClass, Collectors.minBy(Comparator.comparingInt(ScoreDto::getScore))));
+```
 
 
 
@@ -5393,5 +5513,152 @@ public class DoubleJsonExchange  extends JsonSerializer<Double> {
 
 
 
+# 113.  空
 
+```
+null：    表示对象为空
+
+empty：表示对象为空或长度为0
+
+blank： 表示对象为空或长度为0、空格字符串
+```
+
+
+
+# 114. getField() 和 getDeclaredField()
+
+getField:  只能获取public的，包括从父类继承来的字段。
+
+getDeclaredField:  可以获取本类所有的字段，包括private的，但是不能获取继承来的字段
+
+
+
+# 115. setAccessible(true)
+
+使能访问 private 字段的值
+
+
+
+# 116. stringutils
+
+ 
+
+| org.apache.commons.lang3.StringUtils     |                                                       |                                                          |
+| ---------------------------------------- | ----------------------------------------------------- | -------------------------------------------------------- |
+| .center(str, size, patstr)               | 使str 居中                                            | StringUtils.center("wg", 19, "*");                       |
+| .reverse()                               | 颠倒字符串                                            |                                                          |
+| .isNumeric(str)                          | 全由数字组成, 返回true                                |                                                          |
+| .isAlpha(str)                            | 全由字母组成, 返回 true                               |                                                          |
+| .isAlphanumeric(str)                     | 全由数字或字母组成, 返回 true                         |                                                          |
+| .isAlphaspace(str)                       | 全由字母或空格组成, 返回 true                         |                                                          |
+| .countMatches(str1,str2)                 | 取得str2在str1中出现的次数,未发现则返回零             | int i = StringUtils.countMatches("sssfff", "s");         |
+| .ordinalIndexOf(str, searchStr, ordinal) | searchstr 在 str 中, 第 ordinal 次 出现的 位置(index) | int i1 = StringUtils.ordinalIndexOf("22112211", "1", 3); |
+|                                          |                                                       |                                                          |
+|                                          |                                                       |                                                          |
+|                                          |                                                       |                                                          |
+|                                          |                                                       |                                                          |
+|                                          |                                                       |                                                          |
+
+
+
+# 117. biginteger
+
+## 1. BigInteger(int signum, byte[] magnitude)
+
+第一个参数int signum 如果是 1，则代表BigInteger包装的数计算机存储的二进制为正
+第一个参数int signum 如果是 0，则代表BigInteger包装的数为0
+第一个参数Int signum 如果是 -1，则代表BigInteger包装的数计算机存储的二进制为负
+
+
+
+# 118. float double
+
+float: 精确到小数点后6位
+
+double: 精确到小数点后15位
+
+
+
+# 119. Map
+
+## 1. 取 map 值最大的键
+
+1. 第一种方法
+
+```java
+Map<String, Integer> map = new HashMap();
+map.put("1", 8);
+map.put("2", 12);
+map.put("3", 53);
+map.put("4", 33);
+map.put("5", 11);
+map.put("6", 3);
+map.put("7", 3);
+List<Map.Entry<String,Integer>> list = new ArrayList(map.entrySet());
+Collections.sort(list, (o1, o2) -> (o2.getValue() - o1.getValue()));
+```
+
+2. 第二种方法
+
+```java
+//第一种方法
+Map.Entry<Long, Date> entry = longDateHashMap.entrySet()
+                    .stream()
+                    .max(Map.Entry.comparingByValue())
+                    .orElse(null);
+
+            entry.getKey();
+            entry.getValue();
+
+		//第二种方法
+        Optional<Map.Entry<String, Integer>> max1 = map.entrySet()
+                .stream().max((x1, x2) -> Integer.compare(x1.getValue(), x2.getValue()));
+
+ 		//第三种方法
+        Optional<Map.Entry<String, Integer>> max3 = map.entrySet()
+                .stream()
+                .collect(Collectors.maxBy(Map.Entry.comparingByValue()));
+ 
+        //第四种方法
+        Optional<Map.Entry<String, Integer>> max4 = map.entrySet()
+                .stream()
+                .max(Comparator.comparingInt(Map.Entry::getValue));
+ 
+        //第五种方法
+        IntSummaryStatistics max5 = map.entrySet()
+                .stream()
+                .collect(Collectors.summarizingInt(Map.Entry::getValue));
+```
+
+
+
+# 120. LocalDateTime
+
+## 1. 毫秒 转 localdatetime
+
+```
+	/**
+     * 毫秒数 转 日期
+     */
+    public static void toDatetime(Long m){
+        LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(m/1000, 0, ZoneOffset.ofHours(8));
+        System.out.println(localDateTime);
+    }
+```
+
+
+
+# 130. 单精度 双精度
+
+单精度是1位符号，8位指数，23位有效数。
+
+ ![](.\img\danjingdu.png)
+
+双精度是1位符号，11位指数，52位有效数
+
+ ![](.\img\shuangjingdu.png)
+
+ 
+
+# 131. 局部变量 只定义 不赋值 和 定义后赋null
 
