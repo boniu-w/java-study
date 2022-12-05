@@ -1,0 +1,278 @@
+# 1. string
+
+
+
+## 1. string.format()
+
+
+
+| 转换符 | 详细说明                                     | 示例                     |
+| :----- | :------------------------------------------- | :----------------------- |
+| %s     | 字符串类型                                   | “喜欢请收藏”             |
+| %c     | 字符类型                                     | ‘m’                      |
+| %b     | 布尔类型                                     | true                     |
+| %d     | 整数类型（十进制）                           | 88                       |
+| %x     | 整数类型（十六进制）                         | FF                       |
+| %o     | 整数类型（八进制）                           | 77                       |
+| %f     | 浮点类型                                     | 8.888                    |
+| %a     | 十六进制浮点类型                             | FF.35AE                  |
+| %e     | 指数类型                                     | 9.38e+5                  |
+| %g     | 通用浮点类型（f和e类型中较短的）             | 不举例(基本用不到)       |
+| %h     | 散列码                                       | 不举例(基本用不到)       |
+| %%     | 百分比类型                                   | ％(%特殊字符%%才能显示%) |
+| %n     | 换行符                                       | 不举例(基本用不到)       |
+| %tx    | 日期与时间类型（x代表不同的日期与时间转换符) | 不举例(基本用不到)       |
+
+
+
+| 标志               | 说明                                                     | 示例                   | 结果             |
+| :----------------- | :------------------------------------------------------- | :--------------------- | :--------------- |
+| +                  | 为正数或者负数添加符号                                   | (“%+d”,15)             | +15              |
+| 0                  | 数字前面补0(加密常用)                                    | (“%04d”, 99)           | 0099             |
+| 空格               | 在整数之前添加指定数量的空格                             | (“% 4d”, 99)           | 99               |
+| ,                  | 以“,”对数字分组(常用显示金额)                            | (“%,f”, 9999.99)       | 9,999.990000     |
+| (                  | 使用括号包含负数, 把负值去掉负号, 然后用括号包起来       | (“%(f”, -99.99)        | (99.990000)      |
+| #                  | 如果是浮点数则包含小数点，如果是16进制或8进制则添加0x或0 | (“%#x”, 99)(“%#o”, 99) | 0x63 0143        |
+| <                  | 格式化前一个转换符所描述的参数                           | (“%f和%<3.2f”, 99.45)  | 99.450000和99.45 |
+| d,%2$s”, 99,”abc”) | 99,abc                                                   |                        |                  |
+
+
+
+| 标志 | 说明                        | 示例                             |
+| :--- | :-------------------------- | :------------------------------- |
+| %tc  | 包括全部日期和时间信息      | 星期六 十月 27 14:21:20 CST 2007 |
+| %tF  | “年-月-日”格式              | 2007-10-27                       |
+| %tD  | “月/日/年”格式              | 10/27/07                         |
+| %tr  | “HH:MM:SS PM”格式（12时制） | 02:25:51 下午                    |
+| %tT  | “HH:MM:SS”格式（24时制）    | 14:28:16                         |
+| %tR  | “HH:MM”格式（24时制）       | 14:28                            |
+
+转换符	说明	结果
+%tH	小时(00~23)	15
+%tI	小时(01~12)	03
+%tk	小时(0~23)	15
+%tl	小时(1~12)	3
+%tM	分钟(00~59)	35
+%tS	秒(00~59)	55
+%tL	毫秒(000~999)	923
+%tN	9位数微妙(000000000~999999999)	923000000
+%tp	当前语言环境下上午/下午	下午
+%tz	时区	+0800
+%tZ	时区	CST
+%ts	从1970-01-01 00:00:00 到现在的秒	1526196955
+%tQ	从1970-01-01 00:00:00 到现在的毫秒	1526196955923
+
+
+
+转换符	说明	结果
+%tb	指定语言环境下的月份简称	五月
+%tB	指定语言环境下的月份全称	五月
+%ta	指定语言环境下周几的简称	星期日
+%tA	指定语言环境下周几的全称	星期日
+%ty	2位数的年份	18
+%tY	4位数年份	2018
+%tm	月份	05
+%te	一个月中的某一天(1~31)	13
+%td	一个月中的某一天(01~31)	13
+%tj	一年中第几天	133
+
+
+
+### 1. 左对齐
+
+```java
+// 左对齐, 10 是总长度 ; 右对齐的话 改成 %10s
+String.format("%-10s", str)
+```
+
+
+
+## 2. (String)、toString、String.valueOf 的区别
+
+
+
+1. string.valueof 尽量不要用 string.valueof
+
+
+
+```java
+ /*****************************************************
+    * @params:
+    * @description: (String)、toString、String.valueOf 的区别
+    * @author: wg
+    * @date: 2021/8/12 11:46
+    *****************************************************/
+    public static void main(String[] args) {
+        Object s = null;
+
+        System.out.println(String.valueOf(s) == null); // false
+        System.out.println(String.valueOf(s).equals("null")); // true
+
+        if (StringUtils.isBlank(String.valueOf(s))){
+            System.out.println("s is blank");
+        }
+
+        String s1 = (String) s; // 不报异常
+        s.toString(); // 报异常  空指针
+        
+        Object a = new Integer(1);
+        String as = (String) a; // 报异常 ClassCastException  .Integer cannot be cast to java.lang.String
+    }
+```
+
+2. tostring()
+
+   params 是个map, 
+
+```java
+String pipelineNumber =  params.get("pipelineNumber").toString(); // 会报异常
+if (params.containsKey("pipelineNumber") && StringUtils.isNotBlank(pipelineNumber)) {
+
+}
+```
+
+如上例子, 如果 params.get("pipelineNumber") 为 null, 或 params 没有 pipelineNumber 这个key,  那么 在tostring() 这个步骤就会 报错, 下面的if 就不会 运行了
+
+
+
+3. (string) 强转
+
+   ```java
+   String pipelineNumber = (String) params.get("pipelineNumber"); // 不会报异常
+   ```
+
+
+
+## 3. 字符串的最大长度
+
+简单总结
+
+String 的长度是有限制的。
+
+- 编译期的限制：字符串的UTF8编码值的字节数不能超过65535，字符串的长度不能超过65534；
+- 运行时限制：字符串的长度不能超过2^31-1，占用的内存数不能超过虚拟机能够提供的最大值
+
+
+
+### 编译期限制
+
+有JVM虚拟机相关知识的同学肯定知道，下面定义的字符串常量“自由之路”会被放入方法区的常量池中。
+
+```java
+String s = "自由之路";
+System.out.println(s);
+```
+
+Stirng 长度之所以会受限制，是因JVM规范对常量池有所限制。常量池中的每一种数据项都有自己的类型。Java中的UTF-8编码的Unicode字符串在常量池中以CONSTANT_Utf8类型表示。
+
+CONSTANT_Utf8的数据结构如下：
+
+```
+CONSTANT_Utf8_info {
+    u1 tag;
+    u2 length;
+    u1 bytes[length];
+}
+```
+
+我们重点关注下长度为 length 的那个bytes数组，这个数组就是真正存储常量数据的地方，而 length 就是数组可以存储的最大字节数。length 的类型是u2，u2是无符号的16位整数，因此理论上允许的的最大长度是2^16-1=65535。所以上面byte数组的最大长度可以是65535。
+
+```java
+//65535个d，编译报错
+String s = "dd..dd";
+
+//65534个d，编译通过
+String s1 = "dd..d";
+```
+
+上面的列子中长度为65535的字符串s还是编译失败了，但是长度为65534的字符串 s1 编译是成功的。这个好像和我们刚刚的结论不符合。
+
+其实，这是Javac编译器的额外限制。在Javac的源代码中可以找到以下代码：
+
+```java
+private void checkStringConstant(DiagnosticPosition var1, Object var2) {
+    if (this.nerrs == 0 && var2 != null && var2 instanceof String &&   ((String)var2).length() >= 65535) {
+        this.log.error(var1, "limit.string", new Object[0]);
+        ++this.nerrs;
+    }
+}
+```
+
+代码中可以看出，当参数类型为String，并且长度大于等于65535的时候，就会导致编译失败。
+
+这里需要重点强调下的是：String 的限制还有一个部分，那就是对字符串底层存储的字节数的限制。**也就是说：在编译时，一个字符串的长度大于等于65535或者底层存储占用的字节数大于65535时就会报错**。这句话可能比较抽象，下面举个列子就清楚了。
+
+Java中的字符常量都是使用UTF8编码的，UTF8编码使用1~4个字节来表示具体的Unicode字符。所以有的字符占用一个字节，而我们平时所用的大部分中文都需要3个字节来存储。
+
+```java
+//65534个字母，编译通过
+String s1 = "dd..d";
+
+//21845个中文”自“,编译通过
+String s2 = "自自...自";
+
+//一个英文字母d加上21845个中文”自“，编译失败
+String s3 = "d自自...自";
+```
+
+对于s1，一个字母d的UTF8编码占用一个字节，65534字母占用65534个字节，长度是65534，长度和存储都没超过限制，所以可以编译通过。
+
+对于s2，一个中文占用3个字节，21845个正好占用65535个字节，而且字符串长度是21845，长度和存储也都没超过限制，所以可以编译通过。
+
+对于s3，一个英文字母d加上21845个中文”自“占用65536个字节，超过了存储最大限制，编译失败。
+
+### 运行时限制
+
+String 运行时的限制主要体现在 String 的构造函数上。下面是 String 的一个构造函数：
+
+```java
+public String(char value[], int offset, int count) {
+    ...
+}
+```
+
+上面的count值就是字符串的最大长度。在Java中，int的最大长度是2^31-1。所以在运行时，String 的最大长度是2^31-1。
+
+但是这个也是理论上的长度，实际的长度还要看你JVM的内存。我们来看下，最大的字符串会占用多大的内存。
+
+```
+(2^31-1)*2*16/8/1024/1024/1024 = 4GB
+
+```
+
+所以在最坏的情况下，一个最大的字符串要占用4GB的内存。如果你的虚拟机不能分配这么多内存的话，会直接报错的。
+
+JDK9以后对String的存储进行了优化。底层不再使用char数组存储字符串，而是使用byte数组。对于LATIN1字符的字符串可以节省一倍的
+
+
+
+## 4.  isNotBlank, isEmpty (org.apache.commons.lang3)
+
+isEmpty判断的范围更小
+
+isNotBlank 还检查了 空白字符
+
+```java
+/** It is a Unicode space character ({@link #SPACE_SEPARATOR},
+*      {@link #LINE_SEPARATOR}, or {@link #PARAGRAPH_SEPARATOR})
+*      but is not also a non-breaking space ({@code '\u005Cu00A0'},
+*      {@code '\u005Cu2007'}, {@code '\u005Cu202F'}).  
+*/
+public static boolean isBlank(CharSequence cs) {
+        int strLen;
+        if (cs != null && (strLen = cs.length()) != 0) {
+            for(int i = 0; i < strLen; ++i) {
+                if (!Character.isWhitespace(cs.charAt(i))) {
+                    return false;
+                }
+            }
+
+            return true;
+        } else {
+            return true;
+        }
+    }
+```
+
+
+

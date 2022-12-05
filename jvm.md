@@ -66,3 +66,18 @@ LoadLibrary装载jvm.dll动态连接库．然后把jvm.dll中的导出函数JNI_
 ​    java程序有两种方式一种是jar包，一种是class. 运行jar,java -jar XXX.jar运行的时候，java.exe调用GetMainClassName函数，该函数先获得JNIEnv实例然后调用java类java.util.jar.JarFileJNIEnv中方法getManifest()并从返回的Manifest对象中取getAttributes("Main-Class")的值即jar包中文件：META-INF/MANIFEST.MF指定的Main-Class的主类名作为运行的主类。之后main函数会调用java.c中LoadClass方法装载该主类（使用JNIEnv实例的FindClass）。main函数直接调用java.c中LoadClass方法装载该类。如果是执行class方法。main函数直接调用java.c中LoadClass方法装载该类。
 
 ​    然后main函数调用JNIEnv实例的GetStaticMethodID方法查找装载的class主类中 "public static void main(String[] args)"方法，并判断该方法是否为public方法，然后调用JNIEnv实例的CallStaticVoidMethod方法调用该java类的main方法
+
+
+
+# jps
+
+
+
+ 
+
+| command |             |      |
+| ------- | ----------- | ---- |
+| jps -v  | 列出jvm参数 |      |
+|         |             |      |
+|         |             |      |
+

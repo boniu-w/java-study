@@ -107,3 +107,15 @@ Spring在创建Bean的过程中分为三步
 
 
 ![](.\img\create-bean.png)
+
+
+
+
+
+# 2. spring 配置
+
+
+
+# 3. spring 问题
+
+1. add springbootapplication to classpath

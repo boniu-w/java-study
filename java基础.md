@@ -3512,6 +3512,63 @@ lastedExpirationDate = spBasicId$AssessmentLife.get(spBasic.getId())
 
 
 
+## 12. 根据某个字段去重
+
+```java
+ songList = songList.stream()
+                .collect(
+                        Collectors.collectingAndThen(
+                                Collectors.toCollection(
+                                        () -> new TreeSet<>(
+                                                Comparator.comparing(t -> t.getHexHash())
+                                        )
+                                ), ArrayList::new)
+                );
+```
+
+
+
+## 13. 相同部分
+
+```java
+           List<Song> listSame = songList.stream()
+                    .filter(song ->
+                            songs.stream()
+                                    .map(Song::getHexHash)
+                                    .collect(Collectors.toList())
+                                    .contains(song.getHexHash())
+                                    &&
+                                    songs.stream()
+                                            .map(Song::getLocation)
+                                            .collect(Collectors.toList())
+                                            .contains(song.getLocation())
+                    )
+                    .collect(Collectors.toList());
+```
+
+
+
+## 14. 不同部分, 对象的某个属性不同
+
+```java
+                // List<Song> databaseSongs
+				List<Song> listDiff = songList.stream()
+                    .filter(song ->
+                            !databaseSongs.stream()
+                                    .map(Song::getHexHash)
+                                    .collect(Collectors.toList())
+                                    .contains(song.getHexHash())
+                                    ||
+                                    !databaseSongs.stream()
+                                            .map(Song::getLocation)
+                                            .collect(Collectors.toList())
+                                            .contains(song.getLocation())
+                    )
+                    .collect(Collectors.toList());
+```
+
+
+
 # 66. function
 
 
@@ -3559,7 +3616,7 @@ lastedExpirationDate = spBasicId$AssessmentLife.get(spBasic.getId())
 | 0                  | 数字前面补0(加密常用)                                    | (“%04d”, 99)           | 0099             |
 | 空格               | 在整数之前添加指定数量的空格                             | (“% 4d”, 99)           | 99               |
 | ,                  | 以“,”对数字分组(常用显示金额)                            | (“%,f”, 9999.99)       | 9,999.990000     |
-| (                  | 使用括号包含负数                                         | (“%(f”, -99.99)        | (99.990000)      |
+| (                  | 使用括号包含负数, 把负值去掉负号, 然后用括号包起来       | (“%(f”, -99.99)        | (99.990000)      |
 | #                  | 如果是浮点数则包含小数点，如果是16进制或8进制则添加0x或0 | (“%#x”, 99)(“%#o”, 99) | 0x63 0143        |
 | <                  | 格式化前一个转换符所描述的参数                           | (“%f和%<3.2f”, 99.45)  | 99.450000和99.45 |
 | d,%2$s”, 99,”abc”) | 99,abc                                                   |                        |                  |
@@ -4418,13 +4475,340 @@ classpath:mapper/*.xml
 
 > `https://www.cnblogs.com/warking/p/5710303.html`
 
+1. springboot 配置文件的加载顺序
+
+   ```
+   logback.xml -> application.properties -> logback-spring.xml
+   ```
+
+2. 日志级别
+
+   ```
+   all > trace > debug > info > warn > error > fatal > off
+   ```
+
+3. logback-spring.xml 的配置项
+
+   ```
+   一个父标签: configuration
+   两种属性: contextName, property
+   三个节点: appender, root, logger
+   ```
+
+4. 一个父标签 configuration
+
+   ```xml
+   <configuration>
+     <appender> </appender>
+     <root> </root>
+     <logger> </logger>
+   </configuration>
+   ```
+
+   
+
+   ```xml
+   <!--
+   1. scan
+   当此属性设置为true时，配置文件如果发生改变，将会被重新加载，默认值为true
+   2. scanPeriod
+   设置监测配置文件是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。当scan为true时，此属性生效。默认的时间间隔为1分钟。
+   3. debug
+   当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。
+   -->
+   <configuration  scan="true" scanPeriod="10 seconds" debug="false">
+   </configuration>
+   ```
+
+5. 两种属性
+
+   5.1 contextName
+
+6. 三个节点
+
+   6.1 appender
+
+   ```xml
+   <!--
+   appender的意思是追加器，在这里可以理解为一个日志的渲染器（或者说格式化日志输出）。比如渲染console日志为某种格式，渲染文件日志为另一种格式。
+   appender中有name和class两个属性，有rollingPolicy和encoder两个子节点
+   name表示该渲染器的名字，class表示使用的输出策略，常见的有控制台输出策略和文件输出策略
+   -->
+    <appender name="" class="">
+           <encoder class="">            
+           </encoder>
+           
+           <rollingPlcicy class="">       
+           </rollingPlcicy>
+   </appender>
+   ```
+
+   6.1.1 encoder: 表示输出的格式
+
+   ```tex
+   %d表示时间
+   %thread表示线程名
+   %-5level 表示日志级别，允许以五个字符长度输出
+   %logger{50}表示具体的日志输出者，比如类名，括号内表示长度
+   %msg表示具体的日志消息，就是logger.info("xxx")中的xxx
+   %n表示换行
+   ```
+
+   ```xml
+     <encoder>
+       <pattern>%d{MM-dd-yyyy HH:mm:ss.SSS} [%thread] %highlight(%-5level) %cyan(%logger{50}:%L) - %msg%n</pattern>
+       <!-- 设置字符集 -->
+       <charset>UTF-8</charset>
+     </encoder>
+   ```
+   6.2 root 节点实际上是配置启用哪种appender，可以添加多个appender
+
+   ```xml
+   <!--root配置必须在appender下边-->
+   <!--root节点是对所有appender的管理,添加哪个appender就会打印哪个appender的日志-->
+   <!--root节点的level是总的日志级别控制,如果appender的日志级别设定比root的高,会按照appender的日志级别打印日志,-->
+   <!--如果appender的日志级别比root的低,会按照root设定的日志级别进行打印日志-->
+   <!--也就是说root设定的日志级别是最低限制,如果root设定级别为最高ERROR,那么所有appender只能打印最高级别的日志-->
+   <root level="DEBUG">
+     <appender-ref ref="CONSOLE" />
+     <appender-ref ref="DEBUG_FILE" />
+     <appender-ref ref="INFO_FILE" />
+     <appender-ref ref="WARN_FILE" />
+     <appender-ref ref="ERROR_FILE" />
+   </root>
+   ```
+
+   6.3 logger 对单个包或类添加配置：
+
+   ```xml
+   <!--
+       name:用来指定受此loger约束的某一个包或者具体的某一个类。
+       addtivity:是否向上级loger传递打印信息。默认是true。
+   -->
+   <!-- logback为 com.pikaqiu.logbackdemo 中的包 -->
+   <logger name="com.pikaqiu.logbackdemo" level="debug" additivity="false">
+     <appender-ref ref="CONSOLE" />
+   </logger>
+   
+   <!-- logback为 com.pikaqiu.logbackdemo.LogbackdemoApplicationTests 这个类 -->
+   <logger name="com.pikaiqu.logbackdemo.LogbackdemoApplicationTests" level="INFO" additivity="true">
+     <appender-ref ref="STDOUT"/>
+   </logger>
+   ```
+
+
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL，如果设置为WARN，则低于WARN的信息都不会输出 -->
+<!-- scan:当此属性设置为true时，配置文档如果发生改变，将会被重新加载，默认值为true -->
+<!-- scanPeriod:设置监测配置文档是否有修改的时间间隔，如果没有给出时间单位，默认单位是毫秒。
+                 当scan为true时，此属性生效。默认的时间间隔为1分钟。 -->
+<!-- debug:当此属性设置为true时，将打印出logback内部日志信息，实时查看logback运行状态。默认值为false。 -->
+<configuration  scan="true" scanPeriod="10 seconds">
+    <contextName>logback</contextName>
+ 
+    <!-- name的值是变量的名称，value的值时变量定义的值。通过定义的值会被插入到logger上下文中。定义后，可以使“${}”来使用变量。 -->
+    <property name="log.path" value="G:/logs/pmp" />
+ 
+    <!--0. 日志格式和颜色渲染 -->
+    <!-- 彩色日志依赖的渲染类 -->
+    <conversionRule conversionWord="clr" converterClass="org.springframework.boot.logging.logback.ColorConverter" />
+    <conversionRule conversionWord="wex" converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter" />
+    <conversionRule conversionWord="wEx" converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter" />
+    <!-- 彩色日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+ 
+    <!--1. 输出到控制台-->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!--此日志appender是为开发使用，只配置最底级别，控制台输出的日志级别是大于或等于此级别的日志信息-->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>debug</level>
+        </filter>
+        <encoder>
+            <Pattern>${CONSOLE_LOG_PATTERN}</Pattern>
+            <!-- 设置字符集 -->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+ 
+    <!--2. 输出到文档-->
+    <!-- 2.1 level为 DEBUG 日志，时间滚动输出  -->
+    <appender name="DEBUG_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文档的路径及文档名 -->
+        <file>${log.path}/web_debug.log</file>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset> <!-- 设置字符集 -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 日志归档 -->
+            <fileNamePattern>${log.path}/web-debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <!-- 此日志文档只记录debug级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>debug</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+ 
+    <!-- 2.2 level为 INFO 日志，时间滚动输出  -->
+    <appender name="INFO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文档的路径及文档名 -->
+        <file>${log.path}/web_info.log</file>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 每天日志归档路径以及格式 -->
+            <fileNamePattern>${log.path}/web-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <!-- 此日志文档只记录info级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>info</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+ 
+    <!-- 2.3 level为 WARN 日志，时间滚动输出  -->
+    <appender name="WARN_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文档的路径及文档名 -->
+        <file>${log.path}/web_warn.log</file>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/web-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <!-- 此日志文档只记录warn级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>warn</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+ 
+    <!-- 2.4 level为 ERROR 日志，时间滚动输出  -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 正在记录的日志文档的路径及文档名 -->
+        <file>${log.path}/web_error.log</file>
+        <!--日志文档输出格式-->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+            <charset>UTF-8</charset> <!-- 此处设置字符集 -->
+        </encoder>
+        <!-- 日志记录器的滚动策略，按日期，按大小记录 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/web-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>100MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+            <!--日志文档保留天数-->
+            <maxHistory>15</maxHistory>
+        </rollingPolicy>
+        <!-- 此日志文档只记录ERROR级别的 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+ 
+    <!--
+        <logger>用来设置某一个包或者具体的某一个类的日志打印级别、
+        以及指定<appender>。<logger>仅有一个name属性，
+        一个可选的level和一个可选的addtivity属性。
+        name:用来指定受此logger约束的某一个包或者具体的某一个类。
+        level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
+              还有一个特俗值INHERITED或者同义词NULL，代表强制执行上级的级别。
+              如果未设置此属性，那么当前logger将会继承上级的级别。
+        addtivity:是否向上级logger传递打印信息。默认是true。
+        <logger name="org.springframework.web" level="info"/>
+        <logger name="org.springframework.scheduling.annotation.ScheduledAnnotationBeanPostProcessor" level="INFO"/>
+    -->
+   <!-- hibernate logger -->
+   <logger name="com.atguigu" level="debug" />
+   <!-- Spring framework logger -->
+   <logger name="org.springframework" level="debug" additivity="false"></logger>
+ 
+ 
+    <!--
+        使用mybatis的时候，sql语句是debug下才会打印，而这里我们只配置了info，所以想要查看sql语句的话，有以下两种操作：
+        第一种把<root level="info">改成<root level="DEBUG">这样就会打印sql，不过这样日志那边会出现很多其他消息
+        第二种就是单独给dao下目录配置debug模式，代码如下，这样配置sql语句会打印，其他还是正常info级别：
+        【logging.level.org.mybatis=debug logging.level.dao=debug】
+     -->
+ 
+    <!--
+        root节点是必选节点，用来指定最基础的日志输出级别，只有一个level属性
+        level:用来设置打印级别，大小写无关：TRACE, DEBUG, INFO, WARN, ERROR, ALL 和 OFF，
+        不能设置为INHERITED或者同义词NULL。默认是DEBUG
+        可以包含零个或多个元素，标识这个appender将会添加到这个logger。
+    -->
+ 
+    <!-- 4. 最终的策略 -->
+    <!-- 4.1 开发环境:打印控制台-->
+    <springProfile name="dev">
+        <logger name="com.sdcm.pmp" level="debug"/>
+    </springProfile>
+ 
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="DEBUG_FILE" />
+        <appender-ref ref="INFO_FILE" />
+        <appender-ref ref="WARN_FILE" />
+        <appender-ref ref="ERROR_FILE" />
+    </root>
+ 
+    <!-- 4.2 生产环境:输出到文档
+    <springProfile name="pro">
+        <root level="info">
+            <appender-ref ref="CONSOLE" />
+            <appender-ref ref="DEBUG_FILE" />
+            <appender-ref ref="INFO_FILE" />
+            <appender-ref ref="ERROR_FILE" />
+            <appender-ref ref="WARN_FILE" />
+        </root>
+    </springProfile> -->
+ 
+</configuration>
+```
+
+
+
 
 
 # 79. Integer
 
-Integer.getInteger()
+1. Integer.getInteger() : 并不是将字符串转成整型, 底层调用的是 system.getProperty(), 其实是获取的系统属性
 
-Integer.vauluOf()
+2. Integer.vauluOf() : 转成 Integer
+3. Integer.parseInt(string s) : 将字符串 转成 基础类型 int
 
 
 
@@ -5661,4 +6045,75 @@ Map.Entry<Long, Date> entry = longDateHashMap.entrySet()
  
 
 # 131. 局部变量 只定义 不赋值 和 定义后赋null
+
+
+
+
+
+# 132. 事务的失效
+
+1. 数据库不支持, 例如 数据库引擎为 MyISAM 
+
+2. 没有被spring管理
+
+   ```
+   // @Service
+   public class OrderServiceImpl implements OrderService {
+   
+       @Transactional
+       public void updateOrder(Order order) {
+           // update order
+       }
+   
+   }
+   ```
+
+3. 方法不是 public
+
+4. 异常被吃
+
+   ```
+   @Service
+   public class OrderServiceImpl implements OrderService {
+   
+       @Transactional
+       public void updateOrder(Order order) {
+           try {
+               // update order
+           } catch {
+   
+           }
+       }
+   
+   }
+   ```
+
+   
+
+
+
+# 133. 校验 Validator 
+
+```
+@Null 被注释的元素必须为 null
+@NotNull 被注释的元素必须不为 null
+@AssertTrue 被注释的元素必须为 true
+@AssertFalse 被注释的元素必须为 false
+@Min(value) 被注释的元素必须是一个数字，其值必须大于等于指定的最小值
+@Max(value) 被注释的元素必须是一个数字，其值必须小于等于指定的最大值
+@DecimalMin(value) 被注释的元素必须是一个数字，其值必须大于等于指定的最小值
+@DecimalMax(value) 被注释的元素必须是一个数字，其值必须小于等于指定的最大值
+@Size(max=, min=) 被注释的元素的大小必须在指定的范围内
+@Digits (integer, fraction) 被注释的元素必须是一个数字，其值必须在可接受的范围内
+@Past 被注释的元素必须是一个过去的日期
+@Future 被注释的元素必须是一个将来的日期
+@Pattern(regex=,flag=) 被注释的元素必须符合指定的正则表达式
+ 
+Hibernate Validator提供的校验注解：
+@NotBlank(message =) 验证字符串非null，且长度必须大于0
+@Email 被注释的元素必须是电子邮箱地址
+@Length(min=,max=) 被注释的字符串的大小必须在指定的范围内
+@NotEmpty 被注释的字符串的必须非空
+@Range(min=,max=,message=) 被注释的元素必须在合适的范围内
+```
 
