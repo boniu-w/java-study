@@ -43,4 +43,19 @@
 
 5. 
 
-   
+
+
+
+# 2. 配置问题
+
+1. 优先级问题
+
+ ```
+1. extension 的优先级 高于 shared , 也就是 extension 加载晚于 shared 
+2. 若同为 shared 或 extension 配置, 则位于下面的优先级高, 也就是, 下面的晚加载, 会覆盖上面的配置
+3. ${spring.application.name} - ${spring.profies.active} 优先级最高, 也就是最后加载, 会覆盖前面的配置
+
+ ```
+
+​	
+
