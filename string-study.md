@@ -276,3 +276,49 @@ public static boolean isBlank(CharSequence cs) {
 
 
 
+# 2. json string
+
+```java
+    /************************************************************************
+     * @author: wg
+     * @description:
+     * 1. jsonArray alibaba
+     * 2. list 平均值
+     * 3. jsonObject alibaba
+     * @params:
+     * @return:
+     * @createTime: 11:01  2023/1/10
+     * @updateTime: 11:01  2023/1/10
+     ************************************************************************/
+    @Test
+    public void testJsonArray() {
+        String jsonString = "[{\"key\":2,\"sectionCode\":\"M2\",\"c1\":\"222\",\"min\":222,\"c2\":\"222\"},{\"key\":1,\"sectionCode\":\"M1\",\"min\":333,\"c1\":\"333\",\"c2\":\"333\"},{\"sectionCode\":\"最小值\",\"c1\":222,\"min\":222,\"c2\":222}]";
+        JSONArray jsonArray = JSON.parseArray(jsonString);
+
+        System.out.println(jsonArray);
+
+        ArrayList<Double> mins = new ArrayList<>();
+        ArrayList<Double> cs = new ArrayList<>();
+        for (Object o : jsonArray) {
+            JSONObject jsonObject = JSON.parseObject(o.toString());
+            Map<String, Object> innerMap = jsonObject.getInnerMap();
+            if (innerMap.containsKey("key")) {
+                double min = jsonObject.getDouble("min");
+                mins.add(min);
+            } else {
+                double c1 = jsonObject.getDouble("c1");
+                double c2 = jsonObject.getDouble("c2");
+                cs.add(c1);
+                cs.add(c2);
+            }
+        }
+
+        double ma = mins.stream().mapToDouble(Double::valueOf).average().getAsDouble();
+        double ca = cs.stream().mapToDouble(Double::valueOf).average().getAsDouble();
+
+        System.out.println();
+        System.out.println(ma);
+        System.out.println(ca);
+    }
+```
+
