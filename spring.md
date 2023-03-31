@@ -1,4 +1,4 @@
-#### 1. spring解决了哪些问题,如果不用spring,会有什么情况,
+# 1. spring解决了哪些问题,如果不用spring,会有什么情况,
 
 如果现在的开发使用了纯粹的JSP+Servlet+JDBC开发，代码的确是最简单的，但是带来的后续结果就是维护麻烦，而且不停的自己处理所有的操作关系，写出的反射应用，开发与维护成本太高了
 
@@ -20,7 +20,7 @@
 
 3.在控制层里面依然需要业务层工厂类取得相应的对象信息。
 
-#### 2. 怎么理解spring 容器 这个概念
+# 2. 怎么理解spring 容器 这个概念
 
 它解决了横切面编程以及注入编程的窘境,各个框架之间的整合操作是一个的问题，而Spring解决了这个问题,也就是说最早的Spring提供的是一个工厂设计模式，同时也提供了不同开发框架的资源整合。
 
@@ -90,7 +90,7 @@ spring编程 = Factory设计模式 + Proxy设计模式。
 
 
 
-# 1. spring bean
+# 3. spring bean
 
 Spring在创建Bean的过程中分为三步
 
@@ -110,12 +110,20 @@ Spring在创建Bean的过程中分为三步
 
 
 
+## 2. bean 的生命周期
+
+1. spring扫描scan指定的包下添加了Component等注解的类
+2. 为这些类创建一个BeanDefinition的子类对象，这个子类对象包含这个类的一些基本信息如类名称、描述、构造器参数、是否需要延迟加载等等
+3. 将这个子类对象放到Spring的单例池（是一个map）中，
+4. 通过for循环获取BeanDefinition子类对象的构成的map中的子类对象，查看这个类的基本信息，进行验证，如果需要创建对象，就调用prestantiateSingletons将此类new出来，放到Spring单例池中。
+
+# 4. spring 配置
 
 
-# 2. spring 配置
 
-
-
-# 3. spring 问题
+# 5. spring 问题
 
 1. add springbootapplication to classpath
+
+
+

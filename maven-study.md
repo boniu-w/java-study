@@ -225,3 +225,82 @@ Process finished with exit code 0
 
 
 
+# 2. maven 加载 配置的顺序
+
+Maven 加载配置的顺序如下：
+
+1. 全局配置文件 settings.xml
+
+Maven 首先加载全局配置文件 settings.xml，它位于 Maven 安装目录的 conf 子目录中。该文件包含全局配置选项，如本地仓库位置、代理服务器、安全设置等。这些配置选项对所有 Maven 项目都生效。
+
+1. 用户级配置文件 settings.xml
+
+接下来，Maven 加载用户级配置文件 settings.xml，它位于用户主目录的 .m2 子目录中。用户级配置文件的作用类似于全局配置文件，不同之处在于它仅适用于当前用户的所有 Maven 项目。
+
+1. 项目级配置文件 pom.xml
+
+如果 Maven 在前两个步骤中找不到所需的配置选项，它将查找项目级配置文件 pom.xml。该文件是 Maven 项目的核心配置文件，包含项目的依赖关系、插件、构建配置等。在 pom.xml 文件中，您可以指定各种配置选项，如依赖版本、编译器版本、源代码目录等。
+
+1. 命令行参数
+
+最后，如果 Maven 在前三个步骤中找不到所需的配置选项，它将查找命令行参数中是否指定了相关选项。例如，您可以通过以下命令行参数设置 Maven 日志级别：
+
+```lua
+mvn -Dorg.slf4j.simpleLogger.defaultLogLevel=debug
+```
+
+这样，Maven 将以 debug 级别输出日志信息。
+
+总体来说，Maven 遵循“就近原则”（the nearest definition），即优先使用最接近的配置文件中的选项。因此，如果存在多个配置文件中的相同选项，Maven 将使用最后定义的选项。
+
+
+
+#  3. maven 加载依赖的顺序
+
+Maven 加载依赖的顺序如下：
+
+1. 本地仓库
+
+Maven 首先检查本地仓库中是否已经存在所需的依赖。本地仓库通常位于用户主目录的 .m2 子目录中，它是 Maven 下载和缓存所有依赖项的地方。如果本地仓库中已经存在所需的依赖，Maven 将直接使用它，不会重新下载。
+
+1. 远程仓库
+
+如果本地仓库中不存在所需的依赖，Maven 将检查配置的远程仓库（或中央仓库）中是否有该依赖。Maven 遍历所有配置的远程仓库，按照顺序依次查询，直到找到所需的依赖为止。如果远程仓库中存在所需的依赖，Maven 将下载并缓存它到本地仓库中。
+
+1. 依赖传递
+
+当 Maven 下载并缓存所需的依赖后，它将检查这些依赖的传递依赖关系。也就是说，Maven 将查找这些依赖所依赖的其他依赖，并按照相同的顺序加载它们。这个过程可能会涉及到多层依赖传递，因此 Maven 需要按照正确的顺序加载依赖，以保证所有依赖都能够正确地加载和使用。
+
+总体来说，Maven 的依赖加载顺序遵循“依赖传递”和“就近原则”。也就是说，Maven 首先尝试在本地仓库中查找所需的依赖，如果找不到再去远程仓库查找。对于多个远程仓库，Maven 按照配置的顺序依次查询，直到找到所需的依赖为止。在加载依赖的过程中，Maven 还会根据依赖传递关系和就近原则确定依赖的顺序。
+
+
+
+# 4. maven 命令
+
+```
+mvn -v //查看版本 
+mvn archetype:create //创建 Maven 项目 
+mvn compile //编译源代码 
+mvn test-compile //编译测试代码 
+mvn test //运行应用程序中的单元测试 
+mvn site //生成项目相关信息的网站 
+mvn package //依据项目生成 jar 文件 
+mvn install //在本地 Repository 中安装 jar 
+mvn -Dmaven.test.skip=true //忽略测试文档编译 
+mvn clean //清除目标目录中的生成结果 
+mvn clean compile //将.java类编译为.class文件 
+mvn clean package //进行打包 
+mvn clean test //执行单元测试 
+mvn clean deploy //部署到版本仓库 
+mvn clean install //使其他项目使用这个jar,会安装到maven本地仓库中 
+mvn archetype:generate //创建项目架构 
+mvn dependency:list //查看已解析依赖 
+mvn dependency:tree com.xx.xxx //看到依赖树 
+mvn dependency:analyze //查看依赖的工具 
+mvn help:system //从中央仓库下载文件至本地仓库 
+mvn help:active-profiles //查看当前激活的profiles 
+mvn help:all-profiles //查看所有profiles 
+mvn help:effective -pom //查看完整的pom信息
+
+```
+
