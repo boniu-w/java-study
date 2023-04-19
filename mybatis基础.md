@@ -213,4 +213,22 @@ Mybatis                                  java                                   
 
 
 
+# 6. resultSetType
 
+
+
+当使用MyBatis进行数据库操作时，查询结果可以被映射到Java对象中，以便于进行后续的业务处理。ResultSetType就是用来指定查询结果集的类型，以及结果集是否对数据库中数据的更改敏感。
+
+1. ResultSetType.FORWARD_ONLY
+
+ResultSetType.FORWARD_ONLY是默认的结果集类型，它表示结果集只能向前遍历，不能滚动或后退。这种类型的结果集只包含一次性读取的记录，因此在内存占用和查询性能方面具有优势。如果不需要在结果集中进行滚动或后退，可以使用该类型。
+
+1. ResultSetType.SCROLL_SENSITIVE
+
+ResultSetType.SCROLL_SENSITIVE表示结果集对数据库中数据的更改敏感。这种类型的结果集可以在迭代过程中通过ResultSet对象访问当前行，并且可以更改当前行的数据。此外，当数据库中的数据发生更改时，该结果集也会反映这些更改。这种类型的结果集需要更多的资源，因此应该谨慎使用。
+
+1. ResultSetType.SCROLL_INSENSITIVE
+
+ResultSetType.SCROLL_INSENSITIVE表示结果集不对数据库中数据的更改敏感。这种类型的结果集在迭代过程中也可以通过ResultSet对象访问当前行，但是无法更改当前行的数据，也不会反映数据库中的更改。该类型的结果集比SCROLL_SENSITIVE类型的结果集更加高效。
+
+需要注意的是，ResultSetType的取值可能会因数据库类型或驱动程序的不同而受到限制。在使用时需要查看相关文档，以确保选择正确的ResultSetType。
