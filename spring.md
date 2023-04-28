@@ -146,7 +146,7 @@ spring编程 = Factory设计模式 + Proxy设计模式。
 
 # 3. spring bean
 
-Spring在创建Bean的过程中分为三步
+## 1. Spring在创建Bean的过程中分为三步
 
 1. 实例化，对应方法：`AbstractAutowireCapableBeanFactory`中的`createBeanInstance`方法
 2. 属性注入，对应方法：`AbstractAutowireCapableBeanFactory`的`populateBean`方法
@@ -170,6 +170,22 @@ Spring在创建Bean的过程中分为三步
 2. 为这些类创建一个BeanDefinition的子类对象，这个子类对象包含这个类的一些基本信息如类名称、描述、构造器参数、是否需要延迟加载等等
 3. 将这个子类对象放到Spring的单例池（是一个map）中，
 4. 通过for循环获取BeanDefinition子类对象的构成的map中的子类对象，查看这个类的基本信息，进行验证，如果需要创建对象，就调用prestantiateSingletons将此类new出来，放到Spring单例池中。
+
+## 3. 静态代码块的加载时机
+
+静态代码块是类中一种特殊的代码块，它会在类被加载时执行，且只会执行一次。静态代码块可以用于进行类的初始化工作，例如初始化类的static成员变量。
+
+静态代码块的加载时机可以分为以下几种情况：
+
+1. 在类被主动引用时，如果还没有被初始化，则会先触发类的初始化工作，静态代码块也会被执行。
+2. 当一个子类在初始化时，发现父类还没有被初始化，则会触发父类的初始化工作，静态代码块也会被执行。
+3. Java虚拟机启动时，如果定义了main函数所在的类，则会触发这个类的初始化工作，静态代码块也会被执行。
+
+需要注意的是，如果一个类的某个静态代码块抛出了异常，那么这个类的初始化工作就会中止，同时也会导致整个程序的崩溃。因此，在编写静态代码块时，应该确保代码的正确性并处理好可能出现的异常情况。
+
+## 4. @PostConstruct 的加载时机
+
+@PostConstruct方法的作用是在对象依赖注入完成后执行一些初始化工作，这个过程发生在对象初始化完成之后、初始化方法执行之前。
 
 # 4. spring 配置
 
@@ -196,3 +212,221 @@ Apache Tapestry：Tapestry 是一个基于组件化编程的 Web 框架，它使
 Play Framework：Play 是一个基于 Akka 和 Scala 语言的 Web 框架，它使用响应式编程的思想，实现了高并发、高可伸缩性和低延迟的 Web 应用程序。
 
 这些框架各有特点和适用场景，可以根据具体的需求和技术栈进行选择和使用。
+
+
+
+
+
+# 7. 注解分析
+
+## 1. @Primary
+
+   @Primary注解用于在Spring框架中标识默认的Bean。例如，在一个注入多个相同类型Bean的场景下，通过@Primary注解标识默认Bean可以方便地进行自动装配。
+
+   举个例子，假设我们有两个实现了同一接口的类A和B，我们在另一个类C中注入这两个类：
+
+   ```java
+   @Component
+   public class A implements MyInterface {
+       // implementation
+   }
+   
+   @Component
+   @Primary
+   public class B implements MyInterface {
+       // implementation
+   }
+   
+   @Component
+   public class C {
+       @Autowired
+       private MyInterface myInterface;
+   }
+   ```
+
+   在这个例子中，B被标识为默认的Bean，因此在C中自动注入的是B而不是A。如果没有@Primary注解，Spring会抛出一个NoUniqueBeanDefinitionException异常，因为Spring无法决定使用哪个Bean。
+
+   总之，@Primary注解用于解决在同一类型Bean的多个实现中选择默认Bean的问题。
+
+## 2. @Qualifier
+
+   如果在配置文件中指定了多个数据源，那么在调用 `schedulerFactoryBean()` 方法并注入数据源参数时，Spring IoC 容器会根据参数类型和具体注入场景来自动选择匹配的数据源，并将它作为参数传递给方法。
+
+   假设你在配置文件中同时配置了两个数据源，如下：
+
+   ```
+   # 第一个数据源
+   spring.datasource.url=jdbc:mysql://localhost:3306/quartz1?useUnicode=true&characterEncoding=utf8&useSSL=false
+   spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+   spring.datasource.username=root
+   spring.datasource.password=root
+   
+   # 第二个数据源
+   wg.datasource.url=jdbc:mysql://localhost:3306/quartz2?useUnicode=true&characterEncoding=utf8&useSSL=false
+   wg.datasource.driver-class-name=com.mysql.jdbc.Driver
+   wg.datasource.username=root
+   wg.datasource.password=root
+   ```
+
+   你在调用 `schedulerFactoryBean()` 方法时，可以指定数据源参数的具体注入方式。比如，使用 `@Qualifier` 注解来指定要注入的数据源，如下：
+
+   ```
+   @Bean
+   public SchedulerFactoryBean schedulerFactoryBean(@Qualifier("wgDataSource") DataSource dataSource) {
+       // your configuration code
+       return schedulerFactoryBean;
+   }
+   ```
+
+   上述 `schedulerFactoryBean()` 方法中使用了 `@Qualifier("wgDataSource")` 注解来指定要使用名为 `wgDataSource` 的数据源。这就意味着，Spring IoC 容器会根据 `wgDataSource` 的具体配置，将其作为 `DataSource` 参数的具体实现注入到方法中。
+
+   如果不使用 `@Qualifier` 注解指定数据源，那么Spring IoC 容器会默认选择 `@Primary` 注解标记的数据源。如果没有 `@Primary` 注解，那么容器会选择配置文件中排在前面的数据源作为默认数据源。
+
+## 3. @PostConstruct
+
+@PostConstruct 是Java EE中一种常用的注解，它用于标注一个方法，该方法会在依赖注入完成后执行。在对象生命周期中，@PostConstruct方法会在构造函数执行后、依赖注入完成后、初始化方法执行之前被调用。
+
+具体来说，对象创建的过程可以分为以下几个阶段：
+
+1. 加载类的过程：当Java虚拟机启动时，会通过类加载器加载应用程序中的类，在加载过程中，JVM会执行类的静态初始化块。
+
+2. 创建对象的过程：在加载类之后，JVM会创建对象实例，也就是对象的初始化。在这个过程中，JVM会执行对象的构造函数、非静态初始化块以及实例变量的初始化。
+
+3. 依赖注入的过程：在对象实例化完成之后，如果这个对象需要依赖其他对象，则会通过依赖注入的方式将它所依赖的其他对象注入到它自己中。
+
+4. 初始化方法的调用：在依赖注入完成之后，如果对象中有@PostConstruct方法，则会调用这个方法进行对象的初始化工作。
+
+5. 对象的使用：在初始化完成之后，对象可以被使用，在使用过程中，对象可能会被多次调用其方法，直到不再被需要，随后进入垃圾回收。
+
+总之，@PostConstruct方法的作用是在对象依赖注入完成后执行一些初始化工作，这个过程发生在对象初始化完成之后、初始化方法执行之前。
+
+
+
+```java
+@Override
+@Nullable
+public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+    if (!StringUtils.hasLength(beanName)) {
+        return bean;
+    }
+    //调用@PostConstruct注解标注的方法
+    invokeInitMethods(bean, beanName);
+    return bean;
+}
+具体执行方法的代码：
+
+public static void invokeInitMethods(Object target, String beanName) throws Throwable {
+    if (target instanceof InitializingBean) {
+        ((InitializingBean) target).afterPropertiesSet();
+    }
+    if (target instanceof SmartInitializingSingleton) {
+        earlySingletonReferences.add(target);
+        ((SmartInitializingSingleton) target).afterSingletonsInstantiated();
+        earlySingletonReferences.remove(target);
+    }
+    String initMethodName = getInitMethodName(target);
+    if (StringUtils.hasLength(initMethodName) &&
+            !(target instanceof SmartInitializingSingleton && ((SmartInitializingSingleton) target).isEagerInitCalled())) {
+        Method initMethod = ClassUtils.getMethodIfAvailable(target.getClass(), initMethodName);
+        if (initMethod != null) {
+            if (logger.isTraceEnabled()) {
+                logger.trace("Invoking init method '" + initMethodName + "' on bean with name '" + beanName +
+                        "'");
+            }
+            if (System.getSecurityManager() != null) {
+                AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
+                    ReflectionUtils.makeAccessible(initMethod);
+                    return null;
+                }, getAccessControlContext());
+            }
+            else {
+                ReflectionUtils.makeAccessible(initMethod);
+            }
+            ReflectionUtils.invokeMethod(initMethod, target);
+        }
+    }
+}
+```
+
+
+
+# 8. 代码分析
+
+## 1. quartz 关于定时任务
+
+```java
+        //quartz参数
+        Properties prop = new Properties();
+        prop.put("org.quartz.scheduler.instanceName", "Scheduler");
+        prop.put("org.quartz.scheduler.instanceId", "AUTO");
+        //线程池配置
+        prop.put("org.quartz.threadPool.class", "org.quartz.simpl.SimpleThreadPool");
+        prop.put("org.quartz.threadPool.threadCount", "20");
+        prop.put("org.quartz.threadPool.threadPriority", "5");
+        //JobStore配置
+        prop.put("org.quartz.jobStore.class", "org.springframework.scheduling.quartz.LocalDataSourceJobStore");
+        //集群配置
+        prop.put("org.quartz.jobStore.isClustered", "true");
+        prop.put("org.quartz.jobStore.clusterCheckinInterval", "15000");
+        prop.put("org.quartz.jobStore.maxMisfiresToHandleAtATime", "1");
+        
+        prop.put("org.quartz.jobStore.misfireThreshold", "12000");
+        prop.put("org.quartz.jobStore.tablePrefix", "QRTZ_");
+        prop.put("org.quartz.jobStore.selectWithLockSQL", "SELECT * FROM {0}LOCKS UPDLOCK WHERE LOCK_NAME = ?");
+
+
+这段代码用于配置 Quartz 调度器的属性，包括 org.quartz.scheduler、org.quartz.threadPool、org.quartz.jobStore 等。
+
+org.quartz.scheduler.instanceName：指定 Scheduler 实例的名称。
+org.quartz.scheduler.instanceId：指定 Scheduler 实例的唯一标识符，可以为 AUTO，这样 Quartz 就会自动生成一个唯一的标识符。
+org.quartz.threadPool.class：指定线程池类名，这里指定的是 org.quartz.simpl.SimpleThreadPool。
+org.quartz.threadPool.threadCount：指定线程池最大线程数。
+org.quartz.threadPool.threadPriority：指定线程池中线程的优先级。
+org.quartz.jobStore.class：指定 JobStore 实现类，这里指定为 org.springframework.scheduling.quartz.LocalDataSourceJobStore。LocalDataSourceJobStore 是 Quartz 提供的一个用于存储任务的实现，它将任务存储在数据库中。在 Spring 项目中使用时，可以利用 Spring 提供的 DataSource。
+org.quartz.jobStore.isClustered：设置为 true，启用集群模式。
+org.quartz.jobStore.clusterCheckinInterval：指定节点之间的检查间隔时间（毫秒）。
+org.quartz.jobStore.maxMisfiresToHandleAtATime：指定每次检查的最大错过触发数量。
+org.quartz.jobStore.misfireThreshold：指定允许的错过触发时间（毫秒）。
+org.quartz.jobStore.tablePrefix：指定表前缀，这里指定为 QRTZ_。
+org.quartz.jobStore.selectWithLockSQL：指定 SQL 查询语句，用于从数据库中检索一个已经被锁定的任务。
+总体来说，这段代码就是配置 Quartz 调度器的各种属性，这些属性决定了调度器的行为和性能。
+```
+
+
+
+
+
+# 9. serverlet
+
+## 1. severlet 作用: 
+
+```
+动态内容生成：Servlet是根据请求-响应模型工作的，它可以接收HTTP请求并且根据请求动态生成HTML或其他格式的数据来构建网页或者动态获取资源。Servlet通过执行Java代码来加工处理数据并生成动态内容，实现与客户端的交互。动态生成的内容可根据请求参数的不同进行细节上的区分，并能够支持多语言页面、国际化的知识库内容等。
+
+并发处理：Servlet是运行在Web服务器中的Java程序，也是一个多线程应用程序。Servlet容器会为每个请求创建一个Servlet实例，每个实例都会有专属的线程执行它的服务方法。当有许多并发请求时，Servlet容器会根据最大线程数和线程池大小进行处理，同时还可以使用一些缓存机制来提高性能。
+
+生命周期管理：Servlet的生命周期包括初始化、服务、和销毁三个阶段。初始化阶段可以用于创建对象、连接数据库和读取配置文件等操作；服务阶段就是处理具体的业务逻辑，比如查询、修改、删除等操作；销毁阶段用于清理Servlet的内存，关闭数据库等操作。开发者可以重写Servlet生命周期方法以执行自定义的操作，并可以通过注解替代web.xml配置方式来简化配置。
+
+会话管理：在HTTP协议中，每个请求之间是相互独立的。为了维护用户的状态，Servlet容器引入了会话机制。当一个客户端发起请求时，如果没有会话，则Servlet容器会创建一个新的会话对象，并将其与一个唯一的sessionId（会话ID）关联起来。之后可以在整个会话周期中保存或获取需要存储或检索的信息，比如用户是否登录、用户角色等。开发者可以使用HttpSession接口来访问当前会话和当前会话中存储和检索数据。
+
+综上所述，Servlet作为Java Web应用程序的核心组件，可以实现动态内容生成、处理并发请求、生命周期管理以及会话管理等任务。它提供了强大而灵活的功能，能够帮助开发者更加高效地构建Web应用程序。
+```
+
+
+
+## 2. 没有serverlet 会怎样
+
+```
+没有Servlet会对Java Web应用程序的开发和运行产生以下影响：
+
+缺乏统一的组件模型：服务器端应用程序需要接收来自客户端的请求，并处理这些请求并返回响应结果。缺乏类似于Servlet的组件模型，将导致无法快捷地解析请求、生成响应数据，也无法动态地生成HTML页面。此外，每次写服务端程序都要先底层处理HTTP协议，这将是非常麻烦而且极其消耗时间。
+
+处理并发请求麻烦：如果没有Servlet提供的并发处理能力，那么处理许多并发的请求将十分复杂和困难。并发管理涉及到线程池的配置，这个不仅很重要，而且很容易出错。
+
+生命周期管理更加复杂：Web应用程序中，组件的创建和销毁是经过完善的生命周期管理过程的。但如果没有Servlet概念，则需要进行手动管理组件的生命周期，比如说从创建、初始化、运行到销毁环节必须都由编码人员去控制，否则就容易造成内存泄漏问题。
+
+会话管理需要手动实现：如果没有Servlet容器HttpSession的管理，我们就需要手动在Http Session里面维持用户状态，保存用户信息，这不仅繁琐，而且易出错。
+
+总之，没有Servlet将使得Java Web应用程序的开发和运行变得复杂和困难。因为Servlet为Web应用程序提供了规范化的基础架构和标准模型，便于开发人员在其基础上实现更加灵活、高效、安全、可维护的Web应用程序。同时，Servlet还提供了许多帮助开发人员快速开发Web应用程序的工具，包括数据缓存、调度管理、安全认证、分布式处理等，这些都是无法替代的特性。
+```
+
