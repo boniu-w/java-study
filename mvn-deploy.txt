@@ -1,0 +1,119 @@
+
+
+########################################################################################################################################################
+
+-----------  jar + pom -------------------
+--------------  oo-ci-kfsc-common-security-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-security\4.6.0\oo-ci-kfsc-common-security-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-security\4.6.0\oo-ci-kfsc-common-security-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+------------ pom ------------------------
+mvn deploy:deploy-file -DgroupId="com.ci.kfsc" -DartifactId="oo-ci-kfsc-admin" -Dversion="4.6.0" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-admin\4.6.0\oo-ci-kfsc-admin-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+------------------------------
+oo-ci-kfsc-admin-api-4.6.0
+C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-admin-api\4.6.0\
+
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-admin-api\4.6.0\oo-ci-kfsc-admin-api-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-admin-api\4.6.0\oo-ci-kfsc-admin-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+---------------------------
+oo-ci-kfsc-admin-biz-4.6.0
+C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-admin-biz\4.6.0
+
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-admin-biz\4.6.0\oo-ci-kfsc-admin-biz-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-admin-biz\4.6.0\oo-ci-kfsc-admin-biz-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+----------------------  oo-ci-kfsc-auth-4.6.0
+
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-auth\4.6.0\oo-ci-kfsc-auth-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-auth\4.6.0\oo-ci-kfsc-auth-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+--------  oo-ci-kfsc-common-4.6.0
+
+mvn deploy:deploy-file -DgroupId="com.ci.kfsc" -DartifactId="oo-ci-kfsc-common" -Dversion="4.6.0" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common\4.6.0\oo-ci-kfsc-common-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+----------  C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-bom\4.6.0
+mvn deploy:deploy-file -DgroupId="com.ci.kfsc" -DartifactId="oo-ci-kfsc-common-bom" -Dversion="4.6.0" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-bom\4.6.0\oo-ci-kfsc-common-bom-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+------------------  oo-ci-kfsc-common-core-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-core\4.6.0\oo-ci-kfsc-common-core-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-core\4.6.0\oo-ci-kfsc-common-core-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+-------------  oo-ci-kfsc-common-data-4.6.0
+
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-data\4.6.0\oo-ci-kfsc-common-data-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-data\4.6.0\oo-ci-kfsc-common-data-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+------------  oo-ci-kfsc-common-datasource-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-datasource\4.6.0\oo-ci-kfsc-common-datasource-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-datasource\4.6.0\oo-ci-kfsc-common-datasource-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+-----------  oo-ci-kfsc-common-encrypt-api-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-encrypt-api\4.6.0\oo-ci-kfsc-common-encrypt-api-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-encrypt-api\4.6.0\oo-ci-kfsc-common-encrypt-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+---------------  oo-ci-kfsc-common-excel-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-excel\4.6.0\oo-ci-kfsc-common-excel-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-excel\4.6.0\oo-ci-kfsc-common-excel-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+-----------------  oo-ci-kfsc-common-feign-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-feign\4.6.0\oo-ci-kfsc-common-feign-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-feign\4.6.0\oo-ci-kfsc-common-feign-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+--------------------  oo-ci-kfsc-common-gateway-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-gateway\4.6.0\oo-ci-kfsc-common-gateway-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-gateway\4.6.0\oo-ci-kfsc-common-gateway-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+--------------  oo-ci-kfsc-common-gray-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-gray\4.6.0\oo-ci-kfsc-common-gray-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-gray\4.6.0\oo-ci-kfsc-common-gray-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+-------------  oo-ci-kfsc-common-idempotent-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-idempotent\4.6.0\oo-ci-kfsc-common-idempotent-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-idempotent\4.6.0\oo-ci-kfsc-common-idempotent-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+---------------  oo-ci-kfsc-common-job-4.6.0
+
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-job\4.6.0\oo-ci-kfsc-common-job-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-job\4.6.0\oo-ci-kfsc-common-job-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+-------------  oo-ci-kfsc-common-log-4.6.0
+
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-log\4.6.0\oo-ci-kfsc-common-log-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-log\4.6.0\oo-ci-kfsc-common-log-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+-------------------  oo-ci-kfsc-common-oss-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-oss\4.6.0\oo-ci-kfsc-common-oss-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-oss\4.6.0\oo-ci-kfsc-common-oss-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+--------------  oo-ci-kfsc-common-seata-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-seata\4.6.0\oo-ci-kfsc-common-seata-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-seata\4.6.0\oo-ci-kfsc-common-seata-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+------------  oo-ci-kfsc-common-sentinel-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-sentinel\4.6.0\oo-ci-kfsc-common-sentinel-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-sentinel\4.6.0\oo-ci-kfsc-common-sentinel-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+-----------------  oo-ci-kfsc-common-sequence-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-sequence\4.6.0\oo-ci-kfsc-common-sequence-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-sequence\4.6.0\oo-ci-kfsc-common-sequence-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+----------------  oo-ci-kfsc-common-swagger-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-swagger\4.6.0\oo-ci-kfsc-common-swagger-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-swagger\4.6.0\oo-ci-kfsc-common-swagger-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+------------  oo-ci-kfsc-common-websocket-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-websocket\4.6.0\oo-ci-kfsc-common-websocket-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-websocket\4.6.0\oo-ci-kfsc-common-websocket-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+---------------  oo-ci-kfsc-common-xss-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-xss\4.6.0\oo-ci-kfsc-common-xss-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-common-xss\4.6.0\oo-ci-kfsc-common-xss-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+---------  oo-ci-kfsc-gateway-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-gateway\4.6.0\oo-ci-kfsc-gateway-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-gateway\4.6.0\oo-ci-kfsc-gateway-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+----------------  oo-ci-kfsc-parent-4.6.0
+mvn deploy:deploy-file -DgroupId="com.ci.kfsc" -DartifactId="oo-ci-kfsc-parent" -Dversion="4.6.0" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-parent\4.6.0\oo-ci-kfsc-parent-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+---------------  oo-ci-kfsc-register-4.6.0
+mvn deploy:deploy-file -DpomFile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-register\4.6.0\oo-ci-kfsc-register-4.6.0.pom" -Dfile="C:\Users\wg\Downloads\ci_71207\ci\kfsc\oo-ci-kfsc-register\4.6.0\oo-ci-kfsc-register-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
