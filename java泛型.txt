@@ -1,4 +1,3 @@
-test git submodule
 public class ServerResult<T> implements Serializable {
     private T data;
     private boolean success;
