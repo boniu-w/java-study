@@ -430,3 +430,56 @@ org.quartz.jobStore.selectWithLockSQL：指定 SQL 查询语句，用于从数�
 总之，没有Servlet将使得Java Web应用程序的开发和运行变得复杂和困难。因为Servlet为Web应用程序提供了规范化的基础架构和标准模型，便于开发人员在其基础上实现更加灵活、高效、安全、可维护的Web应用程序。同时，Servlet还提供了许多帮助开发人员快速开发Web应用程序的工具，包括数据缓存、调度管理、安全认证、分布式处理等，这些都是无法替代的特性。
 ```
 
+
+
+# 10. Spring Boot 项目包内的 bean 注册到 Spring 容器中，项目依赖包中的 bean 不会被扫描和注册, 这句话什么意思
+这句话指的是 Spring Boot 项目中，只有被包含在该项目源代码树下（即 `src/main/java` 或子目录下）的 Java 类才会自动扫描并注册为 Spring 容器中的 bean。而对于位于其他依赖库中的 Java 类（例如，Maven 依赖的 JAR 包、Project Gradle 依赖的模块等）则不会被自动扫描和注册。
+
+这是因为 Maven 和 Gradle 采用了一种“隔离级别”的概念，即将代码分为编译级别和运行时级别。只有被编译成 Class 文件的代码才能够被打包进最终的生成文件中，运行时级别的代码则需要在类路径上进行配置。
+
+因此，在 Spring Boot 项目中，只有通过 Gradle 或 Maven 将依赖库的代码 “提升” 到编译级别后，才能够让其成为 Spring 容器中的 bean。
+
+当然，如果我们希望将依赖库中的类作为 Spring Bean 注册到容器中，也可以手动使用 `@Bean` 或者其他相应注解将其注册到 Spring 容器中；或者借助 Spring 的扩展组件，实现自定义的 Bean 自动装配逻辑。
+
+
+
+# 11. autowired  和 resource 区别
+
+
+
+@Resouce 不支持 
+
+```
+@nullable
+```
+
+不支持 required
+
+```
+required=false
+```
+
+
+
+不支持 optional 
+
+```
+private Optional<AliyunOssProperties> ossProperties;
+```
+
+
+
+# 12. 注解 
+
+
+
+@AutoConfiguration @RequiredArgsConstructor @Import @EnableConfigurationProperties 详解 这几个注解
+
+下面是对这几个注解的详细解释：
+
+1. `@AutoConfiguration`：`@AutoConfiguration`是Spring Boot中的注解，用于自动配置应用程序的各个组件和功能。通过使用`@AutoConfiguration`注解，Spring Boot可以根据应用程序的依赖和配置来自动配置相应的Bean、组件和其他功能。它基于条件化配置和约定优于配置的原则，简化了应用程序的配置过程。
+2. `@RequiredArgsConstructor`：`@RequiredArgsConstructor`是Lombok库提供的注解，用于自动生成带有`final`修饰的成员变量的构造函数。当在类上使用`@RequiredArgsConstructor`注解时，Lombok会根据类中的`final`成员变量生成一个包含这些成员变量的构造函数。这样可以简化手动编写构造函数的过程。
+3. `@Import`：`@Import`是Spring框架中的注解，用于导入其他配置类或组件类到当前配置类中。通过使用`@Import`注解，可以将其他配置类或组件类添加到当前配置类的Bean定义中，使它们可以在容器中进行管理和使用。这在模块化开发和配置组合中非常有用。
+4. `@EnableConfigurationProperties`：`@EnableConfigurationProperties`是Spring Boot中的注解，用于启用特定的配置属性类。配置属性类通常用于封装应用程序的配置信息，例如`application.properties`或`application.yml`文件中的属性。通过使用`@EnableConfigurationProperties`注解，可以将配置属性类与当前配置类关联起来，使得配置属性类的属性可以通过`@ConfigurationProperties`注解进行注入和使用。
+
+请注意，以上解释是基于常见的用法和约定，具体的用法可能因具体的应用程序和上下文而有所不同。建议在实际开发中查阅相关文档和资料，以了解每个注解的具体行为和使用方式。

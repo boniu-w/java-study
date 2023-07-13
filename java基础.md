@@ -175,6 +175,10 @@ public void floatJudge() {
 
 
 
+## 3. 存储null
+
+treeset 不能存储null, 会出现空指针
+
 # 10. 将map 转换成实体类
 
 阿里的json包
@@ -5161,6 +5165,12 @@ public void downloadFile(HttpServletResponse response, File file) {
 
 
 
+## 2. null 键
+
+允许null为键, 但只能有一个
+
+
+
 # 85. 为什么环境变量要大写
 
 
@@ -6379,4 +6389,10 @@ Hibernate Validator提供的校验注解：
 > 需要注意的是，如果内存设置得过小，可能会导致 OutOfMemoryError 错误；如果内存设置得过大，可能会导致系统内存不足而影响程序的性能。因此，在配置内存大小时，需要根据实际情况和程序的需要进行合理的调整。
 
 
+
+# 138. bug level
+
+
+
+![](./img/bug-level.png)
 
