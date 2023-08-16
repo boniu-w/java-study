@@ -1,0 +1,677 @@
+﻿@charset "utf-8";
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+section.columns.announcements {
+    padding-top: 10px;
+    padding-bottom: 0;
+}
+
+
+.columns.content {
+    padding: 8px;
+    padding-top: 30px;
+}
+
+.columns {
+    width: 100%; /*E 2020-04-30 width: 75%;*/
+    margin: 0 auto;
+    padding-top: 30px;
+    font-size: 0;
+    min-height: 64px;
+    position: relative;
+}
+.columns.visible > .all-sites-hidden {
+    height: 350px;
+    padding: 8px;
+    font-size: 16px;
+    font-family: "Roboto", sans-serif;
+    position: relative;
+
+    display: none;
+}
+.columns.visible > .sites-container:empty ~ .all-sites-hidden {
+    display: block;
+}
+.columns.visible > .all-sites-hidden .content {
+    position: relative;
+    top: 50%;
+    display: block;
+    text-align: center;
+    transform: translateY(-50%);
+    user-select: none;
+    color: #333;
+}
+.columns.visible > .all-sites-hidden .content a {
+    font-family: "Roboto", sans-serif;
+}
+.columns.visible > .all-sites-hidden .content .title {
+    font-size: 22px;
+    font-weight: 500;
+    padding-bottom: 4px;
+}
+.columns.visible > .all-sites-hidden .content .subtitle {
+    text-align: justify;
+    width: 75%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+.columns.discarded {
+    display: none;
+}
+.columns.reordering .button a {
+    text-transform: uppercase;
+    font-weight: 500;
+}
+.columns.reordering #page-reorder-hide-all {
+    margin-left: 8px;
+}
+.columns.reordering #page-reorder-show-all {
+    margin-left: 4px;
+}
+/*E 2020-10-06 每个栏目的整体高度*/
+.publisher-block {
+    width: 33.33%;
+    font-size: 16px;
+    height: 410px;
+    padding: 8px;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+.publisher-block-h410 {
+    width: 33.33%;
+    font-size: 16px;
+    height: 410px;
+    padding: 8px;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+/*E 2020-05-01 赞助商*/
+.publisher-block-pcnt100 {
+    width: 100%;
+    font-size: 16px;
+    height: 190px;
+    padding: 8px;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+/*E 2020-05-01 赞助商*/
+.publisher-block-ad-pcnt100-l3 {
+    width: 100%;
+    font-size: 16px;
+    height: 380px;
+    padding: 8px;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+.publisher-block .publisher-header-spin > .spinner > div > div {
+    background: white!important;
+}
+
+
+.publisher-block-compact {
+    display: inline-block;
+    cursor: grab;
+    vertical-align: top;
+    width: 64px;
+    padding: 8px;
+    position: relative;
+}
+.publisher-block-compact .publisher-header {
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding-top: 100%;
+    vertical-align: top;
+    z-index: 2;
+}
+.publisher-block-compact .publisher-icon {
+    width: 100%;
+}
+.publisher-block-compact .publisher-header-wrapper {
+    top: 0;
+    pointer-events: none;
+}
+
+.publisher-data-wrapper {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    overflow: hidden;
+    top: 50px;
+}
+
+.publisher-data-wrapper:after {
+    content: "";
+    position: absolute;
+    height: 18px;
+    pointer-events: none;
+    display: block;
+    width: 100%;
+    bottom: 0;
+    opacity: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.1), transparent);
+    transition: opacity 0.2s ease;
+    border-radius: 0 0 6px 6px;
+}
+.publisher-data-wrapper.bottom-shadow:hover:after {
+    opacity: 1;
+}
+
+.publisher-data {
+    transform: translateZ(0);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: absolute;
+    height: 100%;
+    left: 0;
+    right: -18px;
+    padding: 10px 5px 0 5px;
+}
+
+
+
+ul > li .list-title {
+    font-weight: 500;
+}
+
+ul > li .list-description {
+    display: block;
+    font-size: 13px;
+}
+
+
+/* Two-column layout */
+@media (max-width: 1200px) {
+    .publisher-block {
+        width: 50%;
+    }
+	.publisher-block-h410 {
+        width: 50%;
+    }
+    .columns, .columns.content {
+        width: 85%;
+    }
+}
+
+/* Two-column layout with smaller left and right paddings */
+@media (max-width: 768px) {
+    .popup-sites .site {
+        width: 50%;
+    }
+    .publisher-block {
+        width: 50%;
+    }
+	.publisher-block-h410 {
+        width: 50%;
+    }
+    .columns {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    .columns.content {
+        width: 100%;
+        padding-right: 23px;
+        padding-left: 23px;
+    }
+}
+
+/* Mobile one-column layout, different layout flow */
+@media (max-width: 596px) {
+
+    .context-menu .menu-item {
+        padding: 10px 22px;
+    }
+
+    .context-menu .menu-item.is-link {
+        padding: 0;
+    }
+
+    .context-menu .menu-item.is-link a {
+        padding: 10px 22px;
+    }
+
+    .context-menu .menu-item .subtitle {
+        display: block;
+        font-size: 14px;
+        color: #797979;
+    }
+
+    .context-menu .article-title {
+        max-width: 100%;
+        padding: 8px 16px;
+        padding-bottom: 16px;
+    }
+
+    .context-menu .menu-options {
+        display: none;
+    }
+
+    .announcement .text.on-desktop {
+        display: none;
+    }
+    .announcement .text.on-mobile {
+        display: inline;
+    }
+
+    .small-popup {
+        width: 100%;
+    }
+    .overlay.dialog-box .modal {
+        width: 100%;
+    }
+    .overlay.preferences .modal {
+        width: 100%;
+    }
+    .overlay.search-results .modal {
+        width: 100%;
+    }
+
+    .modal-results .search-result .icon .publisher-block-compact {
+        width: 24px;
+    }
+
+    .modal-results .search-result .icon {
+        left: 12px;
+    }
+
+    .modal-results .search-result .result {
+        padding-left: 47px;
+    }
+
+    /* Hide the links scroll shadow suggestion */
+    .publisher-data-wrapper:after {
+        display: none;
+    }
+
+    /* One-column layout */
+    .publisher-block {
+        width: 100%;
+        height: 100%;
+    }
+	.publisher-block-h410 {
+        width: 100%;
+        height: 100%;
+    }
+    /* Make the link container fullsize */
+    .publisher-data-wrapper, .publisher-data {
+        position: relative;
+        overflow: auto;
+        top: 0;
+    }
+
+    /* Make the one-column card headers stay sticky on screen */
+    .publisher-card > .publisher-header {
+        position: sticky;
+        top: 16px;
+    }
+
+    @supports not (position: sticky) {
+        .publisher-card > .publisher-header {
+            position: relative;
+            top: 0px;
+        }
+    }
+
+    /* Enable the sticky header filler */
+    .publisher-header > .publisher-header-mask {
+        display: block;
+    }
+
+    /* Columns are more wider */
+    .columns {
+        width: 100%;
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+
+    /* So is the content */
+    .columns.content {
+        width: 100%;
+        padding-right: 23px;
+        padding-left: 23px;
+    }
+    
+    /* If the sites container has a block in view, make all blocks filled by default */
+    .sites-container.has-in-mobile-view .publisher-block .publisher-scroll-progress {
+        transform: translateX(0);
+    }
+
+    /* If the sites container has a block in view, make all blocks below the block in view unfilled */
+    .sites-container.has-in-mobile-view .publisher-block.is-in-mobile-view ~ .publisher-block .publisher-scroll-progress {
+        transform: translateX(-100%)!important;
+    }
+
+    a:hover {
+        color: #0060a0;
+        border-bottom: 1px solid rgba(0,96,160,0.15);
+    }
+}
+
+
+
+.publisher-card {
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    vertical-align: top;
+    position: relative;
+}
+
+.publisher-icon {
+    width: 50px;
+    height: 100%;
+    user-select: none;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    vertical-align: top;
+    display: inline-block;
+}
+.publisher-text {
+    padding: 5px;
+    display: inline-block;
+    vertical-align: top;
+    position: absolute;
+    right: 0;
+    font-family: "Roboto", sans-serif;
+    left: 50px;
+    bottom: 0;
+    top: 0;
+}
+.publisher-text > .title {
+    user-select: none;
+    font-weight: 500;
+    font-size: 17px;
+    display: block;
+    position: relative;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+
+    white-space: nowrap;
+    overflow: hidden;
+    margin-right: 40px;
+    text-overflow: ellipsis;
+}
+
+.publisher-text > .title > .alt {
+    opacity: 0.75;
+    font-size: 16px;
+    margin-left: 4px;
+}
+
+
+.publisher-text > .subtitle {
+    user-select: none;
+    position: relative;
+    display: block;
+    bottom: 4px;
+    height: 19px;
+    font-size: 0;
+    white-space: normal;
+    overflow: hidden;
+    margin-right: 40px;
+    text-overflow: ellipsis;
+}
+.subtitle > .subtitle-wrapper {
+    width: 100%;
+    height: 100%;
+    display: block;
+    position: relative;
+    transition: transform 0.2s ease;
+    transform: translateY(-19px);
+}
+.subtitle.alternate > .subtitle-wrapper {
+    transform: translateY(0px);
+}
+.subtitle-wrapper > .subtitle-alternate {
+    font-size: 13px;
+    opacity: 0.75;
+}
+.subtitle-wrapper > .subtitle-default, .subtitle-wrapper > .subtitle-alternate {
+    width: 100%;
+    height: 100%;
+    display: inline-block;
+    white-space: nowrap;
+    vertical-align: top;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.subtitle-wrapper > .subtitle-default > span {
+    vertical-align: middle;
+    font-size: 13px;
+    cursor: pointer;
+    opacity: 0.75;
+}
+.subtitle-wrapper > .subtitle-default > span.selected {
+    text-decoration: underline;
+}
+.subtitle-wrapper > .subtitle-default > span.sp {
+    font-size: 14px;
+    cursor: default;
+    display: inline-block;
+    margin-left: 3px;
+    margin-right: 3px;
+    line-height: 14px;
+    user-select: none;
+}
+
+.publisher-link {
+    min-height: 24px;
+    padding-bottom: 6px;
+    position: relative;
+    line-height: 18px;
+}
+.publisher-link > .aside {
+    font-family: "Roboto", sans-serif;
+    user-select: none;
+    display: inline-block;
+    position: absolute;
+    width: 42px;
+    font-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.publisher-link > .link {
+    margin-left: 36px;
+    display: block;
+}
+.publisher-link > .aside > .text {
+    cursor: help;
+    vertical-align: top;
+    display: inline-block;
+    font-size: 14px;
+    color: #777;
+}
+.publisher-link > .link > a {
+    font-family: "Roboto", sans-serif;
+    font-size: 15px;
+}
+.publisher-link > .link > a:visited {
+    color: #70a0b0;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(112, 160, 176, 0.15);
+}
+
+.publisher-icon a {
+    border: 0;
+}
+
+/* If the actual icon is inside of a container, it's 100% of its size */
+.publisher-icon .icon-container svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Style for the icon container. Can be the svg itself */
+.publisher-icon .icon-container {
+    position: relative;
+    height: 60%;
+    width: 60%;
+    display: block;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+
+.publisher-header-wrapper {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background: linear-gradient(to bottom, #f1f1f1, #ededed);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.05), 0 2px 2px -1px rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    overflow: hidden;
+    z-index: 2;
+}
+.publisher-scroll-progress {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.075);
+    height: 100%;
+    width: 100%;
+    transform: translateX(-100%);
+    transition: transform 0.1s ease;
+    z-index: -1;
+    pointer-events: none;
+    user-select: none;
+}
+.publisher-scroll-progress:after {
+    content: "";
+    width: 1px;
+    height: 100%;
+    right: 0;
+    background: rgba(0, 0, 0, 0.05);
+    display: block;
+    position: absolute;
+}
+.publisher-header-mask {
+    position: absolute;
+    display: none;
+    width: 100%;
+    background: #f7f7f7;
+    height: 22px;
+    top: -16px;
+    z-index: 0;
+}
+.publisher-header {
+    position: relative;
+    width: 100%;
+    height: 50px;
+    vertical-align: top;
+    z-index: 2;
+}
+
+.publisher-header-spin {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+}
+section.footer {
+    margin-top: 35px;
+    margin-bottom: 35px;
+}
+section.footer > footer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.footer-icon {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    position: absolute;
+    top: 0;
+    left: 2px;
+}
+.footer-icon > svg {
+    width: 100%;
+    height: 100%;
+    stroke: #626262;
+}
+.footer-text {
+    font-size: 14px;
+    line-height: 21px;
+    font-family: "Roboto", sans-serif;
+    padding: 0 12px 0 12px;
+    color: #626262;
+    margin-left: 40px;
+}
+.footer-text > a {
+    font-family: "Roboto", sans-serif;
+}
+.footer-text span.coupon {
+    color: #e05745;
+}
+
+@keyframes spinner-line-fade-more {
+  0%, 100% {
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+}
+
+@keyframes spinner-line-fade-quick {
+  0%, 39%, 100% {
+    opacity: 0.25;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+@keyframes spinner-line-fade-default {
+  0%, 100% {
+    opacity: 0.22;
+  }
+  1% {
+    opacity: 1;
+  }
+}
+
+/*标题栏的背景色:*/
+.publisher-is-tools .publisher-scroll-progress {background: rgba(255, 255, 255, 0.15);}
+.publisher-is-tools .publisher-scroll-progress:after {background: rgba(255, 255, 255, 0.07);}
+.publisher-is-tools .publisher-header-wrapper {background: linear-gradient(to bottom, #007f80, #007070);color: white;}
+
+.publisher-is-articles .publisher-scroll-progress {background: rgba(255, 255, 255, 0.1);}
+.publisher-is-articles .publisher-scroll-progress:after {background: rgba(255, 255, 255, 0.05);}
+.publisher-is-articles .publisher-header-wrapper {background: linear-gradient(135deg, #04a765, #01d503);color: white;}
+
+.publisher-is-links .publisher-header-wrapper {background: linear-gradient(to bottom, #00aeef, #009dd6);color: white;}
+
+.publisher-block.publisher-is-scientificamerican .publisher-header-spin > .spinner > div > div {background: black!important;}
+
+.publisher-is-sponsor .publisher-header-wrapper {background: linear-gradient(to bottom, #767676, #5f5f5f);color: white;}
+
+.publisher-is-video .publisher-header-wrapper {background: linear-gradient(to bottom, #cc0101, #950000);color: white;}
+
+
+
+/*2022-09-23*/
+.publisher-is-sponsor00 {height: 251px;}
+.publisher-is-sponsor00 .publisher-scroll-progress {background: rgba(255, 255, 255, 0.15);}
+.publisher-is-sponsor00 .publisher-scroll-progress:after {background: rgba(255, 255, 255, 0.07);}
+.publisher-is-sponsor00 .publisher-header-wrapper {background: linear-gradient(to bottom, #007f80, #007070);color: white;}
+.publisher-is-sponsor01 {height: 251px;}
+.publisher-is-sponsor01 .publisher-scroll-progress {background: rgba(255, 255, 255, 0.1);}
+.publisher-is-sponsor01 .publisher-scroll-progress:after {background: rgba(255, 255, 255, 0.05);}
+.publisher-is-sponsor01 .publisher-header-wrapper {background: linear-gradient(135deg, #04a765, #01d503);color: white;}
+.publisher-is-sponsor02 {height: 251px;}
+.publisher-is-sponsor02 .publisher-scroll-progress {background: rgba(255, 255, 255, 0.15);}
+.publisher-is-sponsor02 .publisher-scroll-progress:after {background: rgba(255, 255, 255, 0.07);}
+.publisher-is-sponsor02 .publisher-header-wrapper {background: linear-gradient(to bottom, #00aeef, #009dd6);color: white;} 

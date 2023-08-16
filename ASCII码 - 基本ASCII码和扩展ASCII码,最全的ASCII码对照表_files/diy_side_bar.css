@@ -1,0 +1,289 @@
+/** 滚屏 **/
+.scroll {
+	width: 32px;
+	float: right;
+	position: fixed;
+	right: 10px;
+	bottom: 50px;
+	z-index: 9999;
+	list-style: none;
+}
+.scroll li{	
+	border: 0;
+	font-family: inherit;
+	font-size: 100%;
+	font-style: inherit;
+	margin: 0;
+	outline: 0;
+	padding: 0;
+	vertical-align: baseline;		
+}
+.scroll a{
+	background: #fff;
+	font-size: 16px;
+	color: #cacaca;
+	width: 32px;
+	height: 32px;
+	line-height: 28px;
+	text-align: center;
+	vertical-align: middle;
+	margin-top: 4px;
+	display: table-cell;/*block;*/
+	
+	cursor: pointer;
+	background: rgba(255, 255, 255, 0.6);
+	border: 1px solid #ddd;
+	border-radius: 2px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+.scroll a:hover {
+	background: #2f889a;
+	color: #fff !important;
+	border: 1px solid #2f889a;
+	transition: all 0.1s ease-in 0s;
+	vertical-align: middle;
+}
+
+/**/
+.log-no {
+	display: none;
+}
+
+.log {
+	position: relative;
+}
+
+.log-prompt {
+	position: absolute;
+	bottom: 2px;
+	right: 43px;
+	color: #fff;
+	line-height: 27px;
+	animation: blink 1.5s linear infinite;
+}
+
+.log-arrow {
+	position: relative;
+	width: 80px;
+	padding: 0 10px;
+	background: #f40;
+	border-radius: 2px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.log-arrow:after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 0;
+	top: 50%;
+	left: 100%;
+	margin-top: -5px;
+	border: 5px solid;
+	border-left-color: #f40;
+	border-right-color: #f1f1f1;
+	border-top-color: #f1f1f1;
+	border-bottom-color: #f1f1f1;
+}
+.fa {
+	font-size: 18px !important;
+	color: #f85d00 !important;
+	margin: 0 10px 0 0;
+}
+.fa-bars {
+	float: left;
+	font-size: 18px;
+	color: #2f889a;
+	width: 40px;
+	height: 40px;
+	line-height: 40px;
+	margin-right: 15px;
+	padding: 1px 0;
+	text-align: center;
+	border-right: 1px solid #ddd;
+}
+/*向上箭头*/
+.fa-angle-up:before{content:"\f106"}
+/*向下箭头*/
+.fa-angle-down:before{content:"\f107"}
+
+/*E 2020-05-01*/
+/*二微码*/
+.qr-site, .gb2-site, #scroll .scroll-b {
+	/*display: none;*/
+}
+.qr-img {
+	position: fixed;
+	background: #fff;
+	bottom: 50px;
+	right: 50px;
+	max-width: 300px;
+	z-index: 9999;
+	display: none;
+	border-radius: 4px;
+	padding: 10px 10px 10px 10px;
+	animation: fade-in;
+	animation-duration: 0.5s;
+	-webkit-animation: fade-in 0.5s;
+	border: 1px solid #ddd;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+canvas{
+    border: 0;
+    font-family: inherit;
+    font-size: 100%;
+    font-style: inherit;
+    margin: 0;
+    outline: 0;
+    padding: 0;
+    vertical-align: baseline;
+}
+#output img{
+	position: absolute;
+	top: 72px;
+	right: 72px;
+	width: 25px;
+	height: 25px;
+}
+img.alignnone {
+    margin: 0 0 10px 0;
+    display: block;
+}
+.qr-img .arrow {
+	position: absolute;
+	font-size: 26px !important;
+	bottom: 2px;
+}
+
+.qr-img .arrow .be {
+	font-size: 16px !important;
+}
+.arrow-z {
+    color: #c6c6c6;
+    right: -11px;
+}
+.arrow-y {
+    color: #fff;
+    right: -10px;
+}
+.qr-img .arrow .be {
+    font-size: 16px !important;
+}
+
+/*qqonline*/
+.qqonline-box{
+	position:absolute;bottom:25px;right:30px;padding:10px;display:none;z-index:5
+}
+.qqonline-main{
+	width:230px;background:#fff;padding:10px;border-radius:2px;border:1px solid #ddd;border-top:3px solid #c40000;border-bottom:3px solid #c40000
+}
+.qqonline-box{bottom:-10px}
+
+.qqonline .qq-b
+{
+	bottom:-10px;
+}
+.nline-qq a
+{
+	border:0 !important
+}
+.nline-wiexin, .nline-qq {
+    float: left;
+}
+.nline-wiexin img {
+    width: 100px;
+    height: auto;
+}
+
+.nline-qq a {
+    background: #fff !important;
+    text-align: center;
+    height: 100px !important;
+    padding: 25px 0 0 0;
+    width: 100px !important;
+    display: block;
+    box-shadow: none !important;
+    border: 0 !important;
+    background: rgba(255,255,255,0) !important;
+}
+.nline-qq a
+{
+	border:0 !important
+}
+.nline-qq a:hover
+{
+	animation-name:avatar;
+	animation-duration:1s;
+	animation-timing-function:ease-in-out;
+	animation-iteration-count:1;
+	color:#fff !important;
+	background:#c40000 !important;
+	text-decoration:none;
+}
+
+.nline-qq i {
+
+    color: #c40000;
+    font-size: 24px !important;
+    background: #fff !important;
+    padding: 2px 3px;
+    border-radius: 50%;
+
+}
+
+.nline-wiexin h4, .nline-qq h4 {
+	font-size: 13px !important;
+    text-align: center;
+}
+.clear {
+    clear: both;
+    display: block;
+}
+.nline-phone {
+    text-align: center;
+}
+
+.online .be-qq,.qq-mobile .be-qq{
+	font-size:15px !important;color:#c40000
+}
+.online a:hover .be-qq{
+	color:#fff;animation:0
+}
+.online a
+{
+	width:30px;color:#fff;text-align:center;line-height:31px;display:block;border-radius:2px;box-shadow:0 1px 1px rgba(0,0,0,0.1)
+}
+.ms:hover,.type-cat a:hover,.child-cat a:hover,#grid-carousel .post:hover,#header-widget .menu a:hover,.page-numbers:hover,.link:hover
+{
+	box-shadow:0 1px 4px 1px rgba(0,0,0,0.1);
+	transition:All .4s ease-in-out
+}
+.g-row .ms:hover
+{
+	box-shadow:none
+}
+.qq-arrow,.night #feed_widget .be-favorite,.night .qr-img .arrow
+{	
+	display:none
+}
+.qq-arrow .arrow
+{
+	position:absolute;font-size:26px !important;bottom:8px
+}
+.qq-arrow .arrow .be
+{
+	font-size:20px !important
+}
+.qq-arrow .arrow-x
+{
+	color:#fff;right:-340px
+}
+.qq-arrow .arrow-y
+{
+	color:#ddd;
+	right:-342px
+}
+.qq-arrow
+{
+    position: absolute;
+}

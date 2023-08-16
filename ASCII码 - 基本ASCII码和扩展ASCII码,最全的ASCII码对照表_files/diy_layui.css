@@ -1,0 +1,94 @@
+/*html {-webkit-filter: grayscale(100%);filter:progid:DXImageTransform.Microsoft.BasicImage(graysale=1);}*/
+.layui-header,.layui-main{position:relative}
+
+.layui-main{width:100%;margin:0 auto}.layui-header{z-index:1000;height:60px}.layui-header a:hover{transition:all .5s;-webkit-transition:all .5s}
+
+.header{height: 59px; border-bottom: 1px solid #404553;  background-color: #393D49;}
+.logo{position: absolute; left: 0; top: 16px;}
+.logo img{width: 118px; height: 31px;}
+.header .layui-nav{position: absolute; right: 0; top: 0; padding: 0; background: none;}
+.header .layui-nav .layui-nav-item{margin: 0 20px; }
+.header .layui-nav .layui-nav-item[mobile]{display: none;}
+.header .layui-container .logo{left: 15px;}
+.header .layui-container .layui-nav{right: 15px;}
+.layui-nav .layui-nav-item {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 60px;
+}
+.layui-nav .layui-nav-item a {
+    display: block;
+    padding: 0 20px;
+    color: #fff;
+    color: rgba(255,255,255,.9);
+    transition: all .3s;
+    -webkit-transition: all .3s;
+	
+	/*color: #333;*/
+    text-decoration: none;
+}
+.layui-nav .layui-badge, .layui-nav .layui-badge-dot {
+    position: absolute;
+    top: 50%;
+    margin: -8px 6px 0;
+}
+.layui-badge-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border-radius: 50%;
+}
+.layui-badge, .layui-badge-dot, .layui-badge-rim {
+    position: relative;
+    display: inline-block;
+    padding: 0 6px;
+    font-size: 12px;
+    text-align: center;
+    background-color: #FF5722;
+    color: #fff;
+    border-radius: 2px;
+}
+.layui-nav * {
+    font-size: 14px;
+}
+
+.header-index{background-color: #05031A; border: none;}
+.header-index .site-banner-bg{}
+.header-index[spring]{background-color: #0D1206}
+.header-index[summer]{background-color: #0A0E11}
+.header-index[autumn]{background-color: #100903}
+.header-index[winter]{background-color: #0E0E0E}
+
+
+/*2020-04-30 增加面板style*/
+.panel-default {
+    border-color: #ddd;
+}
+.panel {
+    margin-bottom: 5px;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05);
+    box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+.panel-default>.panel-heading {
+    color: #333;
+    background-color: #f5f5f5;
+    border-color: #ddd;
+	
+    padding: 10px 15px;
+    border-bottom: 1px solid transparent;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;	
+}
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 18px;
+    color: inherit;
+}
+.panel-body {
+    padding: 15px;
+}
