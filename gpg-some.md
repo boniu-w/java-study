@@ -230,3 +230,84 @@ Examples:
  --fingerprint [names]      show fingerprints
 ```
 
+
+
+
+
+# gpg
+
+1. 安装 
+
+   ```
+   sudo apt install gpg
+   ```
+
+2. 生成
+
+   ```
+   gpg --full-generate-key
+   ```
+
+3. 查看
+
+   ```
+   gpg --list-keys
+   ```
+
+4. 加密  --recipient  boniu-w@live.cn    指定了一个相应的 GPG 密钥的电子邮件
+
+   ```
+   gpg --output 加密后的文件名 --encrypt --recipient  boniu-w@live.cn  要加密的文件
+   ```
+
+5. 解密
+
+   ```
+   gpg --output 解密后的文件名 --decrypt 加密的文件
+   ```
+
+6. 导出公钥 ,  公钥id 可用 gpg --list-public-keys 查看
+
+   ```
+   gpg --output 导出后公钥的文件名 --export 公钥id
+   ```
+
+7. 导入公钥
+
+   ```
+   gpg --import 要导入的公钥文件
+   ```
+
+   
+
+但要正常使用该密钥，你需要验证该密钥，以便 GPG 正确地信任它。
+
+这可以通过在其他用户的系统上使用 `--edit-key` 参数来完成，然后对密钥进行签名。
+
+首先运行 `gpg --edit-key id`：
+
+![img](./img/gpg导入-3.png)
+
+GPG 编辑密钥
+
+
+
+接下来，使用 `—fpr` 参数，它将显示密钥的指纹。这个命令的输出应该与你自己机器上的输出进行验证，这可以通过在你的系统上运行同样的 `--edit-key` 参数来找到。
+
+![img](./img/gpg导入-0.png)
+
+GPG 密钥的指纹
+
+
+
+如果一切吻合，只需使用 `—sign` 参数，一切就可以开始了。
+
+![img](./img/gpg导入-1.png)
+
+签署 GPG 密钥
+
+
+
+就是这样！其他用户现在可以开始用你的公钥加密文件了，就像你之前做的那样，这可以确保它们只有在你用你的私钥解密时才能被你读取。
+
+这就是使用 GPG 的所有基础知识！
