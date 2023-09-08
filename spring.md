@@ -483,3 +483,19 @@ private Optional<AliyunOssProperties> ossProperties;
 4. `@EnableConfigurationProperties`：`@EnableConfigurationProperties`是Spring Boot中的注解，用于启用特定的配置属性类。配置属性类通常用于封装应用程序的配置信息，例如`application.properties`或`application.yml`文件中的属性。通过使用`@EnableConfigurationProperties`注解，可以将配置属性类与当前配置类关联起来，使得配置属性类的属性可以通过`@ConfigurationProperties`注解进行注入和使用。
 
 请注意，以上解释是基于常见的用法和约定，具体的用法可能因具体的应用程序和上下文而有所不同。建议在实际开发中查阅相关文档和资料，以了解每个注解的具体行为和使用方式。
+
+
+
+# 13. private static final long serialVersionUID = 1L; 具体作用是啥, 能不能不写
+
+
+`serialVersionUID` 是 Java 中用于控制序列化版本的一个标识符。它的作用如下：
+
+1. **版本控制：** 当您对一个类进行序列化（将对象转换为字节流以便存储或传输）时，Java 会自动生成一个 serialVersionUID。当您反序列化（将字节流还原为对象）时，Java 会检查被序列化的类的 serialVersionUID 是否与反序列化的类的 serialVersionUID 匹配。如果匹配，Java 认为类版本一致，可以成功反序列化。如果不匹配，就会抛出序列化版本不一致的异常（`InvalidClassException`）。
+2. **防止反序列化问题：** 如果不显式声明 `serialVersionUID`，Java 会根据类的结构生成一个默认的 `serialVersionUID`。问题是，如果类的结构发生了变化（例如，添加、删除或修改了字段或方法），默认生成的 `serialVersionUID` 也会发生变化，导致无法正确反序列化以前版本的对象。
+
+因此，为了控制类的序列化版本，以确保后续的类结构变化不会导致反序列化问题，通常会在类中显式声明一个 `serialVersionUID`。这个值可以是固定的，也可以是根据一定规则生成的。
+
+
+
+如果您不写 `serialVersionUID`，Java 将为您生成一个默认值，但这样可能会导致潜在的反序列化问题。因此，建议在需要序列化的类中显式声明 `serialVersionUID`。如果您确定不会对类结构进行更改，并且不担心版本控制问题，那么可以选择不写 `serialVersionUID`，但这不是推荐的做法。

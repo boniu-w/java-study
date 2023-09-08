@@ -260,6 +260,12 @@ Examples:
    gpg --output 加密后的文件名 --encrypt --recipient  boniu-w@live.cn  要加密的文件
    ```
 
+   ```
+   gpg --output 加密后的文件名 --encrypt --recipient 公钥标识 要加密的文件
+   ```
+
+   
+
 5. 解密
 
    ```
