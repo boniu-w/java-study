@@ -1,95 +1,151 @@
 -----------  jar + pom -------------------
 --------------  ci-dp-sys-common-security-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-security/4.6.0/ci-dp-sys-common-security-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-security/4.6.0/ci-dp-sys-common-security-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -X -DpomFile="d:\temp/ci-dp-sys-common-security/4.6.0/ci-dp-sys-common-security-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-security/4.6.0/ci-dp-sys-common-security-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 
 ------------ pom ------------------------
-mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-sys-admin" -Dversion="4.6.0" -Dfile="/d/temp/ci-dp-sys-admin/4.6.0/ci-dp-sys-admin-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-sys-admin" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-sys-admin/4.6.0/ci-dp-sys-admin-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 
 ----------------  ci-dp-sys-parent-4.6.0
-mvn deploy:deploy-file -X -DgroupId="ci.dp" -DartifactId="ci-dp-sys-parent" -Dversion="4.6.0" -Dfile="/d/temp/ci-dp-sys-parent/4.6.0/ci-dp-sys-parent-4.6.0-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -X -DgroupId="ci.dp" -DartifactId="ci-dp-sys-parent" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-sys-parent/4.6.0/ci-dp-sys-parent-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ---------------  ci-dp-sys-register-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-register/4.6.0/ci-dp-sys-register-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-register/4.6.0/ci-dp-sys-register-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-register/4.6.0/ci-dp-sys-register-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-register/4.6.0/ci-dp-sys-register-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ---------  ci-dp-sys-gateway-4.6.0
-mvn deploy:deploy-file -X -DpomFile="/d/temp/ci-dp-sys-gateway/4.6.0/ci-dp-sys-gateway-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-gateway/4.6.0/ci-dp-sys-gateway-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -X -DpomFile="d:\temp/ci-dp-sys-gateway/4.6.0/ci-dp-sys-gateway-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-gateway/4.6.0/ci-dp-sys-gateway-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ------------------------------  ci-dp-sys-admin-api-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-admin-api/4.6.0/ci-dp-sys-admin-api-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-admin-api/4.6.0/ci-dp-sys-admin-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-admin-api/4.6.0/ci-dp-sys-admin-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-admin-api/4.6.0/ci-dp-sys-admin-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ---------------------------  ci-dp-sys-admin-svc-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-admin-svc/4.6.0/ci-dp-sys-admin-svc-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-admin-svc/4.6.0/ci-dp-sys-admin-svc-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-admin-svc/4.6.0/ci-dp-sys-admin-svc-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-admin-svc/4.6.0/ci-dp-sys-admin-svc-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
+
+---------------------------  ci-dp-ppm-mdm-4.6.0
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-ppm-mdm" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-ppm-mdm/4.6.0/ci-dp-ppm-mdm-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+---------------------------  ci-dp-ppm-mdm-api-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-ppm-mdm-api/4.6.0/ci-dp-ppm-mdm-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-ppm-mdm-api/4.6.0/ci-dp-ppm-mdm-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+---------------------------  ci-dp-ppm-production-management
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-ppm-production-management" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-ppm-production-management/ci-dp-ppm-production-management/4.6.0/ci-dp-ppm-production-management-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+---------------------------  ci-dp-ppm-production-management-api
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-ppm-production-management-api/4.6.0/ci-dp-ppm-production-management-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-ppm-production-management-api/4.6.0/ci-dp-ppm-production-management-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+---------------------------  ci-dp-ppm-data-collection-4.6.0
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-ppm-data-collection" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-ppm-data-collection/4.6.0/ci-dp-ppm-data-collection-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+---------------------------  ci-dp-ppm-data-collection-api-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-ppm-data-collection-api/4.6.0/ci-dp-ppm-data-collection-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-ppm-data-collection-api/4.6.0/ci-dp-ppm-data-collection-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 
 
 ----------------------  ci-dp-sys-auth-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-auth/4.6.0/ci-dp-sys-auth-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-auth/4.6.0/ci-dp-sys-auth-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-auth/4.6.0/ci-dp-sys-auth-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-auth/4.6.0/ci-dp-sys-auth-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ---------------  ci-dp-sys-common-xss-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-xss/4.6.0/ci-dp-sys-common-xss-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-xss/4.6.0/ci-dp-sys-common-xss-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-xss/4.6.0/ci-dp-sys-common-xss-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-xss/4.6.0/ci-dp-sys-common-xss-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ------------  ci-dp-sys-common-websocket-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-websocket/4.6.0/ci-dp-sys-common-websocket-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-websocket/4.6.0/ci-dp-sys-common-websocket-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-websocket/4.6.0/ci-dp-sys-common-websocket-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-websocket/4.6.0/ci-dp-sys-common-websocket-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ----------------  ci-dp-sys-common-swagger-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-swagger/4.6.0/ci-dp-sys-common-swagger-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-swagger/4.6.0/ci-dp-sys-common-swagger-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-swagger/4.6.0/ci-dp-sys-common-swagger-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-swagger/4.6.0/ci-dp-sys-common-swagger-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 -----------------  ci-dp-sys-common-sequence-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-sequence/4.6.0/ci-dp-sys-common-sequence-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-sequence/4.6.0/ci-dp-sys-common-sequence-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-sequence/4.6.0/ci-dp-sys-common-sequence-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-sequence/4.6.0/ci-dp-sys-common-sequence-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ------------  ci-dp-sys-common-sentinel-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-sentinel/4.6.0/ci-dp-sys-common-sentinel-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-sentinel/4.6.0/ci-dp-sys-common-sentinel-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-sentinel/4.6.0/ci-dp-sys-common-sentinel-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-sentinel/4.6.0/ci-dp-sys-common-sentinel-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 --------------  ci-dp-sys-common-seata-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-seata/4.6.0/ci-dp-sys-common-seata-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-seata/4.6.0/ci-dp-sys-common-seata-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-seata/4.6.0/ci-dp-sys-common-seata-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-seata/4.6.0/ci-dp-sys-common-seata-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 -------------------  ci-dp-sys-common-oss-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-oss/4.6.0/ci-dp-sys-common-oss-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-oss/4.6.0/ci-dp-sys-common-oss-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-oss/4.6.0/ci-dp-sys-common-oss-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-oss/4.6.0/ci-dp-sys-common-oss-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 --------------  ci-dp-sys-common-gray-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-gray/4.6.0/ci-dp-sys-common-gray-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-gray/4.6.0/ci-dp-sys-common-gray-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-gray/4.6.0/ci-dp-sys-common-gray-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-gray/4.6.0/ci-dp-sys-common-gray-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 -------------  ci-dp-sys-common-idempotent-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-idempotent/4.6.0/ci-dp-sys-common-idempotent-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-idempotent/4.6.0/ci-dp-sys-common-idempotent-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-idempotent/4.6.0/ci-dp-sys-common-idempotent-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-idempotent/4.6.0/ci-dp-sys-common-idempotent-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 
 ---------------  ci-dp-sys-common-job-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-job/4.6.0/ci-dp-sys-common-job-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-job/4.6.0/ci-dp-sys-common-job-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-job/4.6.0/ci-dp-sys-common-job-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-job/4.6.0/ci-dp-sys-common-job-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 -------------  ci-dp-sys-common-log-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-log/4.6.0/ci-dp-sys-common-log-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-log/4.6.0/ci-dp-sys-common-log-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-log/4.6.0/ci-dp-sys-common-log-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-log/4.6.0/ci-dp-sys-common-log-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 -----------  ci-dp-sys-common-encrypt-api-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-encrypt-api/4.6.0/ci-dp-sys-common-encrypt-api-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-encrypt-api/4.6.0/ci-dp-sys-common-encrypt-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-encrypt-api/4.6.0/ci-dp-sys-common-encrypt-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-encrypt-api/4.6.0/ci-dp-sys-common-encrypt-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ---------------  ci-dp-sys-common-excel-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-excel/4.6.0/ci-dp-sys-common-excel-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-excel/4.6.0/ci-dp-sys-common-excel-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-excel/4.6.0/ci-dp-sys-common-excel-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-excel/4.6.0/ci-dp-sys-common-excel-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 -----------------  ci-dp-sys-common-feign-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-feign/4.6.0/ci-dp-sys-common-feign-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-feign/4.6.0/ci-dp-sys-common-feign-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-feign/4.6.0/ci-dp-sys-common-feign-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-feign/4.6.0/ci-dp-sys-common-feign-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 --------------------  ci-dp-sys-common-gateway-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-gateway/4.6.0/ci-dp-sys-common-gateway-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-gateway/4.6.0/ci-dp-sys-common-gateway-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-gateway/4.6.0/ci-dp-sys-common-gateway-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-gateway/4.6.0/ci-dp-sys-common-gateway-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ------------------  ci-dp-sys-common-core-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-core/4.6.0/ci-dp-sys-common-core-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-core/4.6.0/ci-dp-sys-common-core-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-core/4.6.0/ci-dp-sys-common-core-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-core/4.6.0/ci-dp-sys-common-core-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 -------------  ci-dp-sys-common-data-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-data/4.6.0/ci-dp-sys-common-data-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-data/4.6.0/ci-dp-sys-common-data-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-data/4.6.0/ci-dp-sys-common-data-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-data/4.6.0/ci-dp-sys-common-data-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 ------------  ci-dp-sys-common-datasource-4.6.0
-mvn deploy:deploy-file -DpomFile="/d/temp/ci-dp-sys-common-datasource/4.6.0/ci-dp-sys-common-datasource-4.6.0.pom" -Dfile="/d/temp/ci-dp-sys-common-datasource/4.6.0/ci-dp-sys-common-datasource-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-sys-common-datasource/4.6.0/ci-dp-sys-common-datasource-4.6.0.pom" -Dfile="d:\temp/ci-dp-sys-common-datasource/4.6.0/ci-dp-sys-common-datasource-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
-----------  /d/temp/ci-dp-sys-common-bom/4.6.0
-mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-sys-common-bom" -Dversion="4.6.0" -Dfile="/d/temp/ci-dp-sys-common-bom/4.6.0/ci-dp-sys-common-bom-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+----------  d:\temp/ci-dp-sys-common-bom/4.6.0
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-sys-common-bom" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-sys-common-bom/4.6.0/ci-dp-sys-common-bom-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 --------  ci-dp-sys-common-4.6.0
-mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-sys-common" -Dversion="4.6.0" -Dfile="/d/temp/ci-dp-sys-common/4.6.0/ci-dp-sys-common-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-sys-common" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-sys-common/4.6.0/ci-dp-sys-common-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
 
 
 ------------------------------------------------------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------------------------------------------------------
 
+--------  ci-dp-peq-strategy-asset-4.6.0
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-peq-strategy-asset" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-peq-strategy-asset/4.6.0/ci-dp-peq-strategy-asset-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+------------------------------  ci-dp-peq-strategy-asset-api-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-strategy-asset-api/4.6.0/ci-dp-peq-strategy-asset-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-strategy-asset-api/4.6.0/ci-dp-peq-strategy-asset-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+---------------------------  ci-dp-peq-strategy-asset-svc-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-strategy-asset-svc/4.6.0/ci-dp-peq-strategy-asset-svc-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-strategy-asset-svc/4.6.0/ci-dp-peq-strategy-asset-svc-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+--------  ci-dp-peq-asset-4.6.0
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-peq-asset" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-peq-asset/4.6.0/ci-dp-peq-asset-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+------------------------------  ci-dp-peq-asset-api-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-asset-api/4.6.0/ci-dp-peq-asset-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-asset-api/4.6.0/ci-dp-peq-asset-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+---------------------------  ci-dp-peq-asset-svc-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-asset-svc/4.6.0/ci-dp-peq-asset-svc-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-asset-svc/4.6.0/ci-dp-peq-asset-svc-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+--------  ci-dp-peq-monitoring-inspection-4.6.0
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-peq-monitoring-inspection" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-peq-monitoring-inspection/4.6.0/ci-dp-peq-monitoring-inspection-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+------------------------------  ci-dp-peq-monitoring-inspection-api-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-monitoring-inspection-api/4.6.0/ci-dp-peq-monitoring-inspection-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-monitoring-inspection-api/4.6.0/ci-dp-peq-monitoring-inspection-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+---------------------------  ci-dp-peq-monitoring-inspection-svc-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-monitoring-inspection-svc/4.6.0/ci-dp-peq-monitoring-inspection-svc-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-monitoring-inspection-svc/4.6.0/ci-dp-peq-monitoring-inspection-svc-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+--------  ci-dp-peq-regulation-training-4.6.0
+mvn deploy:deploy-file -DgroupId="ci.dp" -DartifactId="ci-dp-peq-regulation-training" -Dversion="4.6.0" -Dfile="d:\temp/ci-dp-peq-regulation-training/4.6.0/ci-dp-peq-regulation-training-4.6.0.pom" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+------------------------------  ci-dp-peq-regulation-training-api-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-regulation-training-api/4.6.0/ci-dp-peq-regulation-training-api-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-regulation-training-api/4.6.0/ci-dp-peq-regulation-training-api-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+---------------------------  ci-dp-peq-regulation-training-svc-4.6.0
+mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-regulation-training-svc/4.6.0/ci-dp-peq-regulation-training-svc-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-regulation-training-svc/4.6.0/ci-dp-peq-regulation-training-svc-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
