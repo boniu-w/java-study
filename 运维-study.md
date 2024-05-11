@@ -116,3 +116,272 @@ WinSW下载地址
 | arguments        | 命令执行参数，如指定虚拟机参数，配置文件路径、-jar xxx.jar等。 |
 | stopexecutable   | 指定当请求停止服务时要执行的命令或可执行文件                 |
 | stoparguments    | 当请求停止服务时启动另一个进程时的参数                       |
+
+
+
+具体步骤: 
+
+1. 把winsw 改成 你的jar包的名字, 后缀别改, 还是 exe
+2. 把jar包复制到当前目录下
+3. 在当前目录下配置xml
+
+xml 配置示例: 
+
+```xml
+<service>
+  <id>xianmoer-backend</id>
+  <name>xianmoer-backend</name>
+  <description>xianmoer app</description>
+  <executable>java</executable>
+  <arguments>-jar %BASE%/process_pipe_inspection_and_assessment_system_xian.jar --spring.config.location=%BASE%\application-xianmoer.yml</arguments>
+  <logmode>rotate</logmode>
+  <priority>Normal</priority>
+  <stoptimeout>45 sec</stoptimeout>
+  <stopparentprocessfirst>false</stopparentprocessfirst>
+  <startmode>Automatic</startmode>
+  <logpath>%BASE%\logs</logpath>
+  <waithint>60 sec</waithint>
+  <sleeptime>10 sec</sleeptime>
+</service>
+```
+
+
+
+
+
+# 4. nginx 配置
+
+## 配置样例
+
+```
+
+#user  nobody;
+worker_processes  1;
+
+#error_log  logs/error.log;
+#error_log  logs/error.log  notice;
+#error_log  logs/error.log  info;
+
+#pid        logs/nginx.pid;
+
+
+events {
+    worker_connections  1024;
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    
+    #log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    #                  '$status $body_bytes_sent "$http_referer" '
+    #                  '"$http_user_agent" "$http_x_forwarded_for"';
+
+    #access_log  logs/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    #keepalive_timeout  0;
+    keepalive_timeout  65;
+
+    #gzip  on;
+	gzip on;
+	gzip_comp_level 9;
+	gzip_min_length 10k;
+	gzip_proxied any;
+	gzip_vary on;
+	gzip_types
+    	application/atom+xml
+    	application/javascript
+    	application/json
+    	application/ld+json
+    	application/manifest+json
+    	application/rss+xml
+    	application/vnd.geo+json
+    	application/vnd.ms-fontobject
+    	application/x-font-ttf
+    	application/x-web-app-manifest+json
+    	application/xhtml+xml
+    	application/xml
+    	font/opentype
+    	image/bmp
+    	image/svg+xml
+    	image/x-icon
+    	text/cache-manifest
+    	text/css
+    	text/plain
+    	text/vcard
+    	text/vnd.rim.location.xloc
+    	text/vtt
+    	text/x-component
+    	text/x-cross-domain-policy;	
+
+
+	client_max_body_size 1000M;
+	server_tokens off;
+	
+    server {
+        listen       80;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+        }
+
+        #error_page  404              /404.html;
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+
+        # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+        #
+        #location ~ \.php$ {
+        #    proxy_pass   http://127.0.0.1;
+        #}
+
+        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+        #
+        #location ~ \.php$ {
+        #    root           html;
+        #    fastcgi_pass   127.0.0.1:9000;
+        #    fastcgi_index  index.php;
+        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;
+        #    include        fastcgi_params;
+        #}
+
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #
+        #location ~ /\.ht {
+        #    deny  all;
+        #}
+    }
+
+
+    # another virtual host using mix of IP-, name-, and port-based configuration
+    #
+    #server {
+    #    listen       8000;
+    #    listen       somename:8080;
+    #    server_name  somename  alias  another.alias;
+
+    #    location / {
+    #        root   html;
+    #        index  index.html index.htm;
+    #    }
+    #}
+
+
+    # HTTPS server
+    #
+    #server {
+    #    listen       443 ssl;
+    #    server_name  localhost;
+
+    #    ssl_certificate      cert.pem;
+    #    ssl_certificate_key  cert.key;
+
+    #    ssl_session_cache    shared:SSL:1m;
+    #    ssl_session_timeout  5m;
+
+    #    ssl_ciphers  HIGH:!aNULL:!MD5;
+    #    ssl_prefer_server_ciphers  on;
+
+    #    location / {
+    #        root   html;
+    #        index  index.html index.htm;
+    #    }
+    #}
+
+    server {
+        listen       8090 443 ssl;
+        server_name  xianmoer-frontend;
+		
+		ssl_certificate ./xianmoer.crt;
+        ssl_certificate_key ./xianmoer.key;
+		ssl_session_timeout 5m;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2; 
+        ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE; 
+        ssl_prefer_server_ciphers on;
+	
+		server_tokens off;
+		proxy_hide_header Server;
+		add_header Content-Security-Policy "default-src 'self';
+                                 object-src 'self' ;
+                                 style-src 'self' 'unsafe-inline';
+                                 frame-src 'self' ;
+                                 base-uri 'self'; 
+                                 form-action 'self';
+                                 script-src 'self'  'unsafe-eval' 'sha256-s9RoBFqqRTKEz03aMkaEGLy7X3nJuyOZ8mzkjwCekYA=' ;
+								 connect-src 'self' https://api.iconify.design https://api.unisvg.com https://api.simplesvg.com;
+                                 img-src 'self' data:";
+		add_header X-Content-Type-Options "nosniff";
+		add_header Set-Cookie "SameSite=Lax; Secure; HttpOnly; Path=/";
+		add_header Referrer-Policy same-origin;
+        
+		root D:\xianmoer-assessment\front-end\20231121\dist;
+
+        location /basic-api {
+			
+            proxy_pass http://127.0.0.1:9950/api;
+        }
+
+        location /file/xianmoer {
+            proxy_set_header Host 127.0.0.1:9000;
+            proxy_pass http://127.0.0.1:9000/xianmoer;
+        }
+
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   html;
+        }
+		
+		location ~ /\. {
+			deny all;
+		}
+		
+		location / {
+            try_files $uri $uri/ =404;
+        }
+    }
+}
+
+```
+
+
+
+## 1. 开启ssl
+
+### 1. 生成自签名证书
+
+```
+openssl genrsa -out xianmoer.key 2048
+openssl req -new -key xianmoer.key -out xianmoer.csr
+openssl x509 -req -days 36500 -in xianmoer.csr -signkey xianmoer.key -out xianmoer.crt
+```
+
+
+
+```
+server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate d:/具体的路径/xianmoer.crt;
+    ssl_certificate_key d:/具体的路径/xianmoer.key;
+
+    # 其他配置项
+}
+```
+

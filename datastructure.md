@@ -1,51 +1,6 @@
-# 1. 总览
+# 1. b+ 树
 
-常见的数据结构: 
-
-1. 数组（Array）
-2. 链表（Linked List）
-3. 栈（Stack）
-4. 队列（Queue）
-5. 树（Tree）
-   - 二叉树（Binary Tree）
-   - 二叉搜索树（Binary Search Tree）
-   - AVL树（AVL Tree）
-   - 红黑树（Red-Black Tree）
-   - B树（B-Tree）
-   - B+树（B+ Tree）
-   - Trie树（Trie Tree，前缀树）
-6. 堆（Heap）
-   - 最大堆（Max Heap）
-   - 最小堆（Min Heap）
-7. 图（Graph）
-   - 有向图（Directed Graph）
-   - 无向图（Undirected Graph）
-   - 加权图（Weighted Graph）
-8. 哈希表（Hash Table）
-9. 集合（Set）
-   - 有序集合（Ordered Set）
-   - 无序集合（Unordered Set）
-10. 字典（Dictionary）或映射（Map）
-
-- 哈希映射（Hash Map）
-- 树映射（Tree Map）
-
-1. 哈希集合（Hash Set）
-2. 双端队列（Deque，Double-ended Queue）
-3. 字符串（String）
-4. 邻接矩阵（Adjacency Matrix）
-5. 邻接表（Adjacency List）
-6. 并查集（Union Find）
-7. 布隆过滤器（Bloom Filter）
-8. 线段树（Segment Tree）
-9. 线段树数组（Segment Tree Array）
-10. AVL排序树（AVL Sorted Tree）
-
-
-
-
-
-# 2. b+树
+B+树是一种自平衡的树型数据结构，它常被用于数据库和文件系统中作为索引结构。**B+**树与**B**树类似，但在**B+树中，非叶子节点不存储数据，只存储索引，所有的数据都存储在叶子节点上。这样的设计使得B+树更适合用于范围查询。
 
 B+树是一种树状数据结构，它的设计思想主要围绕着优化磁盘I/O操作、提高范围查询效率和保持树的平衡等方面。以下是B+树的主要设计思想：
 
@@ -55,4 +10,4 @@ B+树是一种树状数据结构，它的设计思想主要围绕着优化磁盘
 4. **平衡性：** B+树保持了所有叶子节点到根节点的距离相等，因此在进行插入和删除操作时，树的平衡性得到了保证。这样可以确保树的高度保持在一个较小的范围内，提高了搜索效率。
 5. **减少磁盘I/O：** B+树的节点设计使得每次磁盘I/O可以获取到更多的数据，从而减少了磁盘I/O的次数。非叶子节点只存储索引，可以容纳更多的键，使得每次I/O可以获取到更多的索引信息，加快了搜索速度。
 
-总的来说，B+树的设计思想是为了充分利用磁盘和内存的性能特点，优化搜索和范围查询操作的效率，同时保持树的平衡性和数据的有序性
+总的来说，B+树的设计思想是为了充分利用磁盘和内存的性能特点，优化搜索和范围查询操作的效率，同时保持树的平衡性和数据的有序性。
