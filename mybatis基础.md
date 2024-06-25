@@ -120,6 +120,79 @@
 
 
 
+```xml
+   <!-- 模板语法 -->
+	<update id="updateEquipmentUse" parameterType="com.sevenme.modules.pia.entity.EquipmentUseEntity">
+        UPDATE
+        equipment_use_table <!-- Replace with your actual table name -->
+        SET
+        <trim suffixOverrides=",">
+#foreach($column in $columns)
+        <if test="${column.columnName} != null">
+        ${column.columnName} = #{${column.attrname}},
+        </if>
+#end
+        </trim>
+    </update>
+```
+
+
+
+
+
+```xml
+	<update id="updateEquipmentUse" parameterType="com.sevenme.modules.pia.entity.EquipmentUseEntity">
+        UPDATE
+        equipment_use
+        SET
+        <trim suffixOverrides=",">
+            <!--<if test="ID != null">-->
+            <!--    ID = #{id},-->
+            <!--</if>-->
+            <if test="SET_DATE != null">
+                SET_DATE = #{setDate},
+            </if>
+            <if test="SET_STAFF != null">
+                SET_STAFF = #{setStaff},
+            </if>
+            <if test="SET_REASON != null">
+                SET_REASON = #{setReason},
+            </if>
+            <if test="MATERIAL_STRENGTH_FACTOR != null">
+                MATERIAL_STRENGTH_FACTOR = #{materialStrengthFactor},
+            </if>
+            <if test="MODELING_FACTOR != null">
+                MODELING_FACTOR = #{modelingFactor},
+            </if>
+            <if test="SAFETY_FACTOR != null">
+                SAFETY_FACTOR = #{safetyFactor},
+            </if>
+            <if test="LOSS_OF_ULTIMATE_WALL_THICKNESS != null">
+                LOSS_OF_ULTIMATE_WALL_THICKNESS = #{lossOfUltimateWallThickness},
+            </if>
+            <!--<if test="DEL_FLAG != null">-->
+            <!--    DEL_FLAG = #{delFlag},-->
+            <!--</if>-->
+            <if test="CREATE_USER != null">
+                CREATE_USER = #{createUser},
+            </if>
+            <if test="UPDATE_USER != null">
+                UPDATE_USER = #{updateUser},
+            </if>
+            <if test="CREATE_TIME != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="UPDATE_TIME != null">
+                UPDATE_TIME = #{updateTime},
+            </if>
+        </trim>
+        where
+        id=#{id}
+        and
+        DEL_FLAG=0;
+    </update>
+```
+
 
 
 # 4. jdbcType
