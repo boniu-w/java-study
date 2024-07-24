@@ -386,21 +386,373 @@ public class HistoryAssessmentSpIntInspectDtFallbackFactory implements FallbackF
 
 
 
+# 5. java14 的 record
+
+## 1. java record 的用法, 它解决是什么难题
+
+Java `record` 是在 Java 14 中引入的一种简洁的语法，用于定义不可变的数据持有类。它主要解决了样板代码过多的问题，使得编写和维护简单的数据类更加方便和高效。下面具体讲解 `record` 的用法及其解决的问题。
+
+### `record` 的基本用法
+
+定义一个 `record` 非常简单，只需要声明它的名称和包含的字段：
+
+```java
+public record Point(int x, int y) {}
+```
+
+上面的 `Point` 记录类会自动生成以下内容：
+
+- 私有的、不可变的字段 `x` 和 `y`。
+- 公共的构造函数 `Point(int x, int y)`。
+- `x()` 和 `y()` 的 getter 方法。
+- `toString()`、`equals()` 和 `hashCode()` 方法。
+
+### 使用示例
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        Point point = new Point(5, 10);
+
+        System.out.println(point.x()); // 输出: 5
+        System.out.println(point.y()); // 输出: 10
+        System.out.println(point);     // 输出: Point[x=5, y=10]
+    }
+}
+
+public record Point(int x, int y) {}
+```
+
+### 详细说明
+
+1. **字段声明和构造函数**: `record` 自动生成构造函数和字段的访问方法。
+
+   ```java
+   Point point = new Point(5, 10);
+   System.out.println(point.x()); // 5
+   System.out.println(point.y()); // 10
+   ```
+
+2. **不可变性**: `record` 的字段是不可变的，即一旦初始化，不能再改变。
+
+   ```java
+   // point.x = 20; // 编译错误，无法修改字段值
+   ```
+
+3. **自动生成的标准方法**: 自动生成的 `toString()`、`equals()` 和 `hashCode()` 方法。
+
+   ```java
+   Point point1 = new Point(5, 10);
+   Point point2 = new Point(5, 10);
+   
+   System.out.println(point1.equals(point2)); // true
+   System.out.println(point1.hashCode() == point2.hashCode()); // true
+   ```
+
+4. **自定义构造函数和方法**: 可以自定义构造函数和添加方法，但要遵守不可变性的原则。
+
+   ```java
+   public record Point(int x, int y) {
+       public Point {
+           if (x < 0 || y < 0) {
+               throw new IllegalArgumentException("Coordinates must be non-negative");
+           }
+       }
+   
+       public int sum() {
+           return x + y;
+       }
+   }
+   ```
+
+### 解决的问题
+
+1. **样板代码减少**: `record` 减少了定义简单数据持有类时的样板代码，如手动编写构造函数、`toString()`、`equals()` 和 `hashCode()` 方法。
+
+   ```java
+   // 使用 record
+   public record Person(String name, int age) {}
+   
+   // 手动编写的等效类
+   public class Person {
+       private final String name;
+       private final int age;
+   
+       public Person(String name, int age) {
+           this.name = name;
+           this.age = age;
+       }
+   
+       public String getName() {
+           return name;
+       }
+   
+       public int getAge() {
+           return age;
+       }
+   
+       @Override
+       public boolean equals(Object o) {
+           if (this == o) return true;
+           if (o == null || getClass() != o.getClass()) return false;
+           Person person = (Person) o;
+           return age == person.age && Objects.equals(name, person.name);
+       }
+   
+       @Override
+       public int hashCode() {
+           return Objects.hash(name, age);
+       }
+   
+       @Override
+       public String toString() {
+           return "Person{" +
+                   "name='" + name + '\'' +
+                   ", age=" + age +
+                   '}';
+       }
+   }
+   ```
+
+2. **不可变性**: `record` 类的字段是不可变的，默认保证了数据的不可变性，有助于编写线程安全的代码。
+
+3. **简洁的语法**: 使用 `record` 语法更加简洁，便于理解和维护。
+
+### 何时使用 `record`
+
+- **数据传输对象（DTO）**: 用于封装和传输数据的对象。
+- **值对象**: 包含数据但没有独立身份的对象，如坐标、颜色等。
+- **不可变对象**: 需要保证对象创建后状态不可变的对象。
+
+### 总结
+
+Java `record` 提供了一种简洁的方式来定义不可变的数据持有类，自动生成构造函数、`toString()`、`equals()` 和 `hashCode()` 方法，减少样板代码，提高开发效率。适用于数据传输对象和值对象等需要不可变性的场景
+
+
+
+例子:
+
+```java
+public class RecordTest {
+    private record KpPair<A, B>(A sectionStartingKp, B sectionEndingKp) {
+    }
+
+    private record ThicknessPair<A, B>(A kpPair, B sectionThickness) {
+    }
+
+    public static void main(String[] args) {
+        KpPair<Double, Double> p = new KpPair<Double, Double>(1d, 2d);
+        ThicknessPair<KpPair<Double, Double>, Double> tp = new ThicknessPair<KpPair<Double, Double>, Double>(p, 1d);
+        System.out.println("tp = " + tp); // ThicknessPair[kpPair=KpPair[sectionStartingKp=1.0, sectionEndingKp=2.0], sectionThickness=1.0]
+    }
+
+}
+```
 
 
 
 
 
+# 6. 内部类
+
+在 Java 中，内部类的创建和引用方式取决于内部类的类型。以下是对成员内部类、静态内部类、局部内部类和匿名内部类的创建和引用方式的详细介绍：
+
+### 1. 成员内部类（Member Inner Class）
+
+成员内部类是定义在另一个类的内部，并且不包含 `static` 关键字。成员内部类可以访问外部类的所有成员变量和方法，包括私有的。
+
+**创建和引用成员内部类的示例：**
+
+```java
+public class OuterClass {
+    private String outerField = "Outer field";
+
+    public class InnerClass {
+        public void display() {
+            System.out.println("Outer field: " + outerField);
+        }
+    }
+
+    public static void main(String[] args) {
+        OuterClass outer = new OuterClass();
+        OuterClass.InnerClass inner = outer.new InnerClass();
+        inner.display();  // 输出：Outer field: Outer field
+    }
+}
+```
+
+### 2. 静态内部类（Static Nested Class）
+
+静态内部类使用 `static` 关键字修饰，不能直接访问外部类的非静态成员变量和方法。
+
+**创建和引用静态内部类的示例：**
+
+```java
+public class OuterClass {
+    private static String staticOuterField = "Static Outer field";
+
+    public static class StaticInnerClass {
+        public void display() {
+            System.out.println("Static Outer field: " + staticOuterField);
+        }
+    }
+
+    public static void main(String[] args) {
+        OuterClass.StaticInnerClass inner = new OuterClass.StaticInnerClass();
+        inner.display();  // 输出：Static Outer field: Static Outer field
+    }
+}
+```
+
+### 3. 局部内部类（Local Inner Class）(方法里面的类)
+
+局部内部类是在方法内部定义的类。它只能在定义它的方法内部使用。
+
+**创建和引用局部内部类的示例：**
+
+```java
+public class OuterClass {
+    private String outerField = "Outer field";
+
+    public void methodWithInnerClass() {
+        class LocalInnerClass {
+            public void display() {
+                System.out.println("Outer field: " + outerField);
+            }
+        }
+        LocalInnerClass inner = new LocalInnerClass();
+        inner.display();  // 输出：Outer field: Outer field
+    }
+
+    public static void main(String[] args) {
+        OuterClass outer = new OuterClass();
+        outer.methodWithInnerClass();
+    }
+}
+```
+
+### 4. 匿名内部类（Anonymous Inner Class）
+
+匿名内部类是没有名字的内部类，通常在需要简化代码时使用。它们一般用于实现接口或者继承类，并且只能实例化一次。
+
+**创建和引用匿名内部类的示例：**
+
+```java
+public class OuterClass {
+    private String outerField = "Outer field";
+
+    public void createAnonymousClass() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Outer field: " + outerField);
+            }
+        }).start();
+    }
+
+    public static void main(String[] args) {
+        OuterClass outer = new OuterClass();
+        outer.createAnonymousClass();  // 启动线程，输出：Outer field: Outer field
+    }
+}
+```
+
+通过这些示例，你可以看到不同类型的内部类在创建和引用时的具体用法。每种类型的内部类都有其特定的应用场景和优缺点，选择适当的内部类类型可以使代码更加清晰和易于维护
 
 
 
 
 
+# 7. java引用传递的 例子
+
+
+
+## 1.  list.stream() 例子
+
+```
+ List<SpRiDtDetailDTO> list = spRiDtDetailDTOList.stream()
+.filter(e -> e.getKpValue() != null && e.getKpValue().doubleValue() >= partitionInfo.getSectionStartingKp() && e.getKpValue().doubleValue() <= partitionInfo.getSectionEndingKp())
+.sorted(Comparator.comparing(SpRiDtDetailDTO::getKpValue))
+.toList();
+我修改了 list 里面的对象的值, 那么 spRiDtDetailDTOList 里面的对象的值 也变化了吗
+```
+
+
+
+在 Java 中，`List<SpRiDtDetailDTO> list` 是通过流操作从 `spRiDtDetailDTOList` 过滤和排序得到的一个新列表。这种情况下，`list` 中的元素是对 `spRiDtDetailDTOList` 中相应元素的引用。因此，如果你修改了 `list` 中某个对象的值，那么 `spRiDtDetailDTOList` 中相应的对象的值也会发生变化。
+
+这是因为 Java 中的对象是通过引用传递的，而不是通过值传递的。流操作生成的新列表 `list` 只是原列表 `spRiDtDetailDTOList` 中对象的引用，因此它们实际上指向的是同一组对象。
+
+举个例子来说明：
+
+```
+java
+复制代码
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+class SpRiDtDetailDTO {
+    private Double kpValue;
+
+    public SpRiDtDetailDTO(Double kpValue) {
+        this.kpValue = kpValue;
+    }
+
+    public Double getKpValue() {
+        return kpValue;
+    }
+
+    public void setKpValue(Double kpValue) {
+        this.kpValue = kpValue;
+    }
+
+    @Override
+    public String toString() {
+        return "SpRiDtDetailDTO{" +
+                "kpValue=" + kpValue +
+                '}';
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<SpRiDtDetailDTO> spRiDtDetailDTOList = new ArrayList<>();
+        spRiDtDetailDTOList.add(new SpRiDtDetailDTO(1.0));
+        spRiDtDetailDTOList.add(new SpRiDtDetailDTO(2.0));
+        spRiDtDetailDTOList.add(new SpRiDtDetailDTO(3.0));
+
+        // Simulating partitionInfo.getSectionStartingKp() and partitionInfo.getSectionEndingKp()
+        double sectionStartingKp = 1.0;
+        double sectionEndingKp = 3.0;
+
+        List<SpRiDtDetailDTO> list = spRiDtDetailDTOList.stream()
+                .filter(e -> e.getKpValue() != null && e.getKpValue() >= sectionStartingKp && e.getKpValue() <= sectionEndingKp)
+                .sorted(Comparator.comparing(SpRiDtDetailDTO::getKpValue))
+                .collect(Collectors.toList());
+
+        // Modify an object in the new list
+        list.get(0).setKpValue(10.0);
+
+        // Print both lists to see the effect
+        System.out.println("Original List: " + spRiDtDetailDTOList);
+        System.out.println("New List: " + list);
+    }
+}
+```
+
+运行此代码时，你会发现 `spRiDtDetailDTOList` 和 `list` 中的第一个对象的 `kpValue` 都变成了 `10.0`：
+
+```
+css
+复制代码
+Original List: [SpRiDtDetailDTO{kpValue=10.0}, SpRiDtDetailDTO{kpValue=2.0}, SpRiDtDetailDTO{kpValue=3.0}]
+New List: [SpRiDtDetailDTO{kpValue=10.0}, SpRiDtDetailDTO{kpValue=2.0}, SpRiDtDetailDTO{kpValue=3.0}]
+```
+
+这说明在 `list` 中修改对象的值会影响到 `spRiDtDetailDTOList` 中对应的对象
 
 
 
 
-
-
-
-  
