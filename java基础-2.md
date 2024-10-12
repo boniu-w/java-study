@@ -218,9 +218,7 @@ public interface UserMapper {
 
 假设我们有一个服务类 `UserService`，其中使用了 `UserMapper` 来查询用户信息：
 
-```
-java
-复制代码
+```java
 @Service
 public class UserService {
 
@@ -265,6 +263,63 @@ public class UserService {
 - 一级缓存在 `SqlSession` 关闭之后会失效，它的生命周期与 `SqlSession` 一致。
 
 通过这种机制，MyBatis 能够有效地减少重复的数据库访问，提升查询性能，特别是在需要频繁执行相同查询的情况下
+
+
+
+### 示例2:
+
+```java
+import org.apache.ibatis.session.SqlSession;
+import com.example.mapper.UserMapper;
+
+public class FirstLevelCacheDemo {
+    public static void main(String[] args) {
+        // 假设 `sqlSessionFactory` 是已经初始化好的 SqlSessionFactory 对象
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            UserMapper mapper = sqlSession.getMapper(UserMapper.class);
+            
+            // 第一次查询用户信息
+            User user1 = mapper.getUserById(1);
+            System.out.println("第一次查询: " + user1);
+
+            // 第二次查询用户信息，这里会命中一级缓存
+            User user2 = mapper.getUserById(1);
+            System.out.println("第二次查询: " + user2);
+
+            // 修改用户信息
+            user1.setName("Updated Name");
+            mapper.updateUser(user1);
+            sqlSession.commit();
+
+            // 再次查询，这次应该从缓存中获取旧的数据
+            User user3 = mapper.getUserById(1);
+            System.out.println("第三次查询: " + user3); // 注意这里会输出修改前的数据
+
+            // 清除缓存
+            sqlSession.clearCache();
+
+            // 清除缓存后再次查询
+            User user4 = mapper.getUserById(1);
+            System.out.println("第四次查询: " + user4); // 这次会查询到最新的数据
+        }
+    }
+}
+
+在这个例子中：
+
+第一次查询 getUserById(1) 会从数据库中获取数据并将其放入缓存。
+第二次查询 getUserById(1) 会直接从缓存中读取数据，而不是查询数据库。
+更新用户信息后提交事务，此时缓存中的数据仍然是旧的。
+第三次查询由于缓存仍然有效，会返回旧的数据。
+调用 sqlSession.clearCache() 清除缓存后，第四次查询会重新查询数据库，获取最新的数据。
+
+缓存失效的情况
+提交或回滚事务后，SqlSession 的缓存会被清空。
+执行任何增删改（DML）操作后，受影响的数据会被从缓存中移除。
+关闭 SqlSession 时，缓存会被清空
+```
+
+
 
 
 
@@ -755,4 +810,54 @@ New List: [SpRiDtDetailDTO{kpValue=10.0}, SpRiDtDetailDTO{kpValue=2.0}, SpRiDtDe
 
 
 
+# 8. default 限定符
 
+在Java中，“default”关键字主要用于以下两个场景：
+
+1. **默认方法（Default Methods）**：
+
+   - Java 8引入了接口中的默认方法概念。在接口中声明的方法可以使用`default`关键字来定义一个实现。这样，实现了该接口的类会自动获得这些方法的默认实现，除非它们已经覆盖了这些方法。
+   - 这个特性允许你向现有的接口添加新方法而不破坏已有的实现。
+
+   **示例代码**：
+
+   <svg width="12" height="12" viewBox="0 0 11.199999809265137 11.199999809265137" class="cursor-pointer flex items-center tongyi-ui-highlighter-copy-btn"><g><path d="M11.2,1.6C11.2,0.716344,10.4837,0,9.6,0L4.8,0C3.91634,0,3.2,0.716344,3.2,1.6L4.16,1.6Q4.16,1.3349,4.34745,1.14745Q4.5349,0.96,4.8,0.96L9.6,0.96Q9.8651,0.96,10.0525,1.14745Q10.24,1.3349,10.24,1.6L10.24,6.4Q10.24,6.6651,10.0525,6.85255Q9.8651,7.04,9.6,7.04L9.6,8C10.4837,8,11.2,7.28366,11.2,6.4L11.2,1.6ZM0,4L0,9.6C0,10.4837,0.716344,11.2,1.6,11.2L7.2,11.2C8.08366,11.2,8.8,10.4837,8.8,9.6L8.8,4C8.8,3.11634,8.08366,2.4,7.2,2.4L1.6,2.4C0.716344,2.4,0,3.11634,0,4ZM1.14745,10.0525Q0.96,9.8651,0.96,9.6L0.96,4Q0.96,3.7349,1.14745,3.54745Q1.3349,3.36,1.6,3.36L7.2,3.36Q7.4651,3.36,7.65255,3.54745Q7.84,3.7349,7.84,4L7.84,9.6Q7.84,9.8651,7.65255,10.0525Q7.4651,10.24,7.2,10.24L1.6,10.24Q1.3349,10.24,1.14745,10.0525Z"></path></g></svg>
+
+   ```java
+   1public interface MyInterface {
+   2    default void myMethod() {
+   3        System.out.println("This is a default method.");
+   4    }
+   5}
+   6
+   7public class MyClass implements MyInterface {
+   8    // MyClass 不需要实现 myMethod 方法，因为它已经有了一个默认实现。
+   9}
+   10
+   11public class Main {
+   12    public static void main(String[] args) {
+   13        MyClass myClass = new MyClass();
+   14        myClass.myMethod(); // 输出: This is a default method.
+   15    }
+   16}
+   ```
+
+2. **默认值（Default Values）**：
+
+   - 在Java中，`default`也可以用来指代枚举类型的默认实例。当创建枚举类型时，如果没有明确指定某个常量作为默认值，那么第一个定义的枚举常量将被默认为默认值。
+   - 这个用途相对较少见，并且通常是在特定框架或库中为了配置目的而使用。
+
+需要注意的是，`default`关键字不应该与类、变量或常规方法的定义混淆，它只适用于上述两种情况。此外，在Java 9及更高版本中，`default`关键字还可以用于模块定义文件（module-info.java）中的模块声明中，用来指定模块是开放给所有其他模块还是只对特定模块开放。
+
+如果你有更具体的关于`default`关键字的问题或者需要更详细的解释，请告诉我！
+
+
+
+在Java中，如果你在一个类内部定义了一个字段（成员变量）但没有显式地指定访问控制修饰符（即访问限定符），那么它的默认访问级别是**包私有**（package-private）。这意味着这个字段只能被同一个包内的类所访问。
+
+下面是几种不同的访问级别及其含义：
+
+- **public**：公开的，可以被任何类访问。
+- **protected**：受保护的，可以被同一包内以及子类访问，无论子类是否位于同一个包内。
+- **private**：私有的，只能被定义该字段的类本身访问。
+- **无访问控制修饰符**（默认）：也称为包私有（package-private），只能被同一个包内的类访问。

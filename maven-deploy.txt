@@ -149,3 +149,16 @@ mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-regulation-training-api/4.6.
 
 ---------------------------  ci-dp-peq-regulation-training-svc-4.6.0
 mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-regulation-training-svc/4.6.0/ci-dp-peq-regulation-training-svc-4.6.0.pom" -Dfile="d:\temp/ci-dp-peq-regulation-training-svc/4.6.0/ci-dp-peq-regulation-training-svc-4.6.0.jar" -DrepositoryId="nexus-7me-release" -Durl="http://119.3.53.55:9081/repository/maven-releases/"
+
+
+---------------------------快照库
+	<parent>
+        <artifactId>engineering</artifactId>
+        <groupId>com.sevenme.engineering</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>risk</artifactId>
+
+mvn -e deploy:deploy-file -DpomFile="C:\Users\wg\.m2\repository\com\sevenme\engineering\risk\1.0-SNAPSHOT/risk-1.0-SNAPSHOT.pom" -Dfile="C:\Users\wg\.m2\repository\com\sevenme\engineering\risk\1.0-SNAPSHOT/risk-1.0-SNAPSHOT.jar" -DrepositoryId="nexus-7me-snapshots" -Durl="http://119.3.53.55:9081/repository/maven-snapshots/"

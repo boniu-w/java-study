@@ -1,0 +1,144 @@
+失效场景
+1.调用的方法非pubilc，外部访问时导致事务没有开启，@transactional失效
+@Transactional基于动态代理实现，在bean初始化时，spring对该注解进行一个扫描，如果标注@Transactional的方法如果修饰符不是public，那么就默认方法的@Transactional信息为空，那么将不会对bean进行代理对象创建或者不会对方法进行代理调用，在bean创建对象时会遍历当前bean的class的方法对象，判断方法上面的注解信息是否包含@Transactional，如果bean任何一个方法包含@Transactional注解信息，那么就是适配BeanFactoryTransactionAttributeSourceAdvisor切点。则需要创建代理对象，然后代理逻辑为我们管理事务开闭逻辑。
+protected TransactionAttribute computeTransactionAttribute(Method method, Class<?> targetClass) {
+   // Don't allow no-public methods as required.
+   //非public 方法，返回@Transactional信息一律是null
+   if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
+      return null;
+   }
+   //后面省略.......
+ }
+因此为非public对象将不会创建代理对象
+
+若一个类的的多个方法都使用该注解，则一定会创建代理对象，但非public方法依旧不会开启事务（在动态代理对象进行逻辑调用时，拦截函数会执行一个逻辑，获取当前对象执行的method适配的aop逻辑，执行近似为上面方法，而非public不启用事务）
+
+
+2.类内部调用@Transactional方法，事务不开启注解失效
+事务管理是基于动态代理逻辑实现，类内部调用是调用事务方法为直接使用this对象，绕过代理调用，故依旧会失效
+（若希望强制内部调用且希望开启事务，则需要@Autowired自动注入继承的service，通过一个租入接口调用事务性方法使之生效）
+
+
+
+3.事务内部捕获异常，导致异常未被抛出，事务操作不会回滚
+事务乳香回滚需要捕捉到异常，若异常在被事务不或签事先被其他部分捕捉，则事务不会回滚（抛出的异常被非事务方法捕获）
+
+
+4.数据库执行的操作不支持事务，如只读查询则不会生效
+
+5.异常类型不触发回滚，运行时异常与错误会触发，而检查时异常不会触发事务回滚
+可查的异常（checked exceptions）：Exception下除了RuntimeException外的异常
+不可查的异常（unchecked exceptions）：RuntimeException及其子类和错误（Error）
+
+@Transactional 事务的回滚仅仅对于unchecked的异常有效。对于checked异常无效。事务回滚仅仅发生在出现RuntimeException或Error的时候。
+
+
+
+使用技巧
+1.确保该注解使用于public方法，保证调用该方法是使用动态代理，处理异常时不进行捕获而是选择抛出
+2.确保该方法所属类被spring进行管理（类上是否包含对应注解）
+
+@Transactional实现原理
+ 
+1) 事务开始时，通过AOP机制，生成一个代理connection对象，
+   并将其放入 DataSource 实例的某个与 DataSourceTransactionManager 相关的某处容器中。
+   在接下来的整个事务中，客户代码都应该使用该 connection 连接数据库，
+   执行所有数据库命令。
+   [不使用该 connection 连接数据库执行的数据库命令，在本事务回滚的时候得不到回滚]
+  （物理连接 connection 逻辑上新建一个会话session；
+   DataSource 与 TransactionManager 配置相同的数据源）
+ 
+2) 事务结束时，回滚在第1步骤中得到的代理 connection 对象上执行的数据库命令，
+   然后关闭该代理 connection 对象。
+  （事务结束后，回滚操作不会对已执行完毕的SQL操作命令起作用）
+
+
+注解说明
+1. value ：主要用来指定不同的事务管理器；
+   主要用来满足在同一个系统中，存在不同的事务管理器。
+   比如在Spring中，声明了两种事务管理器txManager1, txManager2.然后，
+   用户可以根据这个参数来根据需要指定特定的txManager.
+ 
+2. value 适用场景：在一个系统中，需要访问多个数据源或者多个数据库，
+   则必然会配置多个事务管理器的
+ 
+3. REQUIRED_NEW：内部的事务独立运行，在各自的作用域中，可以独立的回滚或者提交；
+   而外部的事务将不受内部事务的回滚状态影响。
+ 
+4. ESTED 的事务，基于单一的事务来管理，提供了多个保存点。
+   这种多个保存点的机制允许内部事务的变更触发外部事务的回滚。
+   而外部事务在混滚之后，仍能继续进行事务处理，即使部分操作已经被混滚。 
+   由于这个设置基于 JDBC 的保存点，所以只能工作在 JDB C的机制。
+ 
+5. rollbackFor：让受检查异常回滚；即让本来不应该回滚的进行回滚操作。
+ 
+6. noRollbackFor：忽略非检查异常；即让本来应该回滚的不进行回滚操作。
+
+value() 和 transactionManager() 函数用来指定事务管理器的名称。
+这两个函数主要在Java配置类或者注解中使用，它们的作用是定义事务管理器的名称，这对于处理数据库事务非常重要。下面是详细的解释：
+
+- **`@AliasFor("transactionManager")`**:
+  - 这个注解表示`value()`方法与`transactionManager()`方法是等价的，即它们可以互换使用，主要目的是为了提供不同的命名方式以适应不同的代码风格或需求。
+  
+- **`String value() default "";`**:
+  - 定义了一个名为`value`的方法，返回类型为`String`，默认返回一个空字符串。这个方法的主要作用是获取事务管理器的名称。
+  - 当我们配置事务管理器时，需要通过这个方法来指定具体的事务管理器名称，如果未指定，则使用默认的空字符串，这通常会导致配置错误，因为事务管理器的名称不能为空。
+
+- **`@AliasFor("value")`**:
+  - 同样，这个注解表明`transactionManager()`方法与`value()`方法是等价的，可以互相替代。
+
+- **`String transactionManager() default "";`**:
+  - 这是一个与`value()`方法功能完全相同的方法，只是名称不同。它同样返回事务管理器的名称，默认也返回空字符串。
+  - 在实际使用中，我们可以选择使用`value()`或`transactionManager()`中的任何一个来指定事务管理器的名称。
+
+总结来说，这两个方法（`value()`和`transactionManager()`）以及它们之间的等价关系，提供了灵活性，允许开发者以不同的方式指定同一个事务管理器的名称，这对于配置Spring框架中的事务管理是非常关键的。
+*****************************************************************************************************
+label() 函数用来指定事务的标签。
+propagation() 函数用来指定事务的传播行为。
+ ///   DEFAULT(-1),
+ ///   READ_UNCOMMITTED(1),
+ ///   READ_COMMITTED(2),
+ ///   REPEATABLE_READ(4),
+  ///  SERIALIZABLE(8);
+以上注解啥用没用，支持底层数据库（该注解没用，是由数据库底层写死）
+
+
+事务指定隔离级别
+1. @Transactional(isolation =Isolation. READ_UNCOMMITTED） 
+2. @Transactional(isolation = Isolation.READ_COMMITTED)：读取已提交数据(会出现不可重复读和幻读)
+ 
+3. @Transactional(isolation = Isolation.REPEATABLE_READ)：可重复读(会出现幻读)
+ 
+4. @Transactional(isolation = Isolation.SERIALIZABLE)：串行化
+********************************************************
+timeout() 和 timeoutString() 函数用来指定事务的超时时间。
+readOnly() 函数用来指定事务是否只读。
+rollbackFor() 和 rollbackForClassName() 函数用来指定触发回滚的异常类型。
+noRollbackFor() 和 noRollbackForClassName() 函数用来指定不触发回滚的异常类型。
+ ******************************************************************************************************************************
+以上部分仍需深入理解
+
+
+//事务的传递引用（这个程序可以控制有用）
+*************************************后续学习********************************
+1. TransactionDefinition.PROPAGATION_REQUIRED：
+   如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。这是默认值。
+ 
+2. TransactionDefinition.PROPAGATION_REQUIRES_NEW：
+   创建一个新的事务，如果当前存在事务，则把当前事务挂起。
+ 
+3. TransactionDefinition.PROPAGATION_SUPPORTS：
+   如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务的方式继续运行。
+ 
+4. TransactionDefinition.PROPAGATION_NOT_SUPPORTED：
+   以非事务方式运行，如果当前存在事务，则把当前事务挂起。
+ 
+5. TransactionDefinition.PROPAGATION_NEVER：
+   以非事务方式运行，如果当前存在事务，则抛出异常。
+ 
+6. TransactionDefinition.PROPAGATION_MANDATORY：
+   如果当前存在事务，则加入该事务；如果当前没有事务，则抛出异常。
+ 
+7. TransactionDefinition.PROPAGATION_NESTED：
+   如果当前存在事务，则创建一个事务作为当前事务的嵌套事务来运行；
+   如果当前没有事务，则该取值等价于TransactionDefinition.PROPAGATION_REQUIRED。
