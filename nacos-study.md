@@ -59,3 +59,11 @@
 
 ​	
 
+# windows
+
+## 1. 启动
+
+```shell
+startup.cmd  -m  standalone  .
+```
+

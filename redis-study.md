@@ -8,7 +8,7 @@
 | ---------------------------------- | ------------ | ---- |
 | redis-server start                 |              |      |
 | .\redis-benchmark.exe -n 100000 -q | 测试电脑性能 |      |
-|                                    |              |      |
+| sudo systemctl status redis        | 查询服务状态 |      |
 
 
 

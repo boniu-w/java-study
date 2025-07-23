@@ -2,7 +2,6 @@
 
 1. #将传入的数据都当成一个字符串，会对自动传入的数据加一个双引号。如：order by #user_id#，如果传入的值是111,那么解析成sql时的值为order by "111", 如果传入的值是id，则解析成的sql为order by "id".
 2. $将传入的数据直接显示生成在sql中。如：order by $user_id$，如果传入的值是111,那么解析成sql时的值为order by user_id, 如果传入的值是id，则解析成的sql为order by id.
-
 3. \#方式能够很大程度防止sql注入。
 4. $方式一般用于传入数据库对象，例如传入表名
 5. MyBatis排序时使用order by 动态参数时需要注意，用$而不是#
@@ -305,3 +304,59 @@ ResultSetType.SCROLL_SENSITIVE表示结果集对数据库中数据的更改敏�
 ResultSetType.SCROLL_INSENSITIVE表示结果集不对数据库中数据的更改敏感。这种类型的结果集在迭代过程中也可以通过ResultSet对象访问当前行，但是无法更改当前行的数据，也不会反映数据库中的更改。该类型的结果集比SCROLL_SENSITIVE类型的结果集更加高效。
 
 需要注意的是，ResultSetType的取值可能会因数据库类型或驱动程序的不同而受到限制。在使用时需要查看相关文档，以确保选择正确的ResultSetType。
+
+
+
+# 7. 什么是预编译
+
+
+
+### **什么是预编译（PreparedStatement）？**
+
+**预编译（PreparedStatement）** 是 JDBC 提供的一种机制，用于**预先编译 SQL 语句结构**，并将参数值以安全的方式绑定，从而避免 SQL 注入。
+
+#### **预编译的工作原理**
+
+1. **SQL 语句预先编译**：
+   SQL 语句的骨架（如 `SELECT * FROM users WHERE username = ? AND password = ?`）会被数据库预编译，`?` 是占位符。
+2. **参数值安全绑定**：
+   后续传入的参数值（如 `username = "admin"`）会被**严格视为数据**，而不会被解析为 SQL 代码。
+
+```java
+String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+PreparedStatement stmt = connection.prepareStatement(sql);
+stmt.setString(1, username); // 安全绑定参数
+stmt.setString(2, password);
+ResultSet rs = stmt.executeQuery();
+```
+
+
+
+
+
+# 8. 什么是 sql注入
+
+
+
+**SQL 注入（SQL Injection）** 是一种常见的网络安全攻击手段，攻击者通过构造恶意的输入数据，篡改原始 SQL 语句的逻辑，从而绕过验证或窃取数据库中的敏感信息。
+
+#### **SQL 注入示例**
+
+假设有一个登录功能，SQL 语句如下：
+
+```
+SELECT * FROM users WHERE username = '${username}' AND password = '${password}'
+```
+
+如果用户输入：
+
+- `username = 'admin' --`
+- `password = 任意值`
+
+拼接后的 SQL 会变成：
+
+```
+SELECT * FROM users WHERE username = 'admin' --' AND password = '任意值'
+```
+
+由于 `--` 是 SQL 注释符，后面的条件被忽略，导致攻击者无需密码即可登录 `admin` 账户。

@@ -824,22 +824,22 @@ New List: [SpRiDtDetailDTO{kpValue=10.0}, SpRiDtDetailDTO{kpValue=2.0}, SpRiDtDe
    <svg width="12" height="12" viewBox="0 0 11.199999809265137 11.199999809265137" class="cursor-pointer flex items-center tongyi-ui-highlighter-copy-btn"><g><path d="M11.2,1.6C11.2,0.716344,10.4837,0,9.6,0L4.8,0C3.91634,0,3.2,0.716344,3.2,1.6L4.16,1.6Q4.16,1.3349,4.34745,1.14745Q4.5349,0.96,4.8,0.96L9.6,0.96Q9.8651,0.96,10.0525,1.14745Q10.24,1.3349,10.24,1.6L10.24,6.4Q10.24,6.6651,10.0525,6.85255Q9.8651,7.04,9.6,7.04L9.6,8C10.4837,8,11.2,7.28366,11.2,6.4L11.2,1.6ZM0,4L0,9.6C0,10.4837,0.716344,11.2,1.6,11.2L7.2,11.2C8.08366,11.2,8.8,10.4837,8.8,9.6L8.8,4C8.8,3.11634,8.08366,2.4,7.2,2.4L1.6,2.4C0.716344,2.4,0,3.11634,0,4ZM1.14745,10.0525Q0.96,9.8651,0.96,9.6L0.96,4Q0.96,3.7349,1.14745,3.54745Q1.3349,3.36,1.6,3.36L7.2,3.36Q7.4651,3.36,7.65255,3.54745Q7.84,3.7349,7.84,4L7.84,9.6Q7.84,9.8651,7.65255,10.0525Q7.4651,10.24,7.2,10.24L1.6,10.24Q1.3349,10.24,1.14745,10.0525Z"></path></g></svg>
 
    ```java
-   1public interface MyInterface {
-   2    default void myMethod() {
-   3        System.out.println("This is a default method.");
-   4    }
-   5}
-   6
-   7public class MyClass implements MyInterface {
-   8    // MyClass 不需要实现 myMethod 方法，因为它已经有了一个默认实现。
-   9}
-   10
-   11public class Main {
-   12    public static void main(String[] args) {
-   13        MyClass myClass = new MyClass();
-   14        myClass.myMethod(); // 输出: This is a default method.
-   15    }
-   16}
+   public interface MyInterface {
+       default void myMethod() {
+           System.out.println("This is a default method.");
+       }
+   }
+   
+   public class MyClass implements MyInterface {
+       // MyClass 不需要实现 myMethod 方法，因为它已经有了一个默认实现。
+   }
+   
+   public class Main {
+       public static void main(String[] args) {
+           MyClass myClass = new MyClass();
+           myClass.myMethod(); // 输出: This is a default method.
+       }
+   }
    ```
 
 2. **默认值（Default Values）**：
@@ -861,3 +861,1109 @@ New List: [SpRiDtDetailDTO{kpValue=10.0}, SpRiDtDetailDTO{kpValue=2.0}, SpRiDtDe
 - **protected**：受保护的，可以被同一包内以及子类访问，无论子类是否位于同一个包内。
 - **private**：私有的，只能被定义该字段的类本身访问。
 - **无访问控制修饰符**（默认）：也称为包私有（package-private），只能被同一个包内的类访问。
+
+
+
+# 9. 反斜杠
+
+在 Java 字符串中，反斜杠 `\` 是一个特殊字符，用作转义字符。这意味着反斜杠后面的字符会被解释为其特定的含义，例如 `\n` 表示换行，`\t` 表示制表符，`\\"` 表示一个字面上的双引号，等等。
+
+### 解释 `\\\\`
+
+1. **单个反斜杠 \**：
+   - 在字符串中，单个反斜杠是一个转义字符。如果你想在字符串中表示一个反斜杠，你需要用两个反斜杠 `\\`。
+2. **两个反斜杠 \\**：
+   - 表示一个字面上的反斜杠字符。即，`"\\u"` 中的 `\\` 将被解释为一个实际的 `\` 字符。
+3. **四个反斜杠 \\\\**：
+   - 由于第一个两个反斜杠 `\\` 表示一个反斜杠，第二个两个反斜杠 `\\` 也同样表示一个反斜杠，所以 `\\\\` 最终表示两个字面上的反斜杠字符。即，`"\\\\"` 这个字符串实际包含两个反斜杠。
+
+### 例子
+
+以下是一些字符串示例及其解释：
+
+```
+java
+
+
+复制代码
+String singleBackslash = "\\"; // 表示一个反斜杠
+String twoBackslashes = "\\\\"; // 表示两个反斜杠
+String unicodeExample = "\\u4F60"; // 表示Unicode转义字符（如：你）
+```
+
+- `singleBackslash` 的值为 `\`
+- `twoBackslashes` 的值为 `\\`
+- `unicodeExample` 的值为 `\u4F60`，在处理时需要将其转义解析为对应字符。
+
+### 使用场景
+
+当你需要在正则表达式中使用反斜杠，或在文件路径、字符串处理等场合时，通常会遇到这样的转义需求。
+
+
+
+# 10. 怎么理解 list本身不可变
+
+怎么理解 list本身不可变
+
+
+
+###### ChatGPT 说：
+
+### **✅ 如何理解 List 本身不可变？**
+
+**⚡ 关键点：**
+
+- **不可变 List**：指的是 **不能修改** 这个 `List` 的结构（即不能 `add()`、`remove()`、`set()` 等）。
+- **但 List 内部的对象仍然可变**，除非它们本身也是不可变的。
+
+------
+
+## **1️⃣ List 本身不可变 ≠ List 里的对象不可变**
+
+**📌 示例：创建不可变 List，但内部对象仍然可修改**
+
+```
+java
+
+
+复制编辑
+import java.util.List;
+
+public class Main {
+    public static void main(String[] args) {
+        Person person1 = new Person("Alice", 25);
+        Person person2 = new Person("Bob", 30);
+
+        List<Person> people = List.of(person1, person2); // 创建不可变 List
+
+        // 尝试修改 List 本身（会报错）
+        // people.add(new Person("Charlie", 40)); // ❌ UnsupportedOperationException
+        // people.remove(0); // ❌ UnsupportedOperationException
+        // people.set(0, new Person("David", 35)); // ❌ UnsupportedOperationException
+
+        // 但可以修改 List 里的对象
+        person2.setAge(35); // ✅ 允许修改
+        System.out.println(people);
+        // 输出: [Person{name='Alice', age=25}, Person{name='Bob', age=35}]
+    }
+}
+```
+
+**🔎 结论**
+
+- **List.of(person1, person2) 让 people 变成了不可变 List**
+- **但 person2 是可变的，所以 person2.setAge(35) 依然有效！**
+
+------
+
+## **2️⃣ List 本身不可变：不能增删改**
+
+当 `List` **本身不可变** 时，下面这些操作都会抛出异常：
+
+```
+java
+
+
+复制编辑
+List<String> names = List.of("Alice", "Bob", "Charlie");
+
+names.add("David");   // ❌ UnsupportedOperationException
+names.remove(0);      // ❌ UnsupportedOperationException
+names.set(1, "Eve");  // ❌ UnsupportedOperationException
+```
+
+**📌 结果：**
+
+```
+cpp
+
+
+复制编辑
+Exception in thread "main" java.lang.UnsupportedOperationException
+```
+
+### **🚀 为什么 List.of() 让 List 变不可变？**
+
+- `List.of(...)` **返回的是 Java 内部的 ImmutableCollections.ListN**
+- 这个 `ListN` 没有 `add()`、`remove()`、`set()` 的实现，调用时会直接抛 `UnsupportedOperationException`。
+
+------
+
+## **3️⃣ 如何让 List 里的对象也不可变？**
+
+如果你想让 `List` **本身** 和 **其中的对象** 都不可变，可以让 `Person` 变成不可变对象：
+
+### **✅ 方案 1：用 final + 无 setter**
+
+```
+java
+
+
+复制编辑
+public final class Person {
+    private final String name;
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() { return name; }
+    public int getAge() { return age; }
+}
+```
+
+### **✅ 方案 2：使用 record（Java 14+）**
+
+```
+java
+
+
+复制编辑
+public record Person(String name, int age) {}
+```
+
+**🔎 这样，即使 List 里的对象，也不能修改 age 了！**
+
+------
+
+## **🎯 4️⃣ 总结**
+
+| 操作                        | `List.of(...)` 是否允许        |
+| --------------------------- | ------------------------------ |
+| `list.add(element)`         | ❌ 不允许                       |
+| `list.remove(index)`        | ❌ 不允许                       |
+| `list.set(index, newValue)` | ❌ 不允许                       |
+| 修改 `List` 里的对象        | ✅ 允许，**除非对象本身不可变** |
+
+------
+
+**🔥 结论：**
+
+- **List.of() 让 List 本身不可变**，但**不影响其中的对象**。
+- **要让 List 里的对象也不可变，必须让对象本身（如 Person）不可变**。
+- **如果 Person 也是不可变的，那么 List.of() 里的所有元素都是只读的！**
+
+
+
+# 11. 怎么理解对象不可变
+
+### **如何理解对象不可变（Immutable Object）？**
+
+**不可变对象（Immutable Object）** 指的是 **一旦创建，就不能被修改** 的对象。它的状态在整个生命周期中保持不变，任何修改都会返回一个新的对象，而不是修改原对象。
+
+------
+
+## **1. 不可变对象的特点**
+
+### **✅ 主要特性**
+
+1. **状态不可变**：对象的字段（字段值）在对象创建后 **不能被修改**。
+2. **线程安全**：多个线程可以安全地访问不可变对象，无需同步。
+3. **无副作用**：由于不会修改对象本身，调用方法不会影响外部状态。
+4. **通常是 final**：类通常被声明为 `final`，确保子类不能修改行为。
+
+------
+
+## **2. 如何创建一个不可变对象？**
+
+以 **Person** 类为例，演示如何定义不可变对象：
+
+```
+java
+
+
+复制编辑
+public final class Person {
+    private final String name;
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    // 不提供 setter 方法，确保不可修改
+
+    @Override
+    public String toString() {
+        return "Person{name='" + name + "', age=" + age + "}";
+    }
+}
+```
+
+### **🚀 关键点**
+
+1. **final 类**：`Person` 使用 `final` 修饰，防止子类修改不可变性。
+2. **所有字段 final**：确保对象创建后字段值不可更改。
+3. **没有 setter 方法**：不提供任何修改字段的方法。
+4. **构造方法初始化所有字段**：只能在创建时赋值，之后不能更改。
+
+------
+
+## **3. 不可变对象的优势**
+
+### **✅ 线程安全**
+
+多个线程可以安全访问 `Person`，不需要额外的同步：
+
+```
+java
+
+
+复制编辑
+Person p1 = new Person("Alice", 25);
+Person p2 = new Person("Alice", 25);
+
+System.out.println(p1 == p2);  // false，不是同一个对象
+System.out.println(p1.equals(p2));  // true，值相等
+```
+
+**由于 Person 不可变，它可以安全地被多个线程共享**，而不需要同步。
+
+### **✅ 适用于缓存和哈希**
+
+不可变对象在 **哈希表（HashMap、HashSet）** 和 **缓存** 里表现更好，因为它们不会改变，哈希值也不会变化。
+
+------
+
+## **4. 不可变对象 VS 可变对象**
+
+| 对比项       | 不可变对象（Immutable）          | 可变对象（Mutable）          |
+| ------------ | -------------------------------- | ---------------------------- |
+| **状态修改** | 不能修改，创建后固定             | 可以随时修改                 |
+| **线程安全** | 天然线程安全                     | 可能需要同步                 |
+| **哈希值**   | 固定不变                         | 可能变化                     |
+| **示例**     | `String`、`Integer`、`LocalDate` | `StringBuilder`、`ArrayList` |
+
+### **示例：String 是不可变对象**
+
+```
+java
+
+
+复制编辑
+String s1 = "Hello";
+String s2 = s1.concat(" World");
+System.out.println(s1);  // 仍然是 "Hello"
+System.out.println(s2);  // "Hello World"
+```
+
+**s1.concat(" World") 并不会修改 s1，而是返回一个新字符串 s2**。
+
+------
+
+## **5. 需要修改怎么办？（返回新对象）**
+
+如果需要修改不可变对象的数据，**创建新对象** 而不是修改原对象。
+
+### **示例：返回新对象**
+
+```
+java
+
+
+复制编辑
+public Person withAge(int newAge) {
+    return new Person(this.name, newAge);
+}
+```
+
+### **调用示例**
+
+```
+java
+
+
+复制编辑
+Person p1 = new Person("Alice", 25);
+Person p2 = p1.withAge(30);
+
+System.out.println(p1); // Person{name='Alice', age=25}
+System.out.println(p2); // Person{name='Alice', age=30}
+```
+
+**p1 依然是 25 岁，p2 是新对象，30 岁！**
+
+------
+
+## **6. 什么时候使用不可变对象？**
+
+✅ 适用于：
+
+- **多线程环境**，如 `String`、`Integer`、`LocalDate`
+- **缓存场景**，如 `String` 被存入字符串池
+- **数据建模**，如 Java 记录 (`record`)、DTO（数据传输对象）
+
+------
+
+## **7. 结论**
+
+- **不可变对象的核心：不能修改，只能创建新对象**
+- **Java 里的 String、Integer、LocalDate 等类都是不可变的**
+- **不可变对象更安全、线程安全、适用于哈希表**
+- **如果需要修改数据，返回新对象，而不是修改原对象**
+
+------
+
+**你是想实现自己的不可变对象，还是想更深入了解 Java 的不可变类？** 😊
+
+
+
+##### 您说：
+
+public class Person {     private String name;     private int age;} 那如果是这样, 能实现不可变吗
+
+
+
+###### ChatGPT 说：
+
+你的 `Person` 类 **不能算是不可变对象**，因为它没有采取必要的保护措施，使其状态在创建后仍然可以被修改。下面我们来分析为什么它 **不是不可变的**，以及如何改进它。
+
+------
+
+## **1. 你的 Person 类的问题**
+
+```
+java
+
+
+复制编辑
+public class Person {
+    private String name;
+    private int age;
+}
+```
+
+### **❌ 为什么它不是不可变的？**
+
+1. **字段不是 final**
+   - `private String name;` 和 `private int age;` 没有 `final` 修饰，意味着可以在构造方法之外被修改。
+2. **没有构造方法**
+   - 没有构造方法的话，默认会有无参构造器，允许在对象创建后赋值。
+3. **没有限制修改的方法**
+   - 如果添加 `setter` 方法（如 `setName()` 和 `setAge()`），那么对象可以随时被修改，不符合“不可变”的概念。
+
+------
+
+## **2. 如何修改成真正的不可变对象？**
+
+我们需要 **确保对象创建后不可修改**，可以按照以下方式实现：
+
+### **✅ 方案 1：使用 final 关键字**
+
+```
+java
+
+
+复制编辑
+public final class Person {
+    private final String name;
+    private final int age;
+
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    @Override
+    public String toString() {
+        return "Person{name='" + name + "', age=" + age + "}";
+    }
+}
+```
+
+### **✅ 关键点**
+
+1. **类用 final 修饰**，防止子类篡改不可变性。
+2. **所有字段 final**，保证创建后不能被修改。
+3. **没有 setter 方法**，不能修改 `name` 和 `age`。
+4. **在构造方法里初始化字段**，避免后续修改。
+
+------
+
+## **3. 这样真的不可变了吗？**
+
+对于 **基本类型（如 int）和不可变对象（如 String）**，这个方案已经是 **100% 不可变** 了！🎯
+
+但是，如果 `Person` 类中有 **可变对象（如 List、Date）**，我们需要额外的保护。
+
+------
+
+## **4. 如果 Person 里有 List 怎么办？**
+
+如果 `Person` 有一个 **List<String>** 类型的 `hobbies`（爱好），默认情况下 `List` 是 **可变的**，别人可以修改它：
+
+```
+java
+
+
+复制编辑
+import java.util.List;
+
+public final class Person {
+    private final String name;
+    private final int age;
+    private final List<String> hobbies; // List 是可变的！
+
+    public Person(String name, int age, List<String> hobbies) {
+        this.name = name;
+        this.age = age;
+        this.hobbies = hobbies; // ❌ 直接赋值，外部仍然可以修改
+    }
+
+    public List<String> getHobbies() {
+        return hobbies; // ❌ 返回的是可变对象的引用
+    }
+}
+```
+
+### **❌ 这里的问题**
+
+即使 `Person` 是 `final`，但是 `hobbies` 仍然可以通过 **外部修改**：
+
+```
+java
+
+
+复制编辑
+List<String> hobbies = new ArrayList<>();
+hobbies.add("Reading");
+
+Person p = new Person("Alice", 25, hobbies);
+hobbies.add("Swimming"); // 修改了外部 list，影响了 p
+
+System.out.println(p.getHobbies()); // [Reading, Swimming] (意外修改)
+```
+
+**💥 这样 Person 仍然不是不可变的！**
+
+------
+
+## **5. 解决方案：深拷贝 List**
+
+### **✅ 方案 1：使用 Collections.unmodifiableList()**
+
+```
+java
+
+
+复制编辑
+import java.util.Collections;
+import java.util.List;
+
+public final class Person {
+    private final String name;
+    private final int age;
+    private final List<String> hobbies;
+
+    public Person(String name, int age, List<String> hobbies) {
+        this.name = name;
+        this.age = age;
+        // 创建不可变 List，防止外部修改
+        this.hobbies = Collections.unmodifiableList(hobbies);
+    }
+
+    public List<String> getHobbies() {
+        return hobbies; // 直接返回不可变 List
+    }
+}
+```
+
+### **✅ 方案 2：深拷贝 List**
+
+```
+java
+
+
+复制编辑
+import java.util.ArrayList;
+import java.util.List;
+
+public final class Person {
+    private final String name;
+    private final int age;
+    private final List<String> hobbies;
+
+    public Person(String name, int age, List<String> hobbies) {
+        this.name = name;
+        this.age = age;
+        // 复制 List，防止外部修改
+        this.hobbies = new ArrayList<>(hobbies);
+    }
+
+    public List<String> getHobbies() {
+        return new ArrayList<>(hobbies); // 返回副本，防止修改原对象
+    }
+}
+```
+
+**✅ 这样，外部的 List 无法影响 Person！**
+
+------
+
+## **6. Java 记录（record）可以更简单**
+
+如果你在 Java 14+，可以直接用 `record` 创建不可变对象：
+
+```
+java
+
+
+复制编辑
+public record Person(String name, int age) {}
+```
+
+**record 天然不可变**：
+
+- **字段自动 final**
+- **没有 setter**
+- **toString()、equals()、hashCode() 自动生成**
+
+使用：
+
+```
+java
+
+
+复制编辑
+Person p = new Person("Alice", 25);
+System.out.println(p.name()); // Alice
+// p.name = "Bob"; // ❌ 编译错误，不能修改
+```
+
+------
+
+## **7. 结论**
+
+| 方式                             | 是否不可变 | 备注                      |
+| -------------------------------- | ---------- | ------------------------- |
+| 你的 `Person` 类                 | ❌ 否       | 字段可以修改              |
+| `final` + `final` 字段           | ✅ 是       | 适用于基本类型和 `String` |
+| `List` 直接赋值                  | ❌ 否       | `List` 仍然可变           |
+| `Collections.unmodifiableList()` | ✅ 是       | 让 `List` 变为只读        |
+| 深拷贝 `List`                    | ✅ 是       | 彻底防止修改              |
+| `record` (Java 14+)              | ✅ 是       | Java 提供的最佳方案       |
+
+### **🔥 最佳做法**
+
+如果你用 Java 14+，`record` 是最好的方案。否则：
+
+- **基本类型 & String** 用 `final`
+- **集合 & 可变对象** 复制数据或使用 `Collections.unmodifiableList()`
+
+
+
+# 12. 怎么理解string 的不可变
+
+### **✅ 如何理解 String a = "hello"; a = "world";**
+
+在 Java 中，`String` 是 **不可变对象（immutable）**，但 `a = "world";` 仍然是合法的。这是因为**`a` 不是 `String` 本身，而是一个引用**，可以指向不同的 `String` 对象。
+
+------
+
+## **1️⃣ 代码分析**
+
+```
+java
+
+
+复制编辑
+String a = "hello";  // a 指向 "hello"
+a = "world";         // a 现在指向 "world"
+```
+
+### **🛠 背后的内存变化**
+
+1. ```
+   String a = "hello";
+   ```
+
+   - 在字符串常量池（String Pool）中创建 `"hello"`，`a` 指向它。
+
+2. ```
+   a = "world";
+   ```
+
+   - 在字符串常量池中创建 `"world"`（如果不存在）。
+   - `a` 现在指向 `"world"`，但 `"hello"` 仍然在内存中，不会被改变。
+
+------
+
+## **2️⃣ 为什么 String 是不可变的？**
+
+**不可变** 的意思是，**字符串对象的值一旦创建就不能修改**，但变量 `a` 只是引用，可以指向别的 `String`。
+
+### **❌ 错误理解：修改了 "hello"**
+
+**❌ a = "world"; 修改了 "hello"**
+
+> ❌ **错误！** `"hello"` **并没有变**，只是 `a` 变了。
+
+### **✅ 正确理解**
+
+```
+java
+
+
+复制编辑
+String a = "hello";
+a = "world";
+```
+
+**✅ "hello" 仍然存在，但 a 不再指向它。**
+
+------
+
+## **3️⃣ 证明 String 是不可变的**
+
+如果 `String` **是可变的**，那么下面的代码：
+
+```
+java
+
+
+复制编辑
+String s1 = "hello";
+String s2 = s1;  // s1 和 s2 指向同一个 "hello"
+s1 = "world";    // s1 变了，s2 还是 "hello"
+
+System.out.println(s2); // "hello"
+```
+
+**如果 String 可变，s2 也会变成 "world"，但它仍然是 "hello"！**
+
+**✅ 说明 String 是不可变的，修改 s1 只是让它指向新字符串。**
+
+------
+
+## **4️⃣ String 的真正不可变性**
+
+真正体现 `String` **不可变** 的例子：
+
+```
+java
+
+
+复制编辑
+String str = "hello";
+str.toUpperCase(); // ❌ 这个操作不会修改 str
+System.out.println(str); // 仍然是 "hello"
+
+String newStr = str.toUpperCase();
+System.out.println(newStr); // "HELLO"
+```
+
+**📌 toUpperCase() 没有修改 "hello"，而是创建了一个新字符串 "HELLO"**。
+
+------
+
+## **🎯 总结**
+
+| 操作                                   | 影响                                              |
+| -------------------------------------- | ------------------------------------------------- |
+| `a = "hello"; a = "world";`            | `a` 的指向变了，**但 "hello" 没有被修改**         |
+| `s1 = "hello"; s2 = s1; s1 = "world";` | `s2` 仍然是 `"hello"`，**说明 String 是不可变的** |
+| `str.toUpperCase();`                   | **不会修改 str，会生成一个新字符串**              |
+
+**🚀 重点：**
+
+- `String` 是不可变的，**修改字符串实际上是创建新对象**。
+- `a = "hello"; a = "world";` **只是改变 a 的指向，不是修改 hello**。
+- **如果你想要真正修改字符串的内容，应该使用 StringBuilder 或 StringBuffer。**
+
+**💡 你是想理解 String 的不可变性，还是遇到了 String 相关的代码问题？😊**
+
+
+
+##### 您说：
+
+"hello" 仍然在内存中 啥意思, 我能访问到它吗
+
+
+
+###### ChatGPT 说：
+
+### **✅ "hello" 仍然在内存中，但你不能直接访问它！**
+
+当你执行：
+
+```
+java
+
+
+复制编辑
+String a = "hello";
+a = "world";
+```
+
+**📌 "hello" 仍然可能存在于内存中，但变量 a 已经不指向它了，你无法再通过 a 访问它。**
+
+------
+
+## **1️⃣ "hello" 真的还在内存中吗？**
+
+取决于具体情况：
+
+1. **如果 "hello" 还被其他变量引用**，它仍然可以被访问：
+
+   ```
+   java
+   
+   
+   复制编辑
+   String a = "hello";
+   String b = a;  // b 也指向 "hello"
+   a = "world";   // a 变了，但 b 仍然是 "hello"
+   System.out.println(b); // 仍然能访问 "hello"
+   ```
+
+   **📌 这里 "hello" 还在，因为 b 仍然引用它。**
+
+2. **如果 "hello" 没有被任何变量引用**，它最终会被 GC（垃圾回收）清理掉：
+
+   ```
+   java
+   
+   
+   复制编辑
+   String a = "hello";
+   a = "world"; // "hello" 现在没有任何变量引用
+   ```
+
+   **📌 "hello" 可能还暂时在内存里，但 Java 的垃圾回收器（GC）最终会清理掉它**。
+
+------
+
+## **2️⃣ 我还能访问 "hello" 吗？**
+
+### **❌ 不能通过 a 访问**
+
+```
+java
+
+
+复制编辑
+String a = "hello";
+a = "world";
+System.out.println(a); // "world"，无法再通过 `a` 访问 "hello"
+```
+
+### **✅ 但如果 "hello" 在字符串常量池中，仍然可以通过 intern() 访问**
+
+```
+java
+
+
+复制编辑
+String x = "hello";
+x = "world";
+
+String y = "hello"; // 由于字符串池的特性，y 可能指向同一个 "hello"
+System.out.println(y); // 仍然是 "hello"
+```
+
+**📌 "hello" 可能仍然在字符串常量池（String Pool）里，所以 y 还能访问到它。**
+
+------
+
+## **3️⃣ 如何证明 "hello" 还在？**
+
+你可以用 **弱引用（WeakReference）** 观察垃圾回收：
+
+```
+java
+
+
+复制编辑
+import java.lang.ref.WeakReference;
+
+public class Main {
+    public static void main(String[] args) {
+        String str = new String("hello"); // 强制创建一个新的字符串
+        WeakReference<String> weakRef = new WeakReference<>(str);
+
+        System.out.println("Before GC: " + weakRef.get()); // "hello"
+
+        str = null; // 解除引用
+        System.gc(); // 手动触发垃圾回收（不保证立即生效）
+
+        System.out.println("After GC: " + weakRef.get()); // 可能是 null（如果 GC 发生了）
+    }
+}
+```
+
+**📌 如果 After GC 输出 null，说明 "hello" 被垃圾回收了。**
+
+------
+
+## **🎯 结论**
+
+| **情况**                                      | **"hello" 还在内存中吗？** | **能访问到吗？** |
+| --------------------------------------------- | -------------------------- | ---------------- |
+| 变量仍然引用它 (`String b = a;`)              | ✅ 还在                     | ✅ 还能访问       |
+| `"hello"` 在字符串池（`String x = "hello";`） | ✅ 可能还在                 | ✅ 还能访问       |
+| 没有变量引用它                                | ❌ 可能被 GC 清理           | ❌ 无法访问       |
+
+**🚀 重点**
+
+- `"hello"` **可能** 还在内存里，但如果没有引用，**你无法再访问它**。
+- **如果 "hello" 在字符串池（String Pool）里，它不会被 GC，仍然可以访问**。
+- **真正的删除依赖于 Java 的垃圾回收机制（GC）**
+
+
+
+
+
+# 13. System.*getProperties*() 里 都有什么
+
+```tex
+java.specification.version = 17
+sun.cpu.isalist = amd64
+sun.jnu.encoding = GBK
+java.class.path = H:\java-project\wg\springboot-3.1.0-java17\target\classes;C:\Users\wg\.m2\repository\org\luaj\luaj-jse\3.0.1\luaj-jse-3.0.1.jar;C:\Users\wg\.m2\repository\org\apache\httpcomponents\httpclient\4.5.14\httpclient-4.5.14.jar;C:\Users\wg\.m2\repository\org\apache\httpcomponents\httpcore\4.4.16\httpcore-4.4.16.jar;C:\Users\wg\.m2\repository\commons-logging\commons-logging\1.2\commons-logging-1.2.jar;C:\Users\wg\.m2\repository\commons-codec\commons-codec\1.11\commons-codec-1.11.jar;C:\Users\wg\.m2\repository\org\mybatis\spring\boot\mybatis-spring-boot-starter\3.0.2\mybatis-spring-boot-starter-3.0.2.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-starter-jdbc\3.1.0\spring-boot-starter-jdbc-3.1.0.jar;C:\Users\wg\.m2\repository\com\zaxxer\HikariCP\5.0.1\HikariCP-5.0.1.jar;C:\Users\wg\.m2\repository\org\springframework\spring-jdbc\6.0.9\spring-jdbc-6.0.9.jar;C:\Users\wg\.m2\repository\org\mybatis\spring\boot\mybatis-spring-boot-autoconfigure\3.0.2\mybatis-spring-boot-autoconfigure-3.0.2.jar;C:\Users\wg\.m2\repository\org\mybatis\mybatis\3.5.13\mybatis-3.5.13.jar;C:\Users\wg\.m2\repository\org\mybatis\mybatis-spring\3.0.2\mybatis-spring-3.0.2.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-starter\3.1.0\spring-boot-starter-3.1.0.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot\3.1.0\spring-boot-3.1.0.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-autoconfigure\3.1.0\spring-boot-autoconfigure-3.1.0.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-starter-logging\3.1.0\spring-boot-starter-logging-3.1.0.jar;C:\Users\wg\.m2\repository\ch\qos\logback\logback-classic\1.4.7\logback-classic-1.4.7.jar;C:\Users\wg\.m2\repository\ch\qos\logback\logback-core\1.4.7\logback-core-1.4.7.jar;C:\Users\wg\.m2\repository\org\apache\logging\log4j\log4j-to-slf4j\2.20.0\log4j-to-slf4j-2.20.0.jar;C:\Users\wg\.m2\repository\org\slf4j\jul-to-slf4j\2.0.7\jul-to-slf4j-2.0.7.jar;C:\Users\wg\.m2\repository\jakarta\annotation\jakarta.annotation-api\2.1.1\jakarta.annotation-api-2.1.1.jar;C:\Users\wg\.m2\repository\org\springframework\spring-core\6.0.9\spring-core-6.0.9.jar;C:\Users\wg\.m2\repository\org\springframework\spring-jcl\6.0.9\spring-jcl-6.0.9.jar;C:\Users\wg\.m2\repository\org\yaml\snakeyaml\1.33\snakeyaml-1.33.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-starter-web\3.1.0\spring-boot-starter-web-3.1.0.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-starter-json\3.1.0\spring-boot-starter-json-3.1.0.jar;C:\Users\wg\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jdk8\2.15.0\jackson-datatype-jdk8-2.15.0.jar;C:\Users\wg\.m2\repository\com\fasterxml\jackson\datatype\jackson-datatype-jsr310\2.15.0\jackson-datatype-jsr310-2.15.0.jar;C:\Users\wg\.m2\repository\com\fasterxml\jackson\module\jackson-module-parameter-names\2.15.0\jackson-module-parameter-names-2.15.0.jar;C:\Users\wg\.m2\repository\org\springframework\spring-web\6.0.9\spring-web-6.0.9.jar;C:\Users\wg\.m2\repository\org\springframework\spring-beans\6.0.9\spring-beans-6.0.9.jar;C:\Users\wg\.m2\repository\io\micrometer\micrometer-observation\1.10.7\micrometer-observation-1.10.7.jar;C:\Users\wg\.m2\repository\io\micrometer\micrometer-commons\1.10.7\micrometer-commons-1.10.7.jar;C:\Users\wg\.m2\repository\org\springframework\spring-webmvc\6.0.9\spring-webmvc-6.0.9.jar;C:\Users\wg\.m2\repository\org\springframework\spring-aop\6.0.9\spring-aop-6.0.9.jar;C:\Users\wg\.m2\repository\org\springframework\spring-expression\6.0.9\spring-expression-6.0.9.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-starter-undertow\3.1.0\spring-boot-starter-undertow-3.1.0.jar;C:\Users\wg\.m2\repository\io\undertow\undertow-core\2.3.6.Final\undertow-core-2.3.6.Final.jar;C:\Users\wg\.m2\repository\org\jboss\logging\jboss-logging\3.4.3.Final\jboss-logging-3.4.3.Final.jar;C:\Users\wg\.m2\repository\org\jboss\xnio\xnio-api\3.8.8.Final\xnio-api-3.8.8.Final.jar;C:\Users\wg\.m2\repository\org\wildfly\common\wildfly-common\1.5.4.Final\wildfly-common-1.5.4.Final.jar;C:\Users\wg\.m2\repository\org\wildfly\client\wildfly-client-config\1.0.1.Final\wildfly-client-config-1.0.1.Final.jar;C:\Users\wg\.m2\repository\org\jboss\xnio\xnio-nio\3.8.8.Final\xnio-nio-3.8.8.Final.jar;C:\Users\wg\.m2\repository\org\jboss\threads\jboss-threads\3.5.0.Final\jboss-threads-3.5.0.Final.jar;C:\Users\wg\.m2\repository\io\undertow\undertow-servlet\2.3.6.Final\undertow-servlet-2.3.6.Final.jar;C:\Users\wg\.m2\repository\jakarta\servlet\jakarta.servlet-api\6.0.0\jakarta.servlet-api-6.0.0.jar;C:\Users\wg\.m2\repository\io\undertow\undertow-websockets-jsr\2.3.6.Final\undertow-websockets-jsr-2.3.6.Final.jar;C:\Users\wg\.m2\repository\jakarta\websocket\jakarta.websocket-api\2.1.0\jakarta.websocket-api-2.1.0.jar;C:\Users\wg\.m2\repository\jakarta\websocket\jakarta.websocket-client-api\2.1.0\jakarta.websocket-client-api-2.1.0.jar;C:\Users\wg\.m2\repository\org\apache\tomcat\embed\tomcat-embed-el\10.1.8\tomcat-embed-el-10.1.8.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-starter-data-jpa\3.1.0\spring-boot-starter-data-jpa-3.1.0.jar;C:\Users\wg\.m2\repository\org\springframework\boot\spring-boot-starter-aop\3.1.0\spring-boot-starter-aop-3.1.0.jar;C:\Users\wg\.m2\repository\org\aspectj\aspectjweaver\1.9.19\aspectjweaver-1.9.19.jar;C:\Users\wg\.m2\repository\org\hibernate\orm\hibernate-core\6.2.2.Final\hibernate-core-6.2.2.Final.jar;C:\Users\wg\.m2\repository\jakarta\persistence\jakarta.persistence-api\3.1.0\jakarta.persistence-api-3.1.0.jar;C:\Users\wg\.m2\repository\jakarta\transaction\jakarta.transaction-api\2.0.1\jakarta.transaction-api-2.0.1.jar;C:\Users\wg\.m2\repository\org\hibernate\common\hibernate-commons-annotations\6.0.6.Final\hibernate-commons-annotations-6.0.6.Final.jar;C:\Users\wg\.m2\repository\io\smallrye\jandex\3.0.5\jandex-3.0.5.jar;C:\Users\wg\.m2\repository\com\fasterxml\classmate\1.5.1\classmate-1.5.1.jar;C:\Users\wg\.m2\repository\net\bytebuddy\byte-buddy\1.12.18\byte-buddy-1.12.18.jar;C:\Users\wg\.m2\repository\jakarta\xml\bind\jakarta.xml.bind-api\4.0.0\jakarta.xml.bind-api-4.0.0.jar;C:\Users\wg\.m2\repository\jakarta\activation\jakarta.activation-api\2.1.0\jakarta.activation-api-2.1.0.jar;C:\Users\wg\.m2\repository\org\glassfish\jaxb\jaxb-runtime\4.0.2\jaxb-runtime-4.0.2.jar;C:\Users\wg\.m2\repository\org\glassfish\jaxb\jaxb-core\4.0.2\jaxb-core-4.0.2.jar;C:\Users\wg\.m2\repository\org\eclipse\angus\angus-activation\2.0.0\angus-activation-2.0.0.jar;C:\Users\wg\.m2\repository\org\glassfish\jaxb\txw2\4.0.2\txw2-4.0.2.jar;C:\Users\wg\.m2\repository\com\sun\istack\istack-commons-runtime\4.1.1\istack-commons-runtime-4.1.1.jar;C:\Users\wg\.m2\repository\jakarta\inject\jakarta.inject-api\2.0.1\jakarta.inject-api-2.0.1.jar;C:\Users\wg\.m2\repository\org\antlr\antlr4-runtime\4.10.1\antlr4-runtime-4.10.1.jar;C:\Users\wg\.m2\repository\org\springframework\data\spring-data-jpa\3.1.0\spring-data-jpa-3.1.0.jar;C:\Users\wg\.m2\repository\org\springframework\data\spring-data-commons\3.1.0\spring-data-commons-3.1.0.jar;C:\Users\wg\.m2\repository\org\springframework\spring-orm\6.0.9\spring-orm-6.0.9.jar;C:\Users\wg\.m2\repository\org\springframework\spring-tx\6.0.9\spring-tx-6.0.9.jar;C:\Users\wg\.m2\repository\org\springframework\spring-aspects\6.0.9\spring-aspects-6.0.9.jar;C:\Users\wg\.m2\repository\com\mysql\mysql-connector-j\8.0.33\mysql-connector-j-8.0.33.jar;C:\Users\wg\.m2\repository\com\google\protobuf\protobuf-java\3.21.9\protobuf-java-3.21.9.jar;C:\Users\wg\.m2\repository\com\alibaba\druid\1.2.18\druid-1.2.18.jar;C:\Users\wg\.m2\repository\cn\hutool\hutool-all\5.8.18\hutool-all-5.8.18.jar;C:\Users\wg\.m2\repository\org\slf4j\slf4j-api\2.0.7\slf4j-api-2.0.7.jar;C:\Users\wg\.m2\repository\org\apache\poi\poi\5.2.3\poi-5.2.3.jar;C:\Users\wg\.m2\repository\org\apache\commons\commons-collections4\4.4\commons-collections4-4.4.jar;C:\Users\wg\.m2\repository\org\apache\commons\commons-math3\3.6.1\commons-math3-3.6.1.jar;C:\Users\wg\.m2\repository\commons-io\commons-io\2.11.0\commons-io-2.11.0.jar;C:\Users\wg\.m2\repository\com\zaxxer\SparseBitSet\1.2\SparseBitSet-1.2.jar;C:\Users\wg\.m2\repository\org\apache\logging\log4j\log4j-api\2.18.0\log4j-api-2.18.0.jar;C:\Users\wg\.m2\repository\org\apache\poi\poi-ooxml\5.2.3\poi-ooxml-5.2.3.jar;C:\Users\wg\.m2\repository\org\apache\poi\poi-ooxml-lite\5.2.3\poi-ooxml-lite-5.2.3.jar;C:\Users\wg\.m2\repository\org\apache\xmlbeans\xmlbeans\5.1.1\xmlbeans-5.1.1.jar;C:\Users\wg\.m2\repository\org\apache\commons\commons-compress\1.21\commons-compress-1.21.jar;C:\Users\wg\.m2\repository\com\github\virtuald\curvesapi\1.07\curvesapi-1.07.jar;C:\Users\wg\.m2\repository\io\github\boniu-w\common-boniu\1.0-SNAPSHOT\common-boniu-1.0-SNAPSHOT.jar;C:\Users\wg\.m2\repository\com\fasterxml\jackson\core\jackson-annotations\2.14.2\jackson-annotations-2.14.2.jar;C:\Users\wg\.m2\repository\com\fasterxml\jackson\core\jackson-databind\2.14.2\jackson-databind-2.14.2.jar;C:\Users\wg\.m2\repository\com\fasterxml\jackson\core\jackson-core\2.14.2\jackson-core-2.14.2.jar;C:\Users\wg\.m2\repository\org\springframework\spring-context\6.0.9\spring-context-6.0.9.jar;C:\Users\wg\.m2\repository\org\apache\commons\commons-lang3\3.12.0\commons-lang3-3.12.0.jar;C:\Users\wg\.m2\repository\com\sevenme\remainingLifeTool\20240612\remainingLifeTool-20240612.jar
+java.vm.vendor = Oracle Corporation
+sun.arch.data.model = 64
+user.variant = 
+java.vendor.url = https://java.oracle.com/
+java.vm.specification.version = 17
+os.name = Windows 10
+sun.java.launcher = SUN_STANDARD
+user.country = CN
+sun.boot.library.path = C:\Program Files\Java\jdk-17.0.1\bin
+sun.java.command = io.github.boniu.test.lua.LuaExample
+jdk.debug = release
+sun.cpu.endian = little
+user.home = C:\Users\wg
+user.language = zh
+java.specification.vendor = Oracle Corporation
+java.version.date = 2021-10-19
+java.home = C:\Program Files\Java\jdk-17.0.1
+file.separator = \
+java.vm.compressedOopsMode = Zero based
+line.separator = 
+
+java.vm.specification.vendor = Oracle Corporation
+java.specification.name = Java Platform API Specification
+user.script = 
+sun.management.compiler = HotSpot 64-Bit Tiered Compilers
+java.runtime.version = 17.0.1+12-LTS-39
+user.name = wg
+path.separator = ;
+os.version = 10.0
+java.runtime.name = Java(TM) SE Runtime Environment
+file.encoding = UTF-8
+java.vm.name = Java HotSpot(TM) 64-Bit Server VM
+java.vendor.url.bug = https://bugreport.java.com/bugreport/
+java.io.tmpdir = C:\Users\wg\AppData\Local\Temp\
+java.version = 17.0.1
+user.dir = H:\java-project\wg\springboot-3.1.0-java17
+os.arch = amd64
+java.vm.specification.name = Java Virtual Machine Specification
+sun.os.patch.level = 
+native.encoding = GBK
+java.library.path = C:\Program Files\Java\jdk-17.0.1\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;E:\VMware\VMware Workstation\bin\;e:\Kingbase\ES\V8\KESRealPro\V008R006C008B0014\Interface\compress\v8r6_compress_win\kb_x64\release;C:\Program Files\Common Files\Siemens\Automation\Simatic OAM\bin;C:\Program Files\nodejs\node_global\cnpm;C:\Windows\System32;C:\Windows;C:\Windows\System32\wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\MySQL\MySQL Server 8.0\bin;E:\apache-maven-3.6.3\bin;E:\flutter\flutter_windows_3.0.5-stable\flutter\bin;C:\Program Files\Git\cmd;C:\Program Files\nodejs\node_global\node_modules\yarn\bin;D:\Programs\Python\Python37\Lib\site-packages\jep;E:\gradle-7.3.2\bin;C:\Program Files\nodejs\;C:\Program Files (x86)\GnuPG\bin;C:\Program Files (x86)\NetSarang\Xftp 7\;C:\Program Files (x86)\NetSarang\Xshell 7\;C:\Program Files\Docker\Docker\resources\bin;C:\Program Files\Cloudflare\Cloudflare WARP\;E:\lua-5.4.2_Win64_bi;C:\MinGW\bin;E:\Python38;E:\Python38\Scripts;C:\Program Files\PuTTY\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\dotnet;C:\Program Files\Java\jdk-17.0.1\bin;C:\Program Files\Java\jdk-17.0.1\jre\bin;C:\MinGW\bin;C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2023.2\bin;;C:\Users\wg\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\wg\AppData\Roaming\npm;e:\webStorm 2020\bin;;e:\Program Files\JetBrains\PyCharm Community Edition 2022.1.3\bin;;E:\apache-jmeter-5.5\lib\ext\ApacheJMeter_core.jar;E:\apache-jmeter-5.5\lib\jorphan.jar;C:\Users\wg\.dotnet\tools;e:\JetBrains Rider 2023.3.4\bin;;e:\JetBrains\CLion 2024.1.4\bin;;d:\DataGrip 2024.2.2\bin;;;.
+java.vm.info = mixed mode, sharing
+java.vendor = Oracle Corporation
+java.vm.version = 17.0.1+12-LTS-39
+sun.io.unicode.encoding = UnicodeLittle
+java.class.version = 61.0
+```
+
+
+
+
+
+下面是 `System.getProperties()` 返回的一些 **常见键值对**，以及它们的含义：
+
+### **1️⃣ Java 运行环境相关**
+
+| 键（Key）            | 说明                | 示例                                     |
+| -------------------- | ------------------- | ---------------------------------------- |
+| `java.version`       | Java 运行时环境版本 | `17.0.2`                                 |
+| `java.vendor`        | Java 供应商         | `Oracle Corporation`                     |
+| `java.vendor.url`    | Java 供应商官网     | `https://java.oracle.com/`               |
+| `java.home`          | JDK/JRE 安装目录    | `C:\Program Files\Java\jdk-17`           |
+| `java.class.version` | Java 类文件格式版本 | `61.0`（Java 17）                        |
+| `java.class.path`    | 类路径（Classpath） | `C:\myproject\classes;C:\libs\mylib.jar` |
+
+------
+
+### **2️⃣ JVM 相关**
+
+| 键（Key）                       | 说明           | 示例                       |
+| ------------------------------- | -------------- | -------------------------- |
+| `java.vm.version`               | JVM 版本号     | `17.0.2+8`                 |
+| `java.vm.vendor`                | JVM 供应商     | `Oracle Corporation`       |
+| `java.vm.name`                  | JVM 名称       | `OpenJDK 64-Bit Server VM` |
+| `java.vm.specification.version` | JVM 规范版本   | `17`                       |
+| `java.vm.specification.vendor`  | JVM 规范提供者 | `Oracle Corporation`       |
+
+------
+
+### **3️⃣ Java 规范**
+
+| 键（Key）                    | 说明            | 示例                              |
+| ---------------------------- | --------------- | --------------------------------- |
+| `java.specification.version` | Java 规范版本   | `17`                              |
+| `java.specification.vendor`  | Java 规范供应商 | `Oracle Corporation`              |
+| `java.specification.name`    | Java 规范名称   | `Java Platform API Specification` |
+
+------
+
+### **4️⃣ 操作系统相关**
+
+| 键（Key）    | 说明         | 示例                              |
+| ------------ | ------------ | --------------------------------- |
+| `os.name`    | 操作系统名称 | `Windows 10`                      |
+| `os.arch`    | 操作系统架构 | `amd64`（64 位）或 `x86`（32 位） |
+| `os.version` | 操作系统版本 | `10.0`                            |
+
+------
+
+### **5️⃣ 用户环境**
+
+| 键（Key）   | 说明                     | 示例             |
+| ----------- | ------------------------ | ---------------- |
+| `user.name` | 当前用户的用户名         | `Administrator`  |
+| `user.home` | 当前用户的主目录         | `C:\Users\Admin` |
+| `user.dir`  | 当前 Java 进程的工作目录 | `C:\myproject`   |
+
+------
+
+### **6️⃣ 文件和路径**
+
+| 键（Key）        | 说明           | Windows 示例 | Linux/macOS 示例 |
+| ---------------- | -------------- | ------------ | ---------------- |
+| `file.separator` | 文件路径分隔符 | `\`          | `/`              |
+| `path.separator` | 路径分隔符     | `;`          | `:`              |
+| `line.separator` | 换行符         | `\r\n`       | `\n`             |
+
+**📌 说明：**
+
+- **Windows 文件路径分隔符** 是 `\`，Linux/macOS 是 `/`。
+- **Windows path.separator** 是 `;`，Linux/macOS 是 `:`（用于 `CLASSPATH` 和 `PATH` 变量）。
+- **Windows line.separator** 是 `\r\n`（回车+换行），而 Linux/macOS 仅 `\n`。
+
+
+
+# 14. static 关键字
+
+在 Java 里，`static` 关键字的用途广泛，它能修饰类、方法、变量和代码块，下面分别介绍其具体作用：
+
+### 静态变量（类变量）
+
+- **定义与特点**：当使用 `static` 修饰变量时，该变量就成为静态变量，也被叫做类变量。静态变量为类的所有实例所共享，也就是说，无论创建了多少个该类的对象，静态变量都只有一份拷贝，存储于类的内存区域中。
+
+
+
+### 静态方法
+
+- **定义与特点**：使用 `static` 修饰的方法是静态方法。静态方法属于类，而非类的某个实例。调用静态方法时，无需创建类的对象，可以直接通过类名调用。静态方法只能访问静态变量和其他静态方法，不能访问实例变量和实例方法，因为实例变量和实例方法依赖于具体的对象。
+
+
+
+### 静态内部类
+
+- **定义与特点**：使用 `static` 修饰的内部类为静态内部类。静态内部类不依赖于外部类的实例，可以直接创建对象。静态内部类只能访问外部类的静态成员。
+
+
+
+### 静态代码块
+
+- **定义与特点**：静态代码块是用 `static` 关键字修饰的代码块，它在类加载时执行，且仅执行一次。静态代码块常被用于对静态变量进行初始化操作
+
+
+
+
+
+# 15. 设计模式
+
+Java 中常用的设计模式按照《GoF（Gang of Four）》分类，主要分为三大类：**创建型、结构型、行为型**。以下是各类中最常见、最实用的设计模式及说明：
+
+------
+
+## ✅ 一、创建型模式（5 种）
+
+创建对象的方式，关注“如何实例化对象”。
+
+| 模式名                               | 说明                           | 使用场景举例                                            |
+| ------------------------------------ | ------------------------------ | ------------------------------------------------------- |
+| **单例模式（Singleton）**            | 保证类只有一个实例             | 配置类、线程池、数据库连接池                            |
+| **工厂方法模式（Factory Method）**   | 延迟到子类来决定要实例化哪个类 | 日志框架、数据库驱动                                    |
+| **抽象工厂模式（Abstract Factory）** | 提供一组相关产品的创建方法     | UI 组件库切换主题                                       |
+| **建造者模式（Builder）**            | 复杂对象的分步骤构建           | 创建配置复杂的对象（如 JSON 构造器、Lombok 的 builder） |
+| **原型模式（Prototype）**            | 通过克隆创建新对象             | 创建对象成本高，复制更快（如 Excel 模板复制）           |
+
+
+
+------
+
+## ✅ 二、结构型模式（7 种）
+
+描述类和对象如何组合在一起形成更大的结构。
+
+| 模式名                      | 说明                             | 使用场景举例                         |
+| --------------------------- | -------------------------------- | ------------------------------------ |
+| **适配器模式（Adapter）**   | 将一个接口转化为客户端期望的接口 | 数据转换、旧系统兼容                 |
+| **装饰器模式（Decorator）** | 动态添加对象功能，保持类不变     | Java IO 流（如 BufferedInputStream） |
+| **代理模式（Proxy）**       | 控制对对象的访问                 | AOP、RPC、权限控制、缓存             |
+| **外观模式（Facade）**      | 提供统一接口，隐藏子系统复杂性   | Controller 层调用多个 Service        |
+| **桥接模式（Bridge）**      | 分离抽象和实现，使其独立变化     | 图形系统中形状和颜色组合             |
+| **组合模式（Composite）**   | 树形结构处理整体和部分           | 文件系统、菜单结构                   |
+| **享元模式（Flyweight）**   | 大量小对象共享内存               | 字符缓存、池技术（Integer.valueOf）  |
+
+
+
+------
+
+## ✅ 三、行为型模式（11 种）
+
+关注对象之间的通信与职责分配。
+
+| 模式名                                    | 说明                       | 使用场景举例             |
+| ----------------------------------------- | -------------------------- | ------------------------ |
+| **策略模式（Strategy）**                  | 定义一系列算法，可互换     | 支付方式选择、排序方式   |
+| **模板方法模式（Template Method）**       | 定义算法骨架，子类实现细节 | 抽象类的标准流程定义     |
+| **观察者模式（Observer）**                | 一方变更通知多方           | 事件监听、消息订阅       |
+| **责任链模式（Chain of Responsibility）** | 请求链传递直到处理         | Servlet Filter、日志处理 |
+| **命令模式（Command）**                   | 将请求封装成对象           | 操作撤销、事务处理       |
+| **状态模式（State）**                     | 状态切换封装行为           | 状态机、流程审批         |
+| **备忘录模式（Memento）**                 | 保存状态以便恢复           | 编辑器撤销               |
+| **访问者模式（Visitor）**                 | 访问不同类的结构统一操作   | 编译器语法树处理         |
+| **中介者模式（Mediator）**                | 用中介封装对象交互         | GUI 控件交互             |
+| **解释器模式（Interpreter）**             | 自定义语言解释             | EL 表达式、正则解析      |
+| **迭代器模式（Iterator）**                | 顺序访问集合               | `Iterator` 接口          |
+
+
+
+------
+
+## 🔥 最常见的实际用法（建议重点掌握）
+
+| 模式         | Java 实际应用                       |
+| ------------ | ----------------------------------- |
+| **单例**     | `Runtime.getRuntime()`、Spring Bean |
+| **工厂**     | `Calendar.getInstance()`、JDBC驱动  |
+| **建造者**   | `StringBuilder`、Lombok `@Builder`  |
+| **策略**     | 业务分支逻辑、if/else 优化          |
+| **模板方法** | `HttpServlet.service()`             |
+| **代理**     | JDK 动态代理、CGLIB、Spring AOP     |
+| **观察者**   | Swing事件、Spring事件               |

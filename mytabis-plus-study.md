@@ -21,3 +21,15 @@
 
    
 
+
+
+# 2. or 的用法
+
+```java
+QueryWrapper<MedicamentAssessJobCompletionReportEntity> wrapper = new QueryWrapper<>();
+                wrapper.lambda()
+                        .eq(operationZone != null, MedicamentAssessJobCompletionReportEntity::getOperationCompany, operationZone)
+                        .and(e -> e.eq(MedicamentAssessJobCompletionReportEntity::getStatus, 6).or().eq(MedicamentAssessJobCompletionReportEntity::getStatus, 7))
+                ;
+```
+
