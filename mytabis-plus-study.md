@@ -33,3 +33,28 @@ QueryWrapper<MedicamentAssessJobCompletionReportEntity> wrapper = new QueryWrapp
                 ;
 ```
 
+
+
+
+
+# 3. 对有空值 得排序
+
+```java
+private Page<SpMflDataTblDTO> getSpMflDataTblDTOPage(Integer pageNum, Integer size, String spInCompleteDataId) {
+        QueryWrapper<SpMflDataTblEntity> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda().eq(SpMflDataTblEntity::getSpInCompleteDataId, spInCompleteDataId)
+                .ge(SpMflDataTblEntity::getDefectLength, BigDecimal.valueOf(10d));
+    	// 第一步排序：表达式结果为 0 的记录（非空值）会排在 1（空值）前面（因为 ASC 升序，0 < 1）；
+		// 第二步排序：对非空值的记录，再按 MAXIMUM_DEFECT_DEPTH 本身降序排列。
+        // queryWrapper.orderBy(true, true, "CASE WHEN MAXIMUM_DEFECT_DEPTH IS NULL THEN 1 ELSE 0 END"); // 将空值放后面, 且要放排序时第一位
+        queryWrapper.lambda().orderByDesc(SpMflDataTblEntity::getMaximumDefectDepth);
+
+        Page<SpMflDataTblEntity> page = new Page<>(pageNum, size);
+        page = spMflDataTblDao.selectPage(page, queryWrapper);
+        List<SpMflDataTblDTO> dataTblDTOS = spMflDataTblMapping.toDTOs(page.getRecords());
+        Page<SpMflDataTblDTO> dtoPage = new Page<>(pageNum, size, page.getTotal());
+        dtoPage.setRecords(dataTblDTOS);
+        return dtoPage;
+    }
+```
+
