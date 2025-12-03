@@ -360,3 +360,24 @@ SELECT * FROM users WHERE username = 'admin' --' AND password = '任意值'
 ```
 
 由于 `--` 是 SQL 注释符，后面的条件被忽略，导致攻击者无需密码即可登录 `admin` 账户。
+
+
+
+# 9.  标签
+
+## 1. trim标签
+
+```
+<trim suffixOverrides=",">
+```
+
+`trim` 标签的 `suffixOverrides=","` 作用是：**自动移除整个 trim 块中最后一个多余的逗号**，而不是移除每个 `if` 里的逗号。
+
+## 2. if标签
+
+```
+ <if test="@ceet.ufps.pl.pipe.common.utils.StringUtil@isNotBlank(id)">
+     id = #{id},
+</if>
+```
+
