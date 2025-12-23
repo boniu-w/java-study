@@ -1,0 +1,246 @@
+pipeline {
+  agent any
+  tools {
+    maven 'Maven3'    // 全局配置中的 Maven 名称
+    jdk 'openjdk17'   // 全局配置中的 JDK 名称
+  }
+
+  environment {
+    // 不在这里动态计算 TIMESTAMP，改在 script 中生成
+    MAVEN_HUB_URL = '192.168.100.10/cnooc'
+    APP_NAME = 'ceet-ufps-pl-pia'
+    ARCHITECTURE = 'amd64'
+    DOCKER_COMPOSE_FILE = 'app-dev.yml'
+    STACK_NAME = 'app-dev'
+
+    // Maven repo endpoints（根据你的 nexus 实际地址修改）
+    MAVEN_RELEASES_REPO = "http://192.168.100.10:8081/nexus/repository/maven-releases"
+    MAVEN_SNAPSHOTS_REPO = "http://192.168.100.10:8081/nexus/repository/maven-snapshots"
+
+    // Credentials IDs (请在 Jenkins Credentials 中创建并替换)
+    GIT_CRED_ID = 'gaojunxin-git'        // 用于推送 devops 仓库
+    GITLAB_CRED_ID = 'git-lab'          // 用于 clone 主代码（如果需要）
+    DOCKER_REGISTRY_CRED = 'MAVEN_HARBOR' // Docker registry credentials id
+    PORTAINER_WEBHOOK = 'PORTAINER_WEBHOOK' // secretText or string credential (可选)
+  }
+
+  options {
+    // 保留最近 30 次构建记录（根据需要调整）
+    buildDiscarder(logRotator(numToKeepStr:'30'))
+    // 在 job 执行失败时保留工作区，便于排查
+    preserveStashes(false)
+    timestamps()
+  }
+
+  stages {
+
+    stage('Checkout 主体代码') {
+      steps {
+        script {
+          checkout([$class: 'GitSCM',
+            branches: [[name: '*/develop']],
+            userRemoteConfigs: [[
+              url: 'http://192.168.100.9:9980/PipelineCenter/ceet-ufps-pl-pia.git',
+              credentialsId: env.GITLAB_CRED_ID
+            ]]
+          ])
+        }
+      }
+    }
+
+    stage('准备版本与时间戳') {
+      steps {
+        script {
+          // 计算 TIMESTAMP（Jenkins 推荐方式）
+          TIMESTAMP = new Date().format("yyyyMMdd-HHmmss", TimeZone.getTimeZone('Asia/Taipei'))
+          echo "TIMESTAMP = ${TIMESTAMP}"
+
+          // 读取 pom 中的 version
+          def rawVersion = sh(returnStdout: true, script: "mvn -q -Dexec.executable=echo -Dexec.args='\\${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec").trim()
+          echo "POM version = ${rawVersion}"
+
+          // 决定最终用于构建/推镜像的版本（EFFECTIVE_VERSION）
+          // 策略：
+          //  - 如果是 SNAPSHOT，EFFECTIVE_VERSION = rawVersion (保留 SNAPSHOT)
+          //  - 否则在 CI 自动构建中，为避免覆盖，附加 BUILD_NUMBER
+          def buildNum = env.BUILD_NUMBER ?: 'local'
+          if (rawVersion.endsWith('-SNAPSHOT')) {
+            EFFECTIVE_VERSION = rawVersion
+            DEPLOY_REPO = env.MAVEN_SNAPSHOTS_REPO
+            isSnapshot = true
+          } else {
+            // 这里选择将 release 版附加 build number 避免覆盖（你也可以改为使用 maven-release-plugin）
+            EFFECTIVE_VERSION = "${rawVersion}-${buildNum}"
+            DEPLOY_REPO = env.MAVEN_RELEASES_REPO
+            isSnapshot = false
+          }
+
+          echo "EFFECTIVE_VERSION = ${EFFECTIVE_VERSION}"
+          // 公开到后续 stage
+          env.TIMESTAMP = TIMESTAMP
+          env.EFFECTIVE_VERSION = EFFECTIVE_VERSION
+          env.DEPLOY_REPO = DEPLOY_REPO
+          env.IS_SNAPSHOT = isSnapshot.toString()
+        }
+      }
+    }
+
+    stage('Maven 构建并 Deploy') {
+      steps {
+        script {
+          // 如果 EFFECTIVE_VERSION 与 pom 不同，临时修改 pom 版本再 deploy
+          def rawVersion = sh(returnStdout: true, script: "mvn -q -Dexec.executable=echo -Dexec.args='\\${project.version}' --non-recursive org.codehaus.mojo:exec-maven-plugin:3.0.0:exec").trim()
+
+          if (rawVersion != env.EFFECTIVE_VERSION) {
+            echo "设置 POM 版本为 ${env.EFFECTIVE_VERSION}"
+            sh "mvn -q versions:set -DnewVersion=${env.EFFECTIVE_VERSION}"
+            // 清理 versions 插件生成的 backup 文件
+            sh "mvn -q versions:commit || true"
+          } else {
+            echo "POM 版本已是 ${env.EFFECTIVE_VERSION}"
+          }
+
+          // 构建并 deploy（跳过测试以提高 CI 速度 — 若需运行测试请移除 -DskipTests）
+          // 使用 withCredentials 如果 repository 需要认证（Nexus 通常有凭据）
+          // 你可以在 settings.xml 中配置 server id 并使用 -DaltDeploymentRepository 指向它，这里直接用 URL
+          try {
+            sh """
+              mvn -B clean deploy -DskipTests \
+                -DaltDeploymentRepository=maven::default::${env.DEPLOY_REPO}
+            """
+            echo "Maven deploy 成功 -> ${env.DEPLOY_REPO}"
+          } catch (err) {
+            error "Maven deploy 失败: ${err}"
+          } finally {
+            // 恢复 pom 到原始版本（可选）
+            if (rawVersion != env.EFFECTIVE_VERSION) {
+              echo "恢复 POM 版本为 ${rawVersion}"
+              sh "mvn -q versions:set -DnewVersion=${rawVersion}"
+              sh "mvn -q versions:commit || true"
+            }
+          }
+        }
+      }
+    }
+
+    stage('构建 Docker 镜像并推送') {
+      steps {
+        script {
+          // 镜像 tag 使用 TIMESTAMP + ARCHITECTURE 保证唯一
+          def imageTag = "${env.MAVEN_HUB_URL}/${env.APP_NAME}:${env.TIMESTAMP}-${env.ARCHITECTURE}"
+          env.IMAGE_TAG = imageTag
+          echo "镜像 tag = ${imageTag}"
+
+          // 使用 lock 来避免并发对 registry 造成冲突
+          lock(resource: "${env.APP_NAME}-docker-push", inversePrecedence: true) {
+            withCredentials([usernamePassword(credentialsId: env.DOCKER_REGISTRY_CRED, usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PWD')]) {
+              sh "echo Logging into Docker registry ${env.MAVEN_HUB_URL}"
+              sh "docker login ${env.MAVEN_HUB_URL} -u ${DOCKER_USER} -p ${DOCKER_PWD}"
+
+              // 构建镜像（假设 Dockerfile 在 repo 根路径）
+              def buildCmd = "docker build -t ${imageTag} -f Dockerfile ."
+              sh "${buildCmd}"
+
+              // 推送镜像（包含 latest 可选）
+              sh "docker push ${imageTag}"
+
+              // 如果需要给 latest 标签，也可以： (取消注释下行)
+              // sh "docker tag ${imageTag} ${env.MAVEN_HUB_URL}/${env.APP_NAME}:latest && docker push ${env.MAVEN_HUB_URL}/${env.APP_NAME}:latest"
+
+              // 安全清理（删除本地 tag，以释放磁盘）
+              sh "docker image rm ${imageTag} || true"
+
+              // 可选：做更温和的磁盘回收
+              // sh "docker image prune -f || true"
+
+              // 登出
+              sh "docker logout ${env.MAVEN_HUB_URL}"
+            }
+          } // end lock
+        }
+      }
+    }
+
+    stage('更新 devops 仓库中的 compose 并触发发布') {
+      steps {
+        script {
+          // 在 devops 仓库中替换 image 字段，使用 yq 修改 YAML（更稳健）
+          // 要求 agent 已安装 yq（v4），否则可以改用 python 脚本或回退到 sed（不推荐）
+          dir('devops') {
+            // Checkout devops 仓库（使用凭据）
+            checkout([$class: 'GitSCM',
+              branches: [[name: '*/main']],
+              userRemoteConfigs: [[
+                url: 'http://192.168.100.9:9980/rdcenter/devops.git',
+                credentialsId: env.GIT_CRED_ID
+              ]]
+            ])
+
+            def imageName = "${env.MAVEN_HUB_URL}/${env.APP_NAME}:${env.TIMESTAMP}-${env.ARCHITECTURE}"
+            echo "要写入 compose 的 image: ${imageName}"
+
+            // 使用 yq 修改指定服务的 image（假设 service 名称与 APP_NAME 一致，或你可以指定 service）
+            // 例：yq eval ".services.${APP_NAME}.image = \"${imageName}\"" -i ${DOCKER_COMPOSE_FILE}
+            // 若 compose 文件结构不同，请按实际路径替换
+            sh """
+              if command -v yq >/dev/null 2>&1; then
+                yq eval ".services.${APP_NAME}.image = \"${imageName}\"" -i ${env.DOCKER_COMPOSE_FILE}
+              else
+                echo "yq 未安装，回退到 sed（请确认格式）"
+                sed -i.bak -E "s#(^\\s*image:\\s*).*\${APP_NAME}[^\\\\s]*#\\1${imageName}#g" ${env.DOCKER_COMPOSE_FILE} || true
+              fi
+            """
+
+            // 如果文件有改动才 commit
+            def changed = sh(returnStatus: true, script: "git status --porcelain | wc -l").trim()
+            if (changed != '0') {
+              echo "发现变更，准备 commit & push"
+              sh """
+                git config user.email "gjx.xin@qq.com"
+                git config user.name "gaojunxin"
+                git add ${env.DOCKER_COMPOSE_FILE}
+                git commit -m "更新 ${env.APP_NAME} 镜像版本到 ${env.TIMESTAMP}-${env.ARCHITECTURE}"
+              """
+
+              // 用凭据安全 push（避免在命令行暴露密码）
+              // 这里用 withCredentials 获取用户名/密码
+              withCredentials([usernamePassword(credentialsId: env.GIT_CRED_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PWD')]) {
+                // 先 pull 避免冲突
+                sh "git pull --rebase http://${GIT_USER}:${GIT_PWD}@192.168.100.9:9980/rdcenter/devops.git main || true"
+                sh "git push http://${GIT_USER}:${GIT_PWD}@192.168.100.9:9980/rdcenter/devops.git HEAD:refs/heads/main"
+              }
+            } else {
+              echo "无变更，跳过 commit/push"
+            }
+
+            // 触发 Portainer webhook（如果配置了）
+            withCredentials([string(credentialsId: env.PORTAINER_WEBHOOK, variable: 'PORTAINER_WEBHOOK_URL')]) {
+              if (env.PORTAINER_WEBHOOK_URL) {
+                sh """
+                  curl -s -X POST -H "Content-Type: application/json" -d '{}' "${PORTAINER_WEBHOOK_URL}" || true
+                """
+                echo "已触发 Portainer webhook"
+              } else {
+                echo "未配置 Portainer webhook，跳过触发"
+              }
+            }
+          } // end dir devops
+        }
+      }
+    }
+
+  } // end stages
+
+  post {
+    success {
+      echo "流水线完成：镜像 ${env.IMAGE_TAG}，版本 ${env.EFFECTIVE_VERSION}"
+    }
+    failure {
+      echo "流水线失败，请查看日志排查。"
+    }
+    always {
+      // 可选清理步骤
+      cleanWs()
+    }
+  }
+}

@@ -1,0 +1,103 @@
+pipeline {
+    agent any
+    tools {
+        maven 'Maven3' // 替换为你在全局配置中配置的Maven名称
+        jdk 'openjdk17'
+    }
+    environment {
+        // 全局变量，用于存储时间戳
+        TIMESTAMP = getCurrentTimestamp()
+        MAVEN_HUB_URL = '192.168.100.10/cnooc'
+        APP_NAME = 'ceet-ufps-pl-pia'
+        ARCHITECTURE = 'amd64'
+        DOCKER_COMPOSE_FILE = 'app-dev.yml'
+        STACK_NAME = 'app-dev'
+    }
+    stages {
+        stage('拉取主体功能代码') {
+            steps {
+                script {
+                    git credentialsId: 'git-lab',
+                        url: 'http://192.168.100.9:9980/PipelineCenter/ceet-ufps-pl-pia.git',
+                        branch: 'develop'
+                }
+            }
+        }
+        stage('Maven构建') {
+            steps {
+                // 使用Maven构建项目
+                script {
+                    sh 'mvn clean install deploy -DaltDeploymentRepository=maven-public::default::http://192.168.100.10:8081/nexus/repository/maven-releases'
+                }
+            }
+        }
+        
+        stage('构建Docker镜像') {
+            steps {
+                script {
+                    // 使用Docker Pipeline插件构建镜像，并使用年月日时分秒作为tag
+                    def customImage = docker.build("${env.MAVEN_HUB_URL}/${env.APP_NAME}:${env.TIMESTAMP}-${env.ARCHITECTURE}", '-f Dockerfile .')
+                    // 推送镜像到私有仓库
+                    docker.withRegistry("http://${env.MAVEN_HUB_URL}", 'MAVEN_HARBOR') {
+                        // 添加 latest 标签并推送
+                        customImage.push()
+                    }
+                   
+                    // 删除本地镜像
+                    //customImage.remove()
+                    sh "docker rmi ${env.MAVEN_HUB_URL}/${env.APP_NAME}:${env.TIMESTAMP}-${env.ARCHITECTURE}"
+                }
+            }
+        }
+                stage('发布应用') {
+            steps {
+                  script {
+                      dir('devops') {
+                        git credentialsId: 'git-lab',
+                            url: 'http://192.168.100.9:9980/rdcenter/devops.git',
+                            branch: 'main'
+                        
+                         // 使用双引号包围sed命令，并使用单引号包裹正则表达式内的特殊字符，同时正确插入环境变量
+                        def imageName = "${env.MAVEN_HUB_URL}/${env.APP_NAME}:${env.TIMESTAMP}-${env.ARCHITECTURE}"
+                        imageName =  imageName.replaceAll("\\/", "\\\\/")
+                        sh """
+                          sed -i " \"s/image.*${env.APP_NAME}:[^\\":]*\\\$/'image: ${imageName}'/\" " ${env.DOCKER_COMPOSE_FILE}
+                        """
+                        sh "cat ${env.DOCKER_COMPOSE_FILE}"
+                        
+                        
+                        // 先不做docker swarm发布，直接通过portainer触发
+                        // sh "docker stack deploy --compose-file '${env.DOCKER_COMPOSE_FILE}' '${env.STACK_NAME}'"
+                    
+                        // 添加、提交并推送更改到Git仓库
+                        sh """
+                          git config --global user.email "gjx.xin@qq.com"
+                          git config --global user.name "gaojunxin"
+                          git add .
+                          git commit -m "更新${APP_NAME}镜像版本到${env.TIMESTAMP}-${ARCHITECTURE}"
+                        """
+                        
+                        withCredentials([usernamePassword(credentialsId: 'gaojunxin-git', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                           sh 'git push http://${GIT_USERNAME}:${GIT_PASSWORD}@192.168.100.9:9980/rdcenter/devops.git HEAD:refs/heads/main'
+                        }
+                        
+                        sh '''
+                        curl -X POST \
+                             -H "Content-Type: application/json" \
+                             -d '{}' \
+                             "${portainer_app_webhook}"
+                        '''
+                      }
+                }
+                   
+            }
+        }
+    }
+}
+//获取时间
+def getCurrentTimestamp() {
+    def calendar = Calendar.getInstance()
+    def timestamp = calendar.format("yyyyMMdd-HHmmss")
+    return timestamp
+}
+

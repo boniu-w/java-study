@@ -162,3 +162,18 @@ mvn deploy:deploy-file -DpomFile="d:\temp/ci-dp-peq-regulation-training-svc/4.6.
     <artifactId>risk</artifactId>
 
 mvn -e deploy:deploy-file -DpomFile="C:\Users\wg\.m2\repository\com\sevenme\engineering\risk\1.0-SNAPSHOT/risk-1.0-SNAPSHOT.pom" -Dfile="C:\Users\wg\.m2\repository\com\sevenme\engineering\risk\1.0-SNAPSHOT/risk-1.0-SNAPSHOT.jar" -DrepositoryId="nexus-7me-snapshots" -Durl="http://119.3.53.55:9081/repository/maven-snapshots/"
+
+
+-- ceet-ufps-pl-pia-svc 的 pom 里加
+<properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+        <maven.install.skip>true</maven.install.skip>
+</properties>
+-- 然后在项目目录下执行（D:\java-project\sevenme\v7158-neijiance\ceet-ufps-pl-pia）
+mvn clean install deploy -Dmaven.test.skip=true -DaltDeploymentRepository=maven-public::default::http://192.168.100.10:8081/nexus/repository/maven-releases
+这样只会发布 ceet-ufps-pl-pia-api
+
+
+
+-- 手动下载的jar包, mvn install
+mvn install:install-file -DpomFile=D:\temp\word2pdf/aspose-words-24.12.pom -Dfile=D:\temp\word2pdf\aspose-words-24.12-jdk17.jar -DgroupId=com.aspose -DartifactId=aspose-words -Dversion=24.12 -Dclassifier=jdk17 -Dpackaging=jar

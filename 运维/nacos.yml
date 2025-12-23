@@ -1,0 +1,113 @@
+version: '3.8'
+
+
+services:
+
+  nacos1:
+    image: 192.168.100.10/cnooc/nacos:20250826-153022-amd64
+    container_name: nacos1
+    hostname: nacos1
+    networks:
+      cnooc-app:
+        ipv4_address: 10.0.4.31
+        aliases:
+          - nacos1
+    environment:
+      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848
+      - MODE=cluster
+      - PREFER_HOST_MODE=hostname
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
+      - NACOS_AUTH_TOKEN=UnduSGZEMFNsVGdmeWE1Mm5XS1NTM014YWZBQ3ZmakE=
+      - NACOS_AUTH_IDENTITY_KEY=cnooc
+      - NACOS_AUTH_IDENTITY_VALUE=RjZ4Z0xCUmxIZ2ZJM0Fm
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://localhost:8848/nacos/"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+    ports:
+      - target: 8080
+        published: 8848
+        protocol: tcp
+    deploy:
+      mode: replicated
+      resources:
+        limits:
+          cpus: "2"
+          memory: "3G"
+      placement:
+        constraints:
+          - node.labels.leader != 1
+    restart: unless-stopped
+  nacos2:
+    image: 192.168.100.10/cnooc/nacos:20250826-153022-amd64
+    container_name: nacos2
+    hostname: nacos2
+    networks:
+      cnooc-app:
+        ipv4_address: 10.0.4.32
+        aliases:
+          - nacos2
+    ports:
+      - target: 9848
+        published: 19848
+        protocol: tcp
+      - target: 7848
+        published: 17848
+        protocol: tcp
+    deploy:
+      mode: replicated
+      resources:
+        limits:
+          cpus: "2"
+          memory: "3G"      
+      placement:
+        constraints:
+          - node.labels.leader != 1
+    environment:
+      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848
+      - MODE=cluster
+      - PREFER_HOST_MODE=hostname
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
+      - NACOS_AUTH_TOKEN=UnduSGZEMFNsVGdmeWE1Mm5XS1NTM014YWZBQ3ZmakE=
+      - NACOS_AUTH_IDENTITY_KEY=cnooc
+      - NACOS_AUTH_IDENTITY_VALUE=RjZ4Z0xCUmxIZ2ZJM0Fm
+    restart: unless-stopped 
+  nacos3:
+    image: 192.168.100.10/cnooc/nacos:20250826-153022-amd64
+    container_name: nacos3
+    hostname: nacos3
+    networks:
+      cnooc-app:
+        ipv4_address: 10.0.4.33
+        aliases:
+          - nacos3
+    ports:
+      - target: 9848
+        published: 29848
+        protocol: tcp
+      - target: 7848
+        published: 27848
+        protocol: tcp
+    deploy:
+      mode: replicated
+      resources:
+        limits:
+          cpus: "2"
+          memory: "3G"            
+      placement:
+        constraints:
+          - node.labels.leader != 1
+    environment:
+      - NACOS_SERVERS=nacos1:8848 nacos2:8848 nacos3:8848
+      - MODE=cluster
+      - PREFER_HOST_MODE=hostname
+      - MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=prometheus,health,info
+      - NACOS_AUTH_TOKEN=UnduSGZEMFNsVGdmeWE1Mm5XS1NTM014YWZBQ3ZmakE=
+      - NACOS_AUTH_IDENTITY_KEY=cnooc
+      - NACOS_AUTH_IDENTITY_VALUE=RjZ4Z0xCUmxIZ2ZJM0Fm
+    restart: unless-stopped
+networks:
+  cnooc-app:
+    external: true	
+

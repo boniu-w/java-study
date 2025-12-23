@@ -79,18 +79,18 @@
 
 
 
-# 前言
+## 前言
 
 由于使用windows自动的自启方法，不管是将程序启动服务放到开机自启文件夹中，还是创建任务计划程序，都没有很好的实现程序的开机自启效果，而WinSW很好的解决了这个问题。
 
-# 下载
+## 下载
 
 WinSW下载地址
 注意：不同版本，有些配置是不一样的，比如我用的这个版本`log mode`就弃用了rotate模式，推荐使用`roll`模式。
 这里我用的版本是： `v2.12.0`。
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/0c5cc7b6cd8e4d089e4c5ee0b9125117.png)
 
-# 配置介绍
+## 配置介绍
 
 配置的话其实在下载的那两个xml文件中就有介绍到，翻译着看也能懂的，这里再介绍一下比较常用的。
 
@@ -145,13 +145,136 @@ xml 配置示例:
 
 
 
+```bash
+# 1. 安装服务
+MyAppService.exe install
+
+# 2. 启动服务
+MyAppService.exe start
+
+# 3. 停止服务
+MyAppService.exe stop
+
+# 4. 重启服务
+MyAppService.exe restart
+
+# 5. 卸载服务（卸载前建议先停止服务）
+MyAppService.exe uninstall
+
+# 6. 查看服务状态
+MyAppService.exe status
+```
+
+
+
+### 总结
+
+1. **核心步骤**：下载 WinSW 并改名 → 编写同名 XML 配置文件 → 以管理员身份执行安装 / 启动命令。
+2. **关键规则**：WinSW 可执行文件、XML 配置文件的**名称必须完全一致**，否则会无法识别配置。
+3. **排错技巧**：优先查看`logpath`目录下的日志文件，大部分问题都能在日志中找到原因。
+
+
+
+## 例子2: py脚本
+
+#### 1. 准备工作
+
+- **下载 WinSW**：依然使用之前的 WinSW 可执行文件（如`WinSW-x64.exe`），并重命名为`TempCleanerService.exe`（和后续配置文件同名）。
+- **文件存放**：将`TempCleanerService.exe`、`TempCleanerService.xml`（配置文件）、`clear_temp_folder.py`放在**同一个目录**下（比如`D:\TempCleaner`）。
+
+#### 2. 编写 WinSW 配置文件（TempCleanerService.xml）
+
+```xml
+<service>
+  <!-- 服务唯一标识（不能重复） -->
+  <id>TempCleanerService</id>
+  <!-- 服务显示名称 -->
+  <name>临时文件夹清理服务</name>
+  <!-- 服务描述 -->
+  <description>定时清理Windows %temp%文件夹的后台服务，基于Python脚本实现</description>
+
+  <!-- 关键：指定Python解释器路径和脚本路径 -->
+  <!-- 注意：替换为你电脑上的python.exe路径（可通过cmd执行where python查看） -->
+  <executable>C:\Python311\python.exe</executable>
+  <!-- 参数：指定脚本的绝对路径 -->
+  <arguments>D:\TempCleaner\clear_temp_folder.py</arguments>
+
+  <!-- 服务工作目录 -->
+  <workingdirectory>D:\TempCleaner</workingdirectory>
+
+  <!-- 日志配置（WinSW自身的日志，脚本的日志在temp_cleaner.log中） -->
+  <logpath>D:\TempCleaner\logs</logpath>
+  <logmode>roll-by-size</logmode>
+  <logsize>10240</logsize>
+  <loglevel>info</loglevel>
+
+  <!-- 服务启动类型：自动（开机自启） -->
+  <startmode>Automatic</startmode>
+  <!-- 服务停止超时时间（秒） -->
+  <stoptimeout>30</stoptime>
+
+  <!-- 解决Python脚本作为服务停止不了的问题：强制杀死进程 -->
+  <stopexecutable>taskkill</stopexecutable>
+  <stoparguments>/F /PID %PID%</stoparguments>
+
+  <!-- 可选：服务失败时的重启策略 -->
+  <onfailure action="restart" delay="10s"/>
+  <onfailure action="restart" delay="20s"/>
+  <onfailure action="none"/>
+</service>
+```
+
+#### 3. 服务的安装与管理（管理员权限 CMD/PowerShell）
+
+进入脚本所在目录（如`D:\TempCleaner`），执行以下命令：
+
+```bash
+# 安装服务
+TempCleanerService.exe install
+
+# 启动服务
+TempCleanerService.exe start
+
+# 停止服务
+TempCleanerService.exe stop
+
+# 重启服务
+TempCleanerService.exe restart
+
+# 卸载服务（先停止再卸载）
+TempCleanerService.exe uninstall
+
+# 查看服务状态
+TempCleanerService.exe status
+```
+
+### 关键配置与脚本说明
+
+1. Python 路径问题:
+
+   - 配置文件中`<executable>`必须写**Python 解释器的绝对路径**（比如`C:\Python311\python.exe`），不能只写`python`（服务环境可能找不到环境变量）。
+   - 可以通过在 CMD 中执行`where python`查看你的 Python 路径。
+
+2. 定时间隔调整:
+
+   - 脚本中`run_as_service(interval_seconds=86400)`的参数是清理间隔（秒），比如`3600`表示每 1 小时清理一次，`86400`表示每 24 小时清理一次，可自行修改。
+
+3. 日志查看：
+
+   - WinSW 的日志在`logs`目录下（服务的启动 / 停止日志）。
+   - Python 脚本的日志在`temp_cleaner.log`中（清理的详细记录），方便排查问题。
+
+4. 权限问题：
+
+   - 建议以**管理员身份**安装和启动服务，避免清理时权限不足。
+
 
 
 # 4. nginx 配置
 
 ## 配置样例
 
-```
+```shell
 
 #user  nobody;
 worker_processes  1;
@@ -371,7 +494,7 @@ openssl x509 -req -days 36500 -in xianmoer.csr -signkey xianmoer.key -out xianmo
 
 
 
-```
+```sh
 server {
     listen 443 ssl;
     server_name example.com;

@@ -1,0 +1,480 @@
+version: '3.8'
+
+x-common-variables: &common-variables
+  networks:
+    - cnooc-app
+  volumes:
+    - /opt/skywalking-agent:/opt/skywalking-agent
+
+x-common-variables: &env-variables
+  NACOS_SERVER_ADDR: nacos1:8848,nacos2:8848,nacos3:8848
+  NACOS_NAMESPACE: 342627f7-f775-4cac-b180-c1f36f8ecad3
+  NACOS_USERNAME: nacos
+  NACOS_PASSWORD: pnC^bEbcVBB7
+  SPRING_PROFILES_ACTIVE: dev
+  SW_AGENT_COLLECTOR_BACKEND_SERVICES: 192.168.100.18:11800
+  JAVA_TOOL_OPTIONS: "-javaagent:/opt/skywalking-agent/skywalking-agent.jar"
+  FLUENTD_ADDR: 192.168.100.17:24224
+  FLUENTD_ENABLED: "true"
+
+x-common-constraints: &common-constraints
+  constraints:
+    - node.labels.arch == arm
+services:
+  osp-datav-portal-service:
+    image: 192.168.100.10/cnooc/osp-datav-portal-service:20250314-140012-arm
+    environment:
+      - SPRING_PROFILES_ACTIVE=config-test
+    ports:
+      - target: 8081
+        published: 8085
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    
+
+  osp-datav-portal-service-integration:
+    image: 192.168.100.10/cnooc/osp-datav-portal-service-integration:20241217-172516-arm64
+    ports:
+      - target: 8080
+        published: 7080
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    
+
+  database-management-tools:
+    image: 192.168.100.10/cnooc/database-management-tools:20251119-140110-arm
+    ports:
+      - target: 8086
+        published: 8086
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+
+  ceet-ufps-rd-md:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-md:20251222-084538-arm64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-md 
+    ports:
+      - target: 9977
+        published: 9977
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+        
+
+  osp-data-map-service:
+    image: 192.168.100.10/cnooc/osp-data-map-service:20251113-145936-arm64
+    ports:
+      - target: 8087
+        published: 8087
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    
+
+  osp-integration-apigateway:
+    image: 192.168.100.10/cnooc/osp-integration-apigateway:20241217-172551-arm64
+    environment:
+      - SPRING_PROFILES_ACTIVE=test
+    ports:
+      - target: 8080
+        published: 30088
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    
+
+  osp-integration-console:
+    image: 192.168.100.10/cnooc/osp-integration-console:20250725-112222-arm
+    ports:
+      - target: 8082
+        published: 8082
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    
+
+  osp-integration-events:
+    image: 192.168.100.10/cnooc/osp-integration-events:20240805-114433-arm64
+    ports:
+      - target: 8081
+        published: 8084
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    
+
+  osp-integration-datagateway:
+    image: 192.168.100.10/cnooc/osp-integration-datagateway:20240805-114309-arm64
+
+    ports:
+      - target: 8089
+        published: 8083
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    
+
+  ospiam:
+    image: 192.168.100.10/cnooc/ospiam:20251113-151200-arm
+
+    ports:
+      - target: 30005
+        published: 30005
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    
+
+  osp-operator-service:
+    image: 192.168.100.10/cnooc/osp-operator-service:20251216-103335-arm
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: osp-operator-service
+    ports:
+      - target: 18080
+        published: 18080
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    volumes:
+      - /opt/skywalking-agent:/opt/skywalking-agent
+
+  osp-operator-server-alert:
+    image: 192.168.100.10/cnooc/osp-operator-server-alert:20250716-174444-arm
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: osp-operator-server-alert
+    ports:
+      - target: 50053
+        published: 50053
+        protocol: tcp
+      - target: 50052
+        published: 50052
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+    volumes:
+      - /opt/skywalking-agent:/opt/skywalking-agent
+
+  osp-operator-server-master:
+    image: 192.168.100.10/cnooc/osp-operator-server-master:20250717-102752-arm
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: osp-operator-server-master
+    ports:
+      - target: 5679
+        published: 5679
+        protocol: tcp
+      - target: 5678
+        published: 5678
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.arch == arm
+          - node.labels.ip == 192.168.100.24
+    volumes:
+      - /opt/skywalking-agent:/opt/skywalking-agent
+
+  osp-operator-server-worker:
+    image: 192.168.100.10/cnooc/osp-operator-server-worker:20250923-110321-arm
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: osp-operator-server-worker
+    ports:
+      - target: 1234
+        published: 1234
+        protocol: tcp
+      - target: 1235
+        published: 1235
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.arch == arm
+          - node.labels.ip == 192.168.100.24
+    volumes:
+      - /home/operator/spark2:/opt/soft/spark1
+      - /home/operator/datax:/opt/operator/datax
+      - /opt/py_tools:/opt/py_tools
+      - /home/operator/OSPDataQuality:/home/operator/OSPDataQuality
+      - /data/operator/OSPDataQuality:/data/operator/OSPDataQuality
+      - /opt/skywalking-agent:/opt/skywalking-agent
+# 先注释掉，和dev重复声明了
+#  ceet-ufps-me-turbine:
+#    image: 192.168.100.10/cnooc/ceet-ufps-me-turbine:20240805-114559-arm64
+#    environment:
+#      - SPRING_PROFILES_ACTIVE=test
+#    ports:
+#      - target: 18081
+#        published: 18081
+#        protocol: tcp
+#
+#      - target: 18082
+#        published: 18082
+#        protocol: tcp
+#
+#    deploy:
+#      mode: replicated
+#      placement:
+#        <<: *common-constraints
+#
+#  ceet-ufps-rd-hsa:
+#    image: 192.168.100.10/cnooc/ceet-ufps-rd-hsa:20250905-085132-amd64
+#    <<: *common-variables
+#    environment:
+#      <<: *env-variables
+#      SW_AGENT_NAME: ceet-ufps-rd-hsa
+#    ports:
+#      - target: 9908
+#        published: 9909
+#        protocol: tcp
+
+  ceet-ufps-me-monitor:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-monitor:20251220-171558-arm64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-monitor
+    ports:
+      - target: 8091
+        published: 8091
+        protocol: tcp
+
+    deploy:
+      mode: replicated
+      resources:
+        limits:
+          cpus: "2"
+          memory: "4G"
+      placement:
+        <<: *common-constraints
+  
+  ceet-ufps-rd-gve-vizup:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-gve-vizup:v2
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-gve-vizup
+    ports:
+      - target: 18054
+        published: 18054
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.ip == 192.168.100.22
+    volumes:
+      - /data/vizup/appsettings.json:/app/Vizup/appsettings.json
+
+  ceet-ufps-rd-gve-portal:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-gve-portal:v2
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-gve-portal
+    ports:
+      - target: 6925
+        published: 6925
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.ip == 192.168.100.22
+    volumes:
+      - /data/portal/wwwroot:/app/Portal/wwwroot
+      - /data/portal/appsettings.json:/app/Portal/appsettings.json
+      - /data/portal/app_data:/app/Portal/app_data
+
+
+  ceet-ufps-rd-gve-graphql:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-gve-graphql:20251122-142759-arm64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-gve-graphql
+    ports:
+      - target: 4003
+        published: 4003
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.ip == 192.168.100.22
+    volumes:
+      - /data/schemas/schema.graphql:/app/graphql/schemas/schema.graphql
+      - /data/schemas/appconfig.json:/app/graphql/appconfig.json
+
+  ceet-ufps-rd-gve-doc:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-gve-doc:v1
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-gve-doc
+    ports:
+      - target: 18055
+        published: 18055
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.ip == 192.168.100.22
+    volumes:
+      - /data/doc-connector/appsettings.json:/app/docConnector/appsettings.json
+      - /data/doc-connector/app_data:/app/docConnector/app_data
+
+  ceet-ufps-rd-gve-model:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-gve-model:20251026-115217-arm64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-gve-model
+    ports:
+      - target: 18848
+        published: 18848
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.ip == 192.168.100.22
+    volumes:
+      - /data/ceet-rd-gve-model/appdata:/app/OC/App_Data
+      - /data/ceet-rd-gve-model/appsettings.json:/app/OC/appsettings.json
+    
+  ceet-ufps-rd-gve-engineering:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-gve-engineering:20251209-195915-arm64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-gve-engineering
+    ports:
+      - target: 18849
+        published: 18849
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.ip == 192.168.100.22
+    volumes:
+      - /data/ceet-ufps-rd-gve-engineering/appdata:/app/OC/App_Data
+      - /data/ceet-ufps-rd-gve-engineering/appsettings.json:/app/OC/appsettings.json
+          
+  ceet-ufps-rd-gve-workflow:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-gve-workflow:20251208-150634-arm64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-gve-workflow
+    ports:
+      - target: 18850
+        published: 18850
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.ip == 192.168.100.22
+    volumes:
+      - /data/ceet-ufps-rd-gve-workflow/appdata:/app/OC/App_Data
+      - /data/ceet-ufps-rd-gve-workflow/appsettings.json:/app/OC/appsettings.json
+
+  ceet-ufps-safe-ocr:
+    image: 192.168.100.10/cnooc/ceet-ufps-safe-ocr:20250820-164750-arm64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-safe-ocr
+    ports:
+      - target: 50290
+        published: 50290
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.arch == arm
+          - node.labels.ip == 192.168.100.24
+
+  cnooc_agent:
+    image: 192.168.100.10/cnooc/cnooc_agent:202512191120_arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: cnooc_agent
+    ports:
+      - target: 8808
+        published: 8808
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        constraints:
+          - node.labels.arch == arm
+          - node.labels.ip == 192.168.100.24
+    volumes:
+      - /app/backend/agent_config.yaml:/app/backend/agent_config.yaml
+
+  cnooc_agent_web:
+    image: 192.168.100.10/cnooc/cnooc_agent_web:202512191136_arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: cnooc_agent_web
+      NGINX_BASE_URL: "http://192.168.100.13:8808"
+    ports:
+      - target: 8810
+        published: 8810
+        protocol: tcp
+    deploy:
+      mode: replicated
+      placement:
+        <<: *common-constraints
+
+networks:
+  cnooc-app:
+    external: true	
