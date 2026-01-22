@@ -177,3 +177,5 @@ mvn clean install deploy -Dmaven.test.skip=true -DaltDeploymentRepository=maven-
 
 -- 手动下载的jar包, mvn install
 mvn install:install-file -DpomFile=D:\temp\word2pdf/aspose-words-24.12.pom -Dfile=D:\temp\word2pdf\aspose-words-24.12-jdk17.jar -DgroupId=com.aspose -DartifactId=aspose-words -Dversion=24.12 -Dclassifier=jdk17 -Dpackaging=jar
+
+mvn install:install-file -Dfile=e:\temp\lunar\commons-suncalc-3.11.jar -DgroupId=org.shredzone.commons -DartifactId=commons-suncalc -Dversion=3.12-SNAPSHOT -Dpackaging=jar

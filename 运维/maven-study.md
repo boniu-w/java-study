@@ -4,7 +4,7 @@
 
 2. 创建这么一个东西, 过程中有经办人会处理, 会花费些时间, 我当时是下午创建的,第二天早上好的; 里面 重要点是: group id -对应你spring项目里pom文件的groupid, 
 
-   ![1643254384231](.\img\sonatype-open-source-project.png)
+   ![1643254384231](..\img\sonatype-open-source-project.png)
 
 
 
@@ -219,7 +219,7 @@ Process finished with exit code 0
 
  发布成功后, 可看到
 
-  ![](.\img\repositories-snapshots-io-gihub-boniu-w-test-0.0.1.png)
+  ![](..\img\repositories-snapshots-io-gihub-boniu-w-test-0.0.1.png)
 
   其中 test-0.0.1-20220127.031452-1.jar 就是 我们的包, sources.jar 是源码包, 
 

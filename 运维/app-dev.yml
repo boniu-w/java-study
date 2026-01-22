@@ -1,0 +1,1343 @@
+version: '3.8'
+
+x-common-variables: &common-variables
+  networks:
+    - cnooc-app
+  volumes:
+    - /opt/skywalking-agent:/opt/skywalking-agent
+
+
+x-common-variables: &env-variables
+  NACOS_SERVER_ADDR: nacos1:8848,nacos2:8848,nacos3:8848
+  NACOS_NAMESPACE: 342627f7-f775-4cac-b180-c1f36f8ecad3
+  NACOS_USERNAME: nacos
+  NACOS_PASSWORD: pnC^bEbcVBB7
+  SPRING_PROFILES_ACTIVE: dev
+  SW_AGENT_COLLECTOR_BACKEND_SERVICES: 192.168.100.18:11800
+  JAVA_TOOL_OPTIONS: "-javaagent:/opt/skywalking-agent/skywalking-agent.jar"
+  FLUENTD_ADDR: 192.168.100.17:24224
+  FLUENTD_ENABLED: "true"
+
+x-common-constraints: &deploy-constraints
+  deploy:
+    mode: replicated
+    resources:
+      limits:
+        cpus: "1"
+        memory: "2G"
+    placement:
+      constraints:
+        - node.labels.leader != 1
+
+x-common-constraints: &cb-volumes-constraints
+  volumes:
+    - /opt/libreoffice24.2:/opt/libreoffice24.2
+    - /opt/skywalking-agent:/opt/skywalking-agent
+
+services:
+  ceet-ufps-gateway:
+    image: 192.168.100.10/cnooc/ceet-ufps-gateway:20251222-101048-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-gateway
+    ports:
+      - target: 8080
+        published: 9084
+        protocol: tcp
+      - target: 8081
+        published: 8031
+        protocol: tcp
+    deploy:
+      mode: replicated
+      resources:
+        limits:
+          cpus: "2"
+          memory: "2.5G"
+      placement:
+        constraints:
+          - node.labels.leader != 1
+    
+
+  ceet-ufps-auth:
+    image: 192.168.100.10/cnooc/ceet-ufps-auth:20251222-101048-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-auth    
+    ports:
+      - target: 9200
+        published: 9200
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-system:
+    image: 192.168.100.10/cnooc/ceet-ufps-system:20251222-101048-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-system    
+    ports:
+      - target: 9600
+        published: 9600
+        protocol: tcp
+    <<: *deploy-constraints
+
+
+  ceet-ufps-message:
+    image: 192.168.100.10/cnooc/ceet-ufps-message:20251222-101048-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-message    
+    ports:
+      - target: 9602
+        published: 9602
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-file:
+    image: 192.168.100.10/cnooc/ceet-ufps-file:20251222-101048-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-file    
+    ports:
+      - target: 9300
+        published: 9300
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-monitor:
+    image: 192.168.100.10/cnooc/ceet-ufps-monitor:20251222-101048-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-monitor    
+    ports:
+      - target: 9100
+        published: 9100
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-job:
+    image: 192.168.100.10/cnooc/ceet-ufps-job:20251217-112242-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-job    
+    ports:
+      - target: 9500
+        published: 9500
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-basedata:
+    image: 192.168.100.10/cnooc/ceet-ufps-basedata:20251216-165345-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-basedata    
+    ports:
+      - target: 9901
+        published: 9901
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-mf-main:
+    image: 192.168.100.10/cnooc/ceet-ufps-mf-main:20251217-183412-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-mf-main    
+    ports:
+      - target: 9601
+        published: 9601
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-ip-om:
+    image: 192.168.100.10/cnooc/ceet-ufps-ip-om:20251218-171835-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ip-om    
+    ports:
+      - target: 9800
+        published: 9800
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-it-om:
+    image: 192.168.100.10/cnooc/ceet-ufps-it-om:20251106-163659-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-it-om    
+    ports:
+      - target: 9900
+        published: 9900
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-pl-om:
+    image: 192.168.100.10/cnooc/ceet-ufps-pl-om:20251209-100834-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-pl-om    
+    ports:
+      - target: 9965
+        published: 9965
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-internal-inspection:
+    image: 192.168.100.10/cnooc/ceet-ufps-internal-inspection:20251223-091050-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-internal-inspection 
+    ports:
+      - target: 9966
+        published: 9966
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-pl-pipe:
+    image: 192.168.100.10/cnooc/ceet-ufps-pl-pipe:20251223-093145-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-pl-pipe   
+    ports:
+      - target: 9970
+        published: 9970
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-failure-analysis:
+    image: 192.168.100.10/cnooc/ceet-ufps-failure-analysis:20251223-090852-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-failure-analysis   
+    ports:
+      - target: 9988
+        published: 9988
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-supervision:
+    image: 192.168.100.10/cnooc/ceet-ufps-supervision:20251223-090448-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-supervision
+    ports:
+      - target: 9976
+        published: 9976
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-corrosion-protection:
+    image: 192.168.100.10/cnooc/ceet-ufps-corrosion-protection:20251223-090629-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-corrosion-protection
+    ports:
+      - target: 9955
+        published: 9955
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-safe:
+    image: 192.168.100.10/cnooc/ceet-ufps-safe:20251222-162100-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-safe    
+    ports:
+      - target: 9765
+        published: 9765
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-security-expense:
+    image: 192.168.100.10/cnooc/ceet-ufps-security-expense:20251217-172859-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-security-expense        
+    ports:
+      - target: 9700
+        published: 9700
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cp-mica:
+    image: 192.168.100.10/cnooc/ceet-ufps-cp-mica:20251216-145230-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cp-mica    
+    ports:
+      - target: 9770
+        published: 9770
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-mica-crp:
+    image: 192.168.100.10/cnooc/ceet-ufps-mica-crp:20251119-102215-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-mica-crp      
+    ports:
+      - target: 50289
+        published: 50289
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-mica-pre:
+    image: 192.168.100.10/cnooc/ceet-ufps-mica-pre:20251119-101507-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-mica-pre      
+    ports:
+      - target: 50288
+        published: 50288
+        protocol: tcp
+    <<: *deploy-constraints
+    
+
+
+
+  ceet-ufps-fl-fac:
+    image: 192.168.100.10/cnooc/ceet-ufps-fl-fac:20251219-110030-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-fl-fac 
+    ports:
+      - target: 9978
+        published: 9978
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-fl-pc:
+    image: 192.168.100.10/cnooc/ceet-ufps-fl-pc:20250410-183523-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-fl-pc     
+    ports:
+      - target: 9979
+        published: 9979
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-rd-gve:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-gve:20251223-144055-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-gve  
+    ports:
+      - target: 9961
+        published: 9961
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cb-project:
+    image: 192.168.100.10/cnooc/ceet-ufps-cb-project:20251218-104200-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cb-project     
+    ports:
+      - target: 10101
+        published: 10101
+        protocol: tcp
+        
+      - target: 9999
+        published: 9999
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cb-colla:
+    image: 192.168.100.10/cnooc/ceet-ufps-cb-colla:20251218-104200-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cb-colla     
+    ports:
+      - target: 10104
+        published: 10104
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cb-data:
+    image: 192.168.100.10/cnooc/ceet-ufps-cb-data:20251218-104200-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cb-data      
+    ports:
+      - target: 10100
+        published: 10100
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cb-event:
+    image: 192.168.100.10/cnooc/ceet-ufps-cb-event:20251218-104200-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cb-event      
+    ports:
+      - target: 10106
+        published: 10106
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cb-setup:
+    image: 192.168.100.10/cnooc/ceet-ufps-cb-setup:20251218-104200-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cb-setup      
+    ports:
+      - target: 10102
+        published: 10102
+        protocol: tcp
+        
+      - target: 9998
+        published: 9998
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cb-tools:
+    image: 192.168.100.10/cnooc/ceet-ufps-cb-tools:20251218-104200-amd64
+    <<: *common-variables
+    <<: *cb-volumes-constraints
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cb-tools      
+    ports:
+      - target: 10103
+        published: 10103
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cb-document:
+    image: 192.168.100.10/cnooc/ceet-ufps-cb-document:20251218-104200-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cb-document      
+    ports:
+      - target: 10105
+        published: 10105
+        protocol: tcp
+        
+      - target: 9997
+        published: 9997
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-cb-stats:
+    image: 192.168.100.10/cnooc/ceet-ufps-cb-stats:20251218-104200-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cb-stats      
+    ports:
+      - target: 10107
+        published: 10107
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  libretranslate-yk:
+    image: 192.168.100.10/cnooc/libretranslate-yk:latest
+    <<: *common-variables
+    ports:
+      - target: 5354
+        published: 5000
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-aol-hardmidware:
+    image: 192.168.100.10/cnooc/ceet-ufps-aol-hardmidware:20241127-112128-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-aol-hardmidware     
+    ports:
+      - target: 5300
+        published: 5300
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  ceet-ufps-aol-core:
+    image: 192.168.100.10/cnooc/ceet-ufps-aol-core:20250305-170021-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-aol-core 
+    ports:
+      - target: 8088
+        published: 8088
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  ceet-ufps-me-memr:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-memr:20251218-172644-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-memr    
+    ports:
+      - target: 8089
+        published: 8089
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-me-electric:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-electric:20251223-113915-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-electric   
+    ports:
+      - target: 8090
+        published: 8090
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+    
+  ceet-ufps-me-sync:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-sync:20251218-170934-arm64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-sync 
+    ports:
+      - target: 8092
+        published: 9091
+        protocol: tcp
+        
+    <<: *deploy-constraints    
+    
+
+  ceet-ufps-me-asset:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-asset:20251214-173539-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-asset   
+    ports:
+      - target: 8092
+        published: 8092
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-me-icmr:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-icmr:20251219-104842-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-icmr  
+    ports:
+      - target: 8093
+        published: 8093
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-me-icsm:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-icsm:20251219-104957-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-icsm     
+    ports:
+      - target: 8094
+        published: 8094
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-me-mps:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-mps:20251219-110831-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-mps  
+    ports:
+      - target: 8095
+        published: 8095
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-me-icit:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-icit:20251128-122901-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-icit
+    ports:
+      - target: 8096
+        published: 8096
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-me-turbine:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-turbine:20251211-164452-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-turbine  
+    ports:
+      - target: 9660
+        published: 9660
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-me-diag:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-diag:20251127-220145-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-diag 
+    ports:
+      - target: 9661
+        published: 9661
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-rd-ar:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-ar:20241101-102327-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-ar   
+    ports:
+      - target: 9902
+        published: 9902
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-me-pm:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-pm:20251209-131521-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-pm
+    ports:
+      - target: 8099
+        published: 8099
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-pl-algorithm:
+    image: 192.168.100.10/cnooc/ceet-ufps-pl-algorithm:20241126-211647-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-pl-algorithm
+    ports:
+      - target: 50051
+        published: 50051
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-pe-failure-analysis:
+    image: 192.168.100.10/cnooc/ceet-ufps-pe-failure-analysis:20251219-142603-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-pe-failure-analysis
+    ports:
+      - target: 9968
+        published: 9968
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-pl-pia:
+    image: 192.168.100.10/cnooc/ceet-ufps-pl-pia:20251218-133011-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-pl-pia 
+    ports:
+      - target: 9967
+        published: 9967
+        protocol: tcp
+        
+    deploy:
+      mode: replicated
+      resources:
+        limits:
+          cpus: "0.25"
+          memory: "3G"
+      placement:
+        constraints:
+          - node.labels.leader != 1
+    
+
+  ceet-ufps-me-cse:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-cse:20250925-160046-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-cse   
+    ports:
+      - target: 8098
+        published: 8098
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-rd-sf:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-sf:20251117-100801-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-sf    
+    ports:
+      - target: 8097
+        published: 8097
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+    
+  ceet-ufps-me-vm:
+    image: 192.168.100.10/cnooc/ceet-ufps-me-vm:20251211-202747-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-me-vm
+    ports:
+      - target: 8097
+        published: 8190
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-rd-mms:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-mms:20251219-082750-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-rd-mms
+    ports:
+      - target: 9908
+        published: 9908
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+  ceet-ufps-mc-wms:
+    image: 192.168.100.10/cnooc/ceet-ufps-mc-wms:20251223-095026-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-mc-wms
+    ports:
+      - target: 9920
+        published: 9920
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  ceet-ufps-rd-hsa:
+    image: 192.168.100.10/cnooc/ceet-ufps-rd-hsa:20251219-104704-amd64
+    <<: *common-variables
+    ports:
+      - target: 9908
+        published: 9909
+        protocol: tcp
+        mode: host
+    <<: *deploy-constraints
+
+  ceet-ufps-cs-da:
+    image: 192.168.100.10/cnooc/ceet-ufps-cs-da:20251120-091203-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-cs-da
+    ports:
+      - target: 18888
+        published: 18888
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-ai-gateway:
+    image: 192.168.100.10/cnooc/ceet-ufps-ai-gateway:20250814-141219-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ai-gateway
+    ports:
+      - target: 9080
+        published: 9080
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-ai-chatbiagent:
+    image: 192.168.100.10/cnooc/ceet-ufps-ai-chatbiagent:20250928-184517-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ai-chatbiagent
+    ports:
+      - target: 18008
+        published: 9090
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+      
+  ceet-ufps-ai-frontend:
+    image: 192.168.100.10/cnooc/ceet-ufps-ai-frontend:arm-1.0
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ai-frontend 
+    ports:
+      - target: 9081
+        published: 9081
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+          
+  ceet-ufps-ai-llm-proxy:
+    image: 192.168.100.10/cnooc/ceet-ufps-ai-llm-proxy:20250930-112434-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ai-llm-proxy
+    ports:
+      - target: 8001
+        published: 9082
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+
+  ceet-ufps-ai-web:
+    image: 192.168.100.10/cnooc/ceet-ufps-ai-web:20251017-172515-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ai-web
+    ports:
+      - target: 80
+        published: 9083
+        protocol: tcp
+        
+    <<: *deploy-constraints
+    
+      
+  unified-facility-proact-sys-web:
+    image: 192.168.100.10/cnooc/unified-facility-proact-sys-web:20251223-104935-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: unified-facility-proact-sys-web      
+    ports:
+      - target: 80
+        published: 8110
+        protocol: tcp
+    <<: *deploy-constraints
+
+
+  unified-facility-proact-mobile:
+    image: 192.168.100.10/cnooc/unified-facility-proact-mobile:20250923-170459-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: unified-facility-proact-mobile      
+    ports:
+      - target: 80
+        published: 7110
+        protocol: tcp
+    <<: *deploy-constraints
+
+  unified-facility-proact-mobile-digitization:
+    image: 192.168.100.10/cnooc/unified-facility-proact-mobile-digitization:20251222-213801-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: unified-facility-proact-mobile-digitization
+    ports:
+      - target: 80
+        published: 7111
+        protocol: tcp
+    <<: *deploy-constraints
+     
+  ceet-ufps-daping:
+    image: 192.168.100.10/cnooc/ceet-ufps-daping:20250923-180304-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-daping
+    ports:
+       - target: 80
+         published: 8200
+         protocol: tcp
+    <<: *deploy-constraints
+
+  ceet-ufps-ai-writer:
+    image: 192.168.100.10/cnooc/ceet-ufps-ai-writer:20251212-130513-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ai-writer
+    ports:
+      - target: 9085
+        published: 9085
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  ceet-ufps-ai-writer-web:
+    image: 192.168.100.10/cnooc/ceet-ufps-ai-writer-web:20251119-135048-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ai-writer-web
+    ports:
+      - target: 80
+        published: 9086
+        protocol: tcp
+        
+    <<: *deploy-constraints  
+    
+  ceet-ufps-ai-chatbi:
+    image: 192.168.100.10/cnooc/ceet-ufps-ai-chatbi:20250910-145043-amd64
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-ai-chatbi
+      dts_license_key: 172.16.#F7AF4B56E07E139C396CF0F9468D2395
+    networks:
+      - cnooc-app
+      - ai-network
+    ports:
+      - target: 30070
+        published: 30070
+        protocol: tcp
+    
+    volumes:
+      - /opt/skywalking-agent:/opt/skywalking-agent
+    
+    <<: *deploy-constraints
+
+  ceet-ufps-api-gateway:
+    image: 192.168.100.10/cnooc/ceet-ufps-api-gateway:20251030-141558-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-api-gateway
+    ports:
+      - target: 8888
+        published: 8888
+        protocol: tcp
+
+    <<: *deploy-constraints
+
+
+  ceet-ufps-api-gateway-management:
+    image: 192.168.100.10/cnooc/ceet-ufps-api-gateway-management:20251217-112700-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-ufps-api-gateway-management
+    ports:
+      - target: 8889
+        published: 8889
+        protocol: tcp
+
+    <<: *deploy-constraints
+  
+
+  sds-modules-system:
+    image: 192.168.100.10/cnooc/sds-modules-system:20251125-143102-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: sds-modules-system    
+    ports:
+      - target: 9810
+        published: 9810
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  sds-modules-file:
+    image: 192.168.100.10/cnooc/sds-modules-file:20251120-153554-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: sds-modules-file    
+    ports:
+      - target: 21035
+        published: 21035
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  sds-gateway:
+    image: 192.168.100.10/cnooc/sds-gateway:20251125-155333-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: sds-gateway    
+    ports:
+      - target: 9805
+        published: 9805
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  sds-job-admin:
+    image: 192.168.100.10/cnooc/sds-job-admin:20251119-174719-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: sds-job-admin    
+    ports:
+      - target: 9825
+        published: 9825
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  sds-flowable:
+    image: 192.168.100.10/cnooc/sds-flowable:20251119-174506-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: sds-flowable    
+    ports:
+      - target: 9855
+        published: 9855
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  sds-auth:
+    image: 192.168.100.10/cnooc/sds-auth:20251125-134920-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: sds-auth    
+    ports:
+      - target: 9801
+        published: 9801
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  mds-server:
+    image: 192.168.100.10/cnooc/mds-server:20251119-141934-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: mds-server    
+    ports:
+      - target: 9088
+        published: 9088
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  datatools-sync:
+    image: 192.168.100.10/cnooc/datatools-sync:20251120-155155-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: datatools-sync    
+    ports:
+      - target: 9089
+        published: 9089
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+#  datatools-connect:
+#    image: 192.168.100.10/cnooc/datatools-connect:20251120-155201-arm
+#    <<: *common-variables
+#    environment:
+#      <<: *env-variables
+#      SW_AGENT_NAME: datatools-connect
+#    ports:
+#      - target: 9091
+#        published: 9091
+#        protocol: tcp
+#
+#    <<: *deploy-constraints
+
+  bds-modules-projectmanage:
+    image: 192.168.100.10/cnooc/bds-modules-projectmanage:20251120-154509-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: bds-modules-projectmanage    
+    ports:
+      - target: 20070
+        published: 20070
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  bds-modules-modelmanage:
+    image: 192.168.100.10/cnooc/bds-modules-modelmanage:20251120-155526-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: bds-modules-modelmanage    
+    ports:
+      - target: 20040
+        published: 20040
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  bds-modules-keydatamanage:
+    image: 192.168.100.10/cnooc/bds-modules-keydatamanage:20251120-155728-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: bds-modules-keydatamanage    
+    ports:
+      - target: 20060
+        published: 20060
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  bds-modules-datasync:
+    image: 192.168.100.10/cnooc/bds-modules-datasync:20251120-154835-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: bds-modules-datasync    
+    ports:
+      - target: 20030
+        published: 20030
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  bds-modules-datacollection:
+    image: 192.168.100.10/cnooc/bds-modules-datacollection:20251120-154731-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: bds-modules-datacollection    
+    ports:
+      - target: 20020
+        published: 20020
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  bds-modules-connectionmanage:
+    image: 192.168.100.10/cnooc/bds-modules-connectionmanage:20251120-154555-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: bds-modules-connectionmanage    
+    ports:
+      - target: 20010
+        published: 20010
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  bds-job-executor:
+    image: 192.168.100.10/cnooc/bds-job-executor:20251120-154637-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: bds-job-executor    
+    ports:
+      - target: 9826
+        published: 9826
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  bds-job-executor:
+    image: 192.168.100.10/cnooc/bds-job-executor:20251120-154637-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: bds-job-executor    
+    ports:
+      - target: 9826
+        published: 9826
+        protocol: tcp
+
+  sds-schema:
+    image: 192.168.100.10/cnooc/sds-schema:20251119-141934-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: sds-schema    
+    ports:
+      - target: 9888
+        published: 9888
+        protocol: tcp
+
+  schema-standard:
+    image: 192.168.100.10/cnooc/schema-standard:20251119-141934-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: schema-standard    
+    ports:
+      - target: 9890
+        published: 9890
+        protocol: tcp
+
+  schema-quality:
+    image: 192.168.100.10/cnooc/schema-quality:20251119-141934-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: schema-quality    
+    ports:
+      - target: 9891
+        published: 9891
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+  datatools-config:
+    image: 192.168.100.10/cnooc/datatools-config:20251125-160305-arm
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: datatools-config    
+    ports:
+      - target: 9001
+        published: 9001
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+
+  ceet-edas-front:
+    image: 192.168.100.10/cnooc/ceet-edas-front:20251125-145320-amd64
+    <<: *common-variables
+    environment:
+      <<: *env-variables
+      SW_AGENT_NAME: ceet-edas-front    
+    ports:
+      - target: 9002
+        published: 9002
+        protocol: tcp
+        
+    <<: *deploy-constraints
+
+
+networks:
+  cnooc-app:
+    name: cnooc-app
+    external: true
+  ai-network:
+    name: ai-network
+    external: true
+
