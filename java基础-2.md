@@ -2157,3 +2157,83 @@ axios.get('/data').then(res => {
 - 浏览器 Network 面板中该请求的 **Response Headers** 和 **Preview/Response**
 
 我可以帮你精准定位！
+
+
+
+# 17. hashcode 和 equals
+
+```java
+        Teacher teacher = new Teacher();
+        int i4 = teacher.hashCode();
+        System.out.println("i4 = " + i4); // 225290371
+
+        Teacher teacher1 = new Teacher();
+        int i5 = teacher1.hashCode();
+        System.out.println("i5 = " + i5); // 1169146729
+
+        boolean equals = teacher.equals(teacher1);
+        System.out.println("equals = " + equals); // false
+        
+        HashSet<Object> hashSet = new HashSet<>();
+        hashSet.add(teacher);
+        hashSet.add(teacher1);
+        System.out.println("hashSet.size = " + hashSet.size()); // 2        
+```
+
+这个现象是 **完全正常且符合预期** 的。我们可以从以下几个方面来解释：
+
+### 1. 为什么 `hashCode` 不同？
+
+在你的代码中，`Teacher` 类**没有重写 hashCode() 方法**，所以它使用的是从 `Object` 类继承过来的默认实现。
+
+- `Object.hashCode()` 的默认行为通常是将对象的**内存地址**（或基于内存地址的某种转换）转换为一个 `int` 值。
+- `teacher` 和 `teacher1` 是通过两次 `new` 关键字创建的，它们在堆内存中是**两个完全独立的对象**，拥有不同的内存地址。
+- 因此，它们的默认 `hashCode` 不同（`225290371` 和 `1169146729`）。
+
+### 2. 为什么 `equals` 是 `false`？
+
+同样因为 `Teacher` 类**没有重写 equals() 方法**，它使用的是 `Object.equals()` 的默认实现。
+
+- `Object.equals()` 的底层逻辑其实就是在比较两个对象的**内存地址**（相当于 `==`）。
+- 既然 `teacher` 和 `teacher1` 是两个不同的对象实例，内存地址不同，`equals` 自然返回 `false`。
+
+### 3. 这符合 Java 的契约吗？
+
+**完全符合！** 我们回顾一下上一轮提到的核心契约：
+
+- **契约**：如果 `equals()` 返回 `true`，则 `hashCode()` 必须相同。
+- **推论**：如果 `hashCode()` 不同，则 `equals()` **一定**是 `false`。
+
+你的代码完美地体现了这一点：因为 `hashCode` 不同，所以 `equals` 必然是 `false`。
+
+------
+
+### 💡 延伸思考：如果你重写了方法会怎样？
+
+假设你在 `Teacher` 类中重写了这两个方法，比如规定“只要 `Teacher` 的 `id` 相同，就认为是同一个老师”：
+
+```java
+@Override
+public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Teacher teacher = (Teacher) o;
+    return id == teacher.id; // 假设 id 是 int 类型
+}
+
+@Override
+public int hashCode() {
+    return Integer.hashCode(id);
+}
+```
+
+如果你给这两个对象的 `id` 赋了**不同的值**（例如 `teacher.id = 1`, `teacher1.id = 2`），那么即使重写了方法，结果依然是：
+
+- `hashCode` 不同
+- `equals` 为 `false`
+
+**总结**：你看到的这段代码，仅仅证明了 `new Teacher()` 两次会创建两个内存地址不同、相互独立的对象。这在 Java 中是最基础也是最正常的表现。
+
+------
+
+要不要我帮你写一份 Teacher 类重写 equals() 和 hashCode() 的完整示例？用实际代码跑一遍，对比一下重写前后的行为差异。
