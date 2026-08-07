@@ -179,3 +179,22 @@ mvn clean install deploy -Dmaven.test.skip=true -DaltDeploymentRepository=maven-
 mvn install:install-file -DpomFile=D:\temp\word2pdf/aspose-words-24.12.pom -Dfile=D:\temp\word2pdf\aspose-words-24.12-jdk17.jar -DgroupId=com.aspose -DartifactId=aspose-words -Dversion=24.12 -Dclassifier=jdk17 -Dpackaging=jar
 
 mvn install:install-file -Dfile=e:\temp\lunar\commons-suncalc-3.11.jar -DgroupId=org.shredzone.commons -DartifactId=commons-suncalc -Dversion=3.12-SNAPSHOT -Dpackaging=jar
+
+
+20260807------------------------------------------------------------
+api项目deploy到sevenme maven
+# 1. 先部署父 POM（不递归子模块）
+mvn clean deploy -N -DskipTests -DaltDeploymentRepository=devops-repo::default::http://devops:9081/repository/maven-releases
+
+# 2. 再部署 api 模块
+mvn clean deploy -pl ci-dp-peq-asset-api -DskipTests -DaltDeploymentRepository=devops-repo::default::http://devops:9081/repository/maven-releases
+
+
+mvn clean deploy -N -DskipTests -DaltDeploymentRepository=devops-repo::default::http://devops:9081/repository/maven-releases
+mvn clean deploy -pl ci-dp-peq-strategy-asset-api -DskipTests -DaltDeploymentRepository=devops-repo::default::http://devops:9081/repository/maven-releases
+
+mvn clean deploy -N -DskipTests -DaltDeploymentRepository=devops-repo::default::http://devops:9081/repository/maven-releases
+mvn clean deploy -pl ci-dp-peq-monitoring-inspection-api -DskipTests -DaltDeploymentRepository=devops-repo::default::http://devops:9081/repository/maven-releases
+
+mvn clean deploy -N -DskipTests -DaltDeploymentRepository=devops-repo::default::http://devops:9081/repository/maven-releases
+mvn clean deploy -pl ci-dp-peq-regulation-training-api -DskipTests -DaltDeploymentRepository=devops-repo::default::http://devops:9081/repository/maven-releases
